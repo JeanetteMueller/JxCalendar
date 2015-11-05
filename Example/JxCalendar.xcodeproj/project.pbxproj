@@ -1,0 +1,473 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		269C0E751BBC2B4E00655EB3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 269C0E741BBC2B4E00655EB3 /* main.m */; };
+		269C0E781BBC2B4E00655EB3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 269C0E771BBC2B4E00655EB3 /* AppDelegate.m */; };
+		269C0E7E1BBC2B4E00655EB3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 269C0E7C1BBC2B4E00655EB3 /* Main.storyboard */; };
+		269C0E801BBC2B4E00655EB3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 269C0E7F1BBC2B4E00655EB3 /* Assets.xcassets */; };
+		269C0E831BBC2B4E00655EB3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 269C0E811BBC2B4E00655EB3 /* LaunchScreen.storyboard */; };
+		26E67B941BEA623800B5138A /* TestCalendarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 26E67B931BEA623800B5138A /* TestCalendarDataSource.m */; };
+		26E91E6A1BEBB19C0095589F /* JxCalendarEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26E91E691BEBB19C0095589F /* JxCalendarEventCell.m */; };
+		26E91E6C1BEBB1AD0095589F /* JxCalendarEventCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26E91E6B1BEBB1AD0095589F /* JxCalendarEventCell.xib */; };
+		26F8C6941BEB9C7300301CCD /* JxCalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C66F1BEB9C7300301CCD /* JxCalendarCell.m */; };
+		26F8C6951BEB9C7300301CCD /* JxCalendarCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26F8C6701BEB9C7300301CCD /* JxCalendarCell.xib */; };
+		26F8C6961BEB9C7300301CCD /* JxCalendarDayHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C6721BEB9C7300301CCD /* JxCalendarDayHeader.m */; };
+		26F8C6971BEB9C7300301CCD /* JxCalendarDayHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26F8C6731BEB9C7300301CCD /* JxCalendarDayHeader.xib */; };
+		26F8C6981BEB9C7300301CCD /* JxCalendarHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C6751BEB9C7300301CCD /* JxCalendarHeader.m */; };
+		26F8C6991BEB9C7300301CCD /* JxCalendarHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26F8C6761BEB9C7300301CCD /* JxCalendarHeader.xib */; };
+		26F8C69A1BEB9C7300301CCD /* JxCalendarListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C6781BEB9C7300301CCD /* JxCalendarListCell.m */; };
+		26F8C69B1BEB9C7300301CCD /* JxCalendarListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26F8C6791BEB9C7300301CCD /* JxCalendarListCell.xib */; };
+		26F8C69C1BEB9C7300301CCD /* JxCalendarMonthGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C67B1BEB9C7300301CCD /* JxCalendarMonthGridCell.m */; };
+		26F8C69D1BEB9C7300301CCD /* JxCalendarMonthGridCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26F8C67C1BEB9C7300301CCD /* JxCalendarMonthGridCell.xib */; };
+		26F8C69E1BEB9C7300301CCD /* JxCalendarYearGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C67E1BEB9C7300301CCD /* JxCalendarYearGridCell.m */; };
+		26F8C69F1BEB9C7300301CCD /* JxCalendarYearGridCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26F8C67F1BEB9C7300301CCD /* JxCalendarYearGridCell.xib */; };
+		26F8C6A41BEB9C7300301CCD /* JxCalendarLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C68B1BEB9C7300301CCD /* JxCalendarLayout.m */; };
+		26F8C6A51BEB9C7300301CCD /* JxCalendarLayoutDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C68D1BEB9C7300301CCD /* JxCalendarLayoutDay.m */; };
+		26F8C6A61BEB9C7300301CCD /* JxCalendarLayoutList.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C68F1BEB9C7300301CCD /* JxCalendarLayoutList.m */; };
+		26F8C6A71BEB9C7300301CCD /* JxCalendarLayoutMonthGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C6911BEB9C7300301CCD /* JxCalendarLayoutMonthGrid.m */; };
+		26F8C6A81BEB9C7300301CCD /* JxCalendarLayoutYearGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C6931BEB9C7300301CCD /* JxCalendarLayoutYearGrid.m */; };
+		26F8C6AE1BEB9CBD00301CCD /* JxCalendarDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C6AB1BEB9CBD00301CCD /* JxCalendarDay.m */; };
+		26F8C6AF1BEB9CBD00301CCD /* JxCalendarOverview.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C6AD1BEB9CBD00301CCD /* JxCalendarOverview.m */; };
+		26F8C6B31BEB9CC200301CCD /* JxCalendarEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C6B21BEB9CC200301CCD /* JxCalendarEvent.m */; };
+		26F8C6B61BEB9D1700301CCD /* JxCalendarGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26F8C6B51BEB9D1700301CCD /* JxCalendarGridCell.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		269C0E701BBC2B4E00655EB3 /* JxCalendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JxCalendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		269C0E741BBC2B4E00655EB3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		269C0E761BBC2B4E00655EB3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		269C0E771BBC2B4E00655EB3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		269C0E7D1BBC2B4E00655EB3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		269C0E7F1BBC2B4E00655EB3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		269C0E821BBC2B4E00655EB3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		269C0E841BBC2B4E00655EB3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		26E67B921BEA623800B5138A /* TestCalendarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCalendarDataSource.h; sourceTree = "<group>"; };
+		26E67B931BEA623800B5138A /* TestCalendarDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCalendarDataSource.m; sourceTree = "<group>"; };
+		26E91E681BEBB19C0095589F /* JxCalendarEventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarEventCell.h; sourceTree = "<group>"; };
+		26E91E691BEBB19C0095589F /* JxCalendarEventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarEventCell.m; sourceTree = "<group>"; };
+		26E91E6B1BEBB1AD0095589F /* JxCalendarEventCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarEventCell.xib; sourceTree = "<group>"; };
+		26F8C66E1BEB9C7300301CCD /* JxCalendarCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarCell.h; sourceTree = "<group>"; };
+		26F8C66F1BEB9C7300301CCD /* JxCalendarCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarCell.m; sourceTree = "<group>"; };
+		26F8C6701BEB9C7300301CCD /* JxCalendarCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarCell.xib; sourceTree = "<group>"; };
+		26F8C6711BEB9C7300301CCD /* JxCalendarDayHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarDayHeader.h; sourceTree = "<group>"; };
+		26F8C6721BEB9C7300301CCD /* JxCalendarDayHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarDayHeader.m; sourceTree = "<group>"; };
+		26F8C6731BEB9C7300301CCD /* JxCalendarDayHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarDayHeader.xib; sourceTree = "<group>"; };
+		26F8C6741BEB9C7300301CCD /* JxCalendarHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarHeader.h; sourceTree = "<group>"; };
+		26F8C6751BEB9C7300301CCD /* JxCalendarHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarHeader.m; sourceTree = "<group>"; };
+		26F8C6761BEB9C7300301CCD /* JxCalendarHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarHeader.xib; sourceTree = "<group>"; };
+		26F8C6771BEB9C7300301CCD /* JxCalendarListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarListCell.h; sourceTree = "<group>"; };
+		26F8C6781BEB9C7300301CCD /* JxCalendarListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarListCell.m; sourceTree = "<group>"; };
+		26F8C6791BEB9C7300301CCD /* JxCalendarListCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarListCell.xib; sourceTree = "<group>"; };
+		26F8C67A1BEB9C7300301CCD /* JxCalendarMonthGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarMonthGridCell.h; sourceTree = "<group>"; };
+		26F8C67B1BEB9C7300301CCD /* JxCalendarMonthGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarMonthGridCell.m; sourceTree = "<group>"; };
+		26F8C67C1BEB9C7300301CCD /* JxCalendarMonthGridCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarMonthGridCell.xib; sourceTree = "<group>"; };
+		26F8C67D1BEB9C7300301CCD /* JxCalendarYearGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarYearGridCell.h; sourceTree = "<group>"; };
+		26F8C67E1BEB9C7300301CCD /* JxCalendarYearGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarYearGridCell.m; sourceTree = "<group>"; };
+		26F8C67F1BEB9C7300301CCD /* JxCalendarYearGridCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarYearGridCell.xib; sourceTree = "<group>"; };
+		26F8C6821BEB9C7300301CCD /* JxCalendarDefinitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarDefinitions.h; sourceTree = "<group>"; };
+		26F8C68A1BEB9C7300301CCD /* JxCalendarLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarLayout.h; sourceTree = "<group>"; };
+		26F8C68B1BEB9C7300301CCD /* JxCalendarLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarLayout.m; sourceTree = "<group>"; };
+		26F8C68C1BEB9C7300301CCD /* JxCalendarLayoutDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarLayoutDay.h; sourceTree = "<group>"; };
+		26F8C68D1BEB9C7300301CCD /* JxCalendarLayoutDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarLayoutDay.m; sourceTree = "<group>"; };
+		26F8C68E1BEB9C7300301CCD /* JxCalendarLayoutList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarLayoutList.h; sourceTree = "<group>"; };
+		26F8C68F1BEB9C7300301CCD /* JxCalendarLayoutList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarLayoutList.m; sourceTree = "<group>"; };
+		26F8C6901BEB9C7300301CCD /* JxCalendarLayoutMonthGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarLayoutMonthGrid.h; sourceTree = "<group>"; };
+		26F8C6911BEB9C7300301CCD /* JxCalendarLayoutMonthGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarLayoutMonthGrid.m; sourceTree = "<group>"; };
+		26F8C6921BEB9C7300301CCD /* JxCalendarLayoutYearGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarLayoutYearGrid.h; sourceTree = "<group>"; };
+		26F8C6931BEB9C7300301CCD /* JxCalendarLayoutYearGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarLayoutYearGrid.m; sourceTree = "<group>"; };
+		26F8C6AA1BEB9CBD00301CCD /* JxCalendarDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarDay.h; sourceTree = "<group>"; };
+		26F8C6AB1BEB9CBD00301CCD /* JxCalendarDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarDay.m; sourceTree = "<group>"; };
+		26F8C6AC1BEB9CBD00301CCD /* JxCalendarOverview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarOverview.h; sourceTree = "<group>"; };
+		26F8C6AD1BEB9CBD00301CCD /* JxCalendarOverview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarOverview.m; sourceTree = "<group>"; };
+		26F8C6B11BEB9CC200301CCD /* JxCalendarEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarEvent.h; sourceTree = "<group>"; };
+		26F8C6B21BEB9CC200301CCD /* JxCalendarEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarEvent.m; sourceTree = "<group>"; };
+		26F8C6B41BEB9D1700301CCD /* JxCalendarGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarGridCell.h; sourceTree = "<group>"; };
+		26F8C6B51BEB9D1700301CCD /* JxCalendarGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarGridCell.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		269C0E6D1BBC2B4E00655EB3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		269C0E671BBC2B4E00655EB3 = {
+			isa = PBXGroup;
+			children = (
+				26F8C66C1BEB9C7300301CCD /* Sources */,
+				269C0E721BBC2B4E00655EB3 /* JxCalendar */,
+				269C0E711BBC2B4E00655EB3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		269C0E711BBC2B4E00655EB3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				269C0E701BBC2B4E00655EB3 /* JxCalendar.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		269C0E721BBC2B4E00655EB3 /* JxCalendar */ = {
+			isa = PBXGroup;
+			children = (
+				26E67B921BEA623800B5138A /* TestCalendarDataSource.h */,
+				26E67B931BEA623800B5138A /* TestCalendarDataSource.m */,
+				269C0E761BBC2B4E00655EB3 /* AppDelegate.h */,
+				269C0E771BBC2B4E00655EB3 /* AppDelegate.m */,
+				269C0E7C1BBC2B4E00655EB3 /* Main.storyboard */,
+				269C0E7F1BBC2B4E00655EB3 /* Assets.xcassets */,
+				269C0E811BBC2B4E00655EB3 /* LaunchScreen.storyboard */,
+				269C0E841BBC2B4E00655EB3 /* Info.plist */,
+				269C0E731BBC2B4E00655EB3 /* Supporting Files */,
+			);
+			path = JxCalendar;
+			sourceTree = "<group>";
+		};
+		269C0E731BBC2B4E00655EB3 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				269C0E741BBC2B4E00655EB3 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		26F8C66C1BEB9C7300301CCD /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				26F8C66D1BEB9C7300301CCD /* Cells */,
+				26F8C6891BEB9C7300301CCD /* Layouts */,
+				26F8C6B01BEB9CC200301CCD /* DataObjects */,
+				26F8C6A91BEB9CBD00301CCD /* ViewControllers */,
+				26F8C6821BEB9C7300301CCD /* JxCalendarDefinitions.h */,
+			);
+			name = Sources;
+			path = ../Sources;
+			sourceTree = "<group>";
+		};
+		26F8C66D1BEB9C7300301CCD /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				26F8C6B41BEB9D1700301CCD /* JxCalendarGridCell.h */,
+				26F8C6B51BEB9D1700301CCD /* JxCalendarGridCell.m */,
+				26F8C66E1BEB9C7300301CCD /* JxCalendarCell.h */,
+				26F8C66F1BEB9C7300301CCD /* JxCalendarCell.m */,
+				26F8C6701BEB9C7300301CCD /* JxCalendarCell.xib */,
+				26F8C6711BEB9C7300301CCD /* JxCalendarDayHeader.h */,
+				26F8C6721BEB9C7300301CCD /* JxCalendarDayHeader.m */,
+				26F8C6731BEB9C7300301CCD /* JxCalendarDayHeader.xib */,
+				26F8C6741BEB9C7300301CCD /* JxCalendarHeader.h */,
+				26F8C6751BEB9C7300301CCD /* JxCalendarHeader.m */,
+				26F8C6761BEB9C7300301CCD /* JxCalendarHeader.xib */,
+				26F8C6771BEB9C7300301CCD /* JxCalendarListCell.h */,
+				26F8C6781BEB9C7300301CCD /* JxCalendarListCell.m */,
+				26F8C6791BEB9C7300301CCD /* JxCalendarListCell.xib */,
+				26F8C67A1BEB9C7300301CCD /* JxCalendarMonthGridCell.h */,
+				26F8C67B1BEB9C7300301CCD /* JxCalendarMonthGridCell.m */,
+				26F8C67C1BEB9C7300301CCD /* JxCalendarMonthGridCell.xib */,
+				26F8C67D1BEB9C7300301CCD /* JxCalendarYearGridCell.h */,
+				26F8C67E1BEB9C7300301CCD /* JxCalendarYearGridCell.m */,
+				26F8C67F1BEB9C7300301CCD /* JxCalendarYearGridCell.xib */,
+				26E91E681BEBB19C0095589F /* JxCalendarEventCell.h */,
+				26E91E691BEBB19C0095589F /* JxCalendarEventCell.m */,
+				26E91E6B1BEBB1AD0095589F /* JxCalendarEventCell.xib */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		26F8C6891BEB9C7300301CCD /* Layouts */ = {
+			isa = PBXGroup;
+			children = (
+				26F8C68A1BEB9C7300301CCD /* JxCalendarLayout.h */,
+				26F8C68B1BEB9C7300301CCD /* JxCalendarLayout.m */,
+				26F8C68E1BEB9C7300301CCD /* JxCalendarLayoutList.h */,
+				26F8C68F1BEB9C7300301CCD /* JxCalendarLayoutList.m */,
+				26F8C6901BEB9C7300301CCD /* JxCalendarLayoutMonthGrid.h */,
+				26F8C6911BEB9C7300301CCD /* JxCalendarLayoutMonthGrid.m */,
+				26F8C6921BEB9C7300301CCD /* JxCalendarLayoutYearGrid.h */,
+				26F8C6931BEB9C7300301CCD /* JxCalendarLayoutYearGrid.m */,
+				26F8C68C1BEB9C7300301CCD /* JxCalendarLayoutDay.h */,
+				26F8C68D1BEB9C7300301CCD /* JxCalendarLayoutDay.m */,
+			);
+			path = Layouts;
+			sourceTree = "<group>";
+		};
+		26F8C6A91BEB9CBD00301CCD /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				26F8C6AA1BEB9CBD00301CCD /* JxCalendarDay.h */,
+				26F8C6AB1BEB9CBD00301CCD /* JxCalendarDay.m */,
+				26F8C6AC1BEB9CBD00301CCD /* JxCalendarOverview.h */,
+				26F8C6AD1BEB9CBD00301CCD /* JxCalendarOverview.m */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		26F8C6B01BEB9CC200301CCD /* DataObjects */ = {
+			isa = PBXGroup;
+			children = (
+				26F8C6B11BEB9CC200301CCD /* JxCalendarEvent.h */,
+				26F8C6B21BEB9CC200301CCD /* JxCalendarEvent.m */,
+			);
+			path = DataObjects;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		269C0E6F1BBC2B4E00655EB3 /* JxCalendar */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 269C0E871BBC2B4E00655EB3 /* Build configuration list for PBXNativeTarget "JxCalendar" */;
+			buildPhases = (
+				269C0E6C1BBC2B4E00655EB3 /* Sources */,
+				269C0E6D1BBC2B4E00655EB3 /* Frameworks */,
+				269C0E6E1BBC2B4E00655EB3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = JxCalendar;
+			productName = JxCalendar;
+			productReference = 269C0E701BBC2B4E00655EB3 /* JxCalendar.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		269C0E681BBC2B4E00655EB3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "Jeanette Müller";
+				TargetAttributes = {
+					269C0E6F1BBC2B4E00655EB3 = {
+						CreatedOnToolsVersion = 7.0;
+					};
+				};
+			};
+			buildConfigurationList = 269C0E6B1BBC2B4E00655EB3 /* Build configuration list for PBXProject "JxCalendar" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 269C0E671BBC2B4E00655EB3;
+			productRefGroup = 269C0E711BBC2B4E00655EB3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				269C0E6F1BBC2B4E00655EB3 /* JxCalendar */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		269C0E6E1BBC2B4E00655EB3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				269C0E831BBC2B4E00655EB3 /* LaunchScreen.storyboard in Resources */,
+				269C0E801BBC2B4E00655EB3 /* Assets.xcassets in Resources */,
+				269C0E7E1BBC2B4E00655EB3 /* Main.storyboard in Resources */,
+				26F8C69F1BEB9C7300301CCD /* JxCalendarYearGridCell.xib in Resources */,
+				26E91E6C1BEBB1AD0095589F /* JxCalendarEventCell.xib in Resources */,
+				26F8C6951BEB9C7300301CCD /* JxCalendarCell.xib in Resources */,
+				26F8C69D1BEB9C7300301CCD /* JxCalendarMonthGridCell.xib in Resources */,
+				26F8C6991BEB9C7300301CCD /* JxCalendarHeader.xib in Resources */,
+				26F8C6971BEB9C7300301CCD /* JxCalendarDayHeader.xib in Resources */,
+				26F8C69B1BEB9C7300301CCD /* JxCalendarListCell.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		269C0E6C1BBC2B4E00655EB3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26F8C6AE1BEB9CBD00301CCD /* JxCalendarDay.m in Sources */,
+				269C0E781BBC2B4E00655EB3 /* AppDelegate.m in Sources */,
+				26F8C6AF1BEB9CBD00301CCD /* JxCalendarOverview.m in Sources */,
+				26F8C6B61BEB9D1700301CCD /* JxCalendarGridCell.m in Sources */,
+				26E67B941BEA623800B5138A /* TestCalendarDataSource.m in Sources */,
+				26F8C6A71BEB9C7300301CCD /* JxCalendarLayoutMonthGrid.m in Sources */,
+				26F8C6981BEB9C7300301CCD /* JxCalendarHeader.m in Sources */,
+				269C0E751BBC2B4E00655EB3 /* main.m in Sources */,
+				26E91E6A1BEBB19C0095589F /* JxCalendarEventCell.m in Sources */,
+				26F8C6A51BEB9C7300301CCD /* JxCalendarLayoutDay.m in Sources */,
+				26F8C69C1BEB9C7300301CCD /* JxCalendarMonthGridCell.m in Sources */,
+				26F8C6A61BEB9C7300301CCD /* JxCalendarLayoutList.m in Sources */,
+				26F8C6941BEB9C7300301CCD /* JxCalendarCell.m in Sources */,
+				26F8C6961BEB9C7300301CCD /* JxCalendarDayHeader.m in Sources */,
+				26F8C69E1BEB9C7300301CCD /* JxCalendarYearGridCell.m in Sources */,
+				26F8C6A41BEB9C7300301CCD /* JxCalendarLayout.m in Sources */,
+				26F8C69A1BEB9C7300301CCD /* JxCalendarListCell.m in Sources */,
+				26F8C6A81BEB9C7300301CCD /* JxCalendarLayoutYearGrid.m in Sources */,
+				26F8C6B31BEB9CC200301CCD /* JxCalendarEvent.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		269C0E7C1BBC2B4E00655EB3 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				269C0E7D1BBC2B4E00655EB3 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		269C0E811BBC2B4E00655EB3 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				269C0E821BBC2B4E00655EB3 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		269C0E851BBC2B4E00655EB3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		269C0E861BBC2B4E00655EB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		269C0E881BBC2B4E00655EB3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = JxCalendar/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = de.themaverick.JxCalendar;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		269C0E891BBC2B4E00655EB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = JxCalendar/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = de.themaverick.JxCalendar;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		269C0E6B1BBC2B4E00655EB3 /* Build configuration list for PBXProject "JxCalendar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				269C0E851BBC2B4E00655EB3 /* Debug */,
+				269C0E861BBC2B4E00655EB3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		269C0E871BBC2B4E00655EB3 /* Build configuration list for PBXNativeTarget "JxCalendar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				269C0E881BBC2B4E00655EB3 /* Debug */,
+				269C0E891BBC2B4E00655EB3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 269C0E681BBC2B4E00655EB3 /* Project object */;
+}
