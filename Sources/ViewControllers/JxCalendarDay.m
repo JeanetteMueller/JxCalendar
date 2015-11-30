@@ -15,6 +15,8 @@
 
 @interface JxCalendarDay ()
 
+@property (nonatomic, readwrite) BOOL initialScrollDone;
+
 @end
 
 @implementation JxCalendarDay
@@ -36,7 +38,6 @@
     [self.collectionView registerClass:[JxCalendarDayHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarDayHeader"];
     [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarDayHeader" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarDayHeader"];
     
-    
     self.view.backgroundColor = [UIColor whiteColor];
     self.collectionView.backgroundColor = self.view.backgroundColor;
 }
@@ -50,6 +51,28 @@
     [super viewWillAppear:animated];
     
     [self setCurrentDate:_currentDate];
+    
+    
+}
+- (void)viewDidLayoutSubviews {
+    
+    // If we haven't done the initial scroll, do it once.
+    if (!self.initialScrollDone) {
+        self.initialScrollDone = YES;
+        
+        NSDate *now = [NSDate date];
+        NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:now];
+        
+        CGFloat offset = [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                                                  atIndexPath:[NSIndexPath indexPathForItem:0 inSection:components.hour]].frame.origin.y - 64;
+        
+        [self.collectionView setContentOffset:CGPointMake(0, offset) animated:NO];
+    }
+}
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+    
     
 }
 - (void)setCurrentDate:(NSDate *)currentDate{
@@ -136,6 +159,7 @@
     }
     return nil;
 }
+
 #pragma mark <UICollectionViewDelegate>
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{

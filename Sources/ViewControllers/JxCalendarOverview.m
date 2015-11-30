@@ -137,7 +137,11 @@ typedef enum {
     }];
 
 }
+
 - (void)switchToMonthGridView{
+    [self switchToMonthGridViewWithCallback:nil];
+}
+- (void)switchToMonthGridViewWithCallback:(void (^)(BOOL finished))callback{
     
     self.style = JxCalendarStyleMonthGrid;
     
@@ -149,9 +153,7 @@ typedef enum {
         [self.collectionView.collectionViewLayout invalidateLayout];
         [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutMonthGrid alloc] initWithWidth:CGRectGetWidth(self.collectionView.bounds)] animated:YES];
         
-    } completion:^(BOOL finished) {
-        
-    }];
+    } completion:callback];
 
 }
 - (void)switchToListView{
@@ -169,6 +171,51 @@ typedef enum {
     } completion:^(BOOL finished) {
         
     }];
+}
+- (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year{
+    
+    if (self.startYear != year) {
+        
+        [self switchToYear:year];
+
+        [self.collectionView reloadData];
+        
+        [self.collectionView performBatchUpdates:^{
+            
+            [self.collectionView.collectionViewLayout invalidateLayout];
+            
+        } completion:^(BOOL finished) {
+            NSIndexPath *path = [NSIndexPath indexPathForItem:0 inSection:month-1];
+            
+            NSLog(@"path %ld section %ld", path.item, path.section);
+            
+            UICollectionViewLayoutAttributes *attributes = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:path];
+            
+            CGFloat y = attributes.frame.origin.y - 64 - [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:path].frame.size.height;
+            
+            [self.collectionView setContentOffset:CGPointMake(0, y) animated:YES];
+        }];
+        
+    }else{
+        NSIndexPath *path = [NSIndexPath indexPathForItem:0 inSection:month-1];
+        
+        NSLog(@"path %ld section %ld", path.item, path.section);
+        
+        UICollectionViewLayoutAttributes *attributes = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:path];
+        
+        CGFloat y = attributes.frame.origin.y - 64 - [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:path].frame.size.height;
+        
+        [self.collectionView setContentOffset:CGPointMake(0, y) animated:YES];
+    }
+    
+}
+- (void)scrollToDate:(NSDate *)date{
+    
+    NSIndexPath *path = [self getIndexPathForDate:date];
+    
+    NSLog(@"path %ld section %ld", path.item, path.section);
+    
+    [self.collectionView scrollToItemAtIndexPath:path atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
 }
 /*
 #pragma mark - Navigation
@@ -346,6 +393,53 @@ typedef enum {
     }
     return nil;
 }
+- (NSIndexPath *)getIndexPathForDate:(NSDate *)date{
+
+    
+    
+    NSDateComponents *components = [[self calendar] components:(
+                                                                NSCalendarUnitHour |
+                                                                NSCalendarUnitMinute |
+                                                                NSCalendarUnitSecond |
+                                                                NSCalendarUnitDay |
+                                                                NSCalendarUnitMonth |
+                                                                NSCalendarUnitYear |
+                                                                NSCalendarUnitWeekday
+                                                                )
+                                                      fromDate:date];
+    
+    NSDate *firstDay = [self firstDayOfMonth:components.month];
+    
+    NSLog(@"firstDay %@", firstDay);
+    
+    NSDateComponents *firstComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday   )
+                                                           fromDate:firstDay];
+    
+    
+    NSLog(@"day %ld", components.day);
+    
+    NSInteger weekday = components.weekday-1;
+    if (weekday < 1) {
+        weekday = 7;
+    }
+    
+    NSLog(@"weekday %ld", weekday);
+    
+    NSLog(@"month %ld", components.month);
+    
+    NSInteger extraCells = ([self normalizedWeekDay:firstComponents.weekday]-1);
+    
+    NSLog(@"extraCells %ld", extraCells);
+    
+    NSInteger row = ceil(((extraCells + components.day)-1) / 7);
+    
+    NSLog(@"row %ld", row);
+    
+    
+    
+    return [NSIndexPath indexPathForItem:(row * 7 + (weekday-1))  inSection:components.month-1];
+}
+
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
@@ -449,9 +543,28 @@ typedef enum {
 #pragma mark <UICollectionViewDelegate>
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
-    NSDate *date = [self getDateForIndexPath:indexPath];
+    __block NSDate *date = [self getDateForIndexPath:indexPath];
     
     if (date) {
+        if (_style == JxCalendarStyleYearGrid) {
+            
+            __weak __typeof(self)weakSelf = self;
+            [self switchToMonthGridViewWithCallback:^(BOOL finished) {
+                //scroll to date
+                __strong __typeof(weakSelf)strongSelf = weakSelf;
+                
+                NSDateComponents *components = [[strongSelf calendar] components:(
+                                                                            NSCalendarUnitMonth |
+                                                                            NSCalendarUnitYear
+                                                                            )
+                                                                  fromDate:date];
+                
+                [strongSelf scrollToMonth:components.month inYear:components.year];
+            }];
+            return;
+        }
+    
+    
         [self.delegate calendar:self didSelectDate:date];
         
         JxCalendarDay *day = [[JxCalendarDay alloc] initWithCollectionViewLayout:[[JxCalendarLayoutDay alloc] initWithWidth:CGRectGetWidth(self.collectionView.bounds) andEvents:[self.dataSource eventsAt:date]]];

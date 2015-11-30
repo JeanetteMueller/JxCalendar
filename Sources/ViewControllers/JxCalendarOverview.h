@@ -22,7 +22,11 @@
 
 - (void)switchToYearGridView;
 - (void)switchToMonthGridView;
+- (void)switchToMonthGridViewWithCallback:(void (^)(BOOL finished))callback;
+
 - (void)switchToListView;
 
+- (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year;
+- (void)scrollToDate:(NSDate *)date;
 @end
 

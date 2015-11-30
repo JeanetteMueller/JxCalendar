@@ -19,9 +19,9 @@
 #define kJxCalendarMonthLayoutCells @"JxCalendarMonthLayoutCells"
 #define kJxCalendarMonthLayoutHeader @"JxCalendarMonthLayoutHeader"
 
-#define kJxCalendarDayLayoutCells @"JxCalendarDayLayoutCells"
-#define kJxCalendarDayLayoutHeader @"JxCalendarDayLayoutHeader"
-
+#define kJxCalendarDayLayoutCells       @"JxCalendarDayLayoutCells"
+#define kJxCalendarDayLayoutHeader      @"JxCalendarDayLayoutHeader"
+#define kJxCalendarDayLayoutDecoration  @"JxCalendarDayLayoutDecoration"
 
 @class JxCalendarOverview;
 

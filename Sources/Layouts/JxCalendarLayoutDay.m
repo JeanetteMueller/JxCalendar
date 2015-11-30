@@ -250,7 +250,6 @@
     
     return CGRectZero;
 }
-
 - (BOOL)checkIfRectIsAvailable:(CGRect)rect{
     
     NSLog(@"rect %f x %f size %f x %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
