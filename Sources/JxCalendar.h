@@ -20,8 +20,5 @@ FOUNDATION_EXPORT const unsigned char JxCalendarVersionString[];
 #import <JxCalendar/JxCalendarDefinitions.h>
 #import <JxCalendar/JxCalendarOverview.h>
 #import <JxCalendar/JxCalendarDay.h>
-
 #import <JxCalendar/JxCalendarEvent.h>
 
-
-#import <JxCalendar/JxCalendarCell.h>

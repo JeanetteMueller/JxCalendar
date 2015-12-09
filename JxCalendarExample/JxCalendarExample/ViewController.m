@@ -39,7 +39,9 @@
     self.dataSource = [[TestCalendarDataSource alloc] init];
     
     
-    JxCalendarOverview *overview = [[JxCalendarOverview alloc] initWithDataSource:_dataSource andStyle:JxCalendarStyleMonthGrid andWidth:self.view.frame.size.width];
+    JxCalendarOverview *overview = [[JxCalendarOverview alloc] initWithDataSource:_dataSource
+                                                                         andStyle:JxCalendarStyleYearGrid
+                                                                         andWidth:self.view.frame.size.width];
     
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:overview];

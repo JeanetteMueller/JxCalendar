@@ -491,22 +491,17 @@
         
         NSInteger month = indexPath.section+1;
         
-        NSDateComponents *base = [self baseComponents];
-        NSInteger moreYears = ceil(month/12);
-        
-        month = (month % 12);
-        if (month == 0) {
-            month = 12;
-            moreYears--;
-            
-        }
-        
-        
-        titleLabel.text = [NSString stringWithFormat:@"%@ %ld", [[[self defaultFormatter] monthSymbols] objectAtIndex:month-1], (long)(base.year + moreYears)];
+        titleLabel.text = [NSString stringWithFormat:@"%@", [[[self defaultFormatter] monthSymbols] objectAtIndex:month-1]];
         
         switch (self.style) {
             case JxCalendarStyleYearGrid:
-                titleLabel.font = [titleLabel.font fontWithSize:14];
+                if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad){
+                    titleLabel.font = [titleLabel.font fontWithSize:18];
+                }else{
+                    titleLabel.font = [titleLabel.font fontWithSize:14];
+                }
+                
+                
                 break;
             case JxCalendarStyleMonthGrid:
                 titleLabel.font = [titleLabel.font fontWithSize:16];
@@ -515,7 +510,7 @@
                 titleLabel.font = [titleLabel.font fontWithSize:20];
                 break;
         }
-
+        //header.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.3];
         return header;
     }
     return nil;
@@ -544,7 +539,11 @@
         switch (self.style) {
             case JxCalendarStyleYearGrid:
                 cell.label.text = [NSString stringWithFormat:@"%ld", (long)dateComponents.day];
-                cell.label.font = [cell.label.font fontWithSize:10];
+                if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad){
+                    cell.label.font = [cell.label.font fontWithSize:14];
+                }else{
+                    cell.label.font = [cell.label.font fontWithSize:10];
+                }
                 cell.label.textAlignment = NSTextAlignmentCenter;
                 break;
             case JxCalendarStyleMonthGrid:

@@ -32,6 +32,9 @@
 
         
         CGFloat maxWidth = floor((width-kCalendarLayoutDayHeaderTextWidth) / 3.5) - self.minimumInteritemSpacing;
+        if (maxWidth > 150) {
+            maxWidth = 150;
+        }
         self.itemSize = CGSizeMake(maxWidth, kCalendarLayoutDaySectionHeight);
         self.minimumLineSpacing = 0;
         

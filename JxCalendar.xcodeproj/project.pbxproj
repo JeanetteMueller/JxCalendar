@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		26EBE1F61C18446700A0DB2E /* JxCalendarCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1CC1C18446700A0DB2E /* JxCalendarCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		26EBE1F61C18446700A0DB2E /* JxCalendarCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1CC1C18446700A0DB2E /* JxCalendarCell.h */; };
 		26EBE1F71C18446700A0DB2E /* JxCalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1CD1C18446700A0DB2E /* JxCalendarCell.m */; };
 		26EBE1F81C18446700A0DB2E /* JxCalendarCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26EBE1CE1C18446700A0DB2E /* JxCalendarCell.xib */; };
 		26EBE1F91C18446700A0DB2E /* JxCalendarDayHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1CF1C18446700A0DB2E /* JxCalendarDayHeader.h */; };
