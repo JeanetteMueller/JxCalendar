@@ -10,4 +10,7 @@
 
 @interface JxCalendarCell : UICollectionViewCell
 
+@property (strong, nonatomic) IBOutlet UILabel *label;
+@property (strong, nonatomic) IBOutlet UIView *eventMarker;
+
 @end

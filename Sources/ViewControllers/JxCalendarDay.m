@@ -12,10 +12,18 @@
 #import "JxCalendarDefinitions.h"
 #import "JxCalendarEvent.h"
 #import "JxCalendarEventCell.h"
+#import "JxCalendarLayoutDay.h"
 
 @interface JxCalendarDay ()
 
 @property (nonatomic, readwrite) BOOL initialScrollDone;
+@property (strong, nonatomic) UIView *zeiger;
+@property (strong, nonatomic) NSTimer *zeigerPositionTimer;
+
+@property (strong, nonatomic) NSDateComponents *currentComponents;
+@property (strong, nonatomic) NSDate *now;
+@property (strong, nonatomic) NSDateComponents *nowComponents;
+
 
 @end
 
@@ -32,14 +40,31 @@
     // Register cell classes
     [self.collectionView setDirectionalLockEnabled:YES];
     
+    NSString* const frameworkBundleID = @"de.themaverick.JxCalendar";
+    NSBundle* bundle = [NSBundle bundleWithIdentifier:frameworkBundleID];
+    
     [self.collectionView registerClass:[JxCalendarEventCell class] forCellWithReuseIdentifier:@"JxCalendarEventCell"];
-    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarEventCell" bundle:nil] forCellWithReuseIdentifier:@"JxCalendarEventCell"];
+    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarEventCell" bundle:bundle] forCellWithReuseIdentifier:@"JxCalendarEventCell"];
     
     [self.collectionView registerClass:[JxCalendarDayHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarDayHeader"];
-    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarDayHeader" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarDayHeader"];
+    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarDayHeader" bundle:bundle] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarDayHeader"];
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.collectionView.backgroundColor = self.view.backgroundColor;
+    
+    
+    self.currentComponents = [[self.dataSource calendar] components:( NSCalendarUnitHour |
+                                                                                  NSCalendarUnitMinute |
+                                                                                  NSCalendarUnitSecond |
+                                                                                  NSCalendarUnitDay |
+                                                                                  NSCalendarUnitMonth |
+                                                                                  NSCalendarUnitYear |
+                                                                                  NSCalendarUnitWeekday   )
+                                                                        fromDate:_currentDate];
+    
+    [self loadNow];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -51,6 +76,9 @@
     [super viewWillAppear:animated];
     
     [self setCurrentDate:_currentDate];
+    
+    
+    
     
     
 }
@@ -67,18 +95,68 @@
                                                                                                   atIndexPath:[NSIndexPath indexPathForItem:0 inSection:components.hour]].frame.origin.y - 64;
         
         [self.collectionView setContentOffset:CGPointMake(0, offset) animated:NO];
+    
+    
+        if (_nowComponents.year == _currentComponents.year && _nowComponents.month == _currentComponents.month && _nowComponents.day == _currentComponents.day) {
+            //aktueller tag ist heute
+            
+            //plaziere zeitzeiger
+            
+            if (!_zeiger) {
+                self.zeiger = [[UIView alloc] init];
+                _zeiger.backgroundColor = [UIColor redColor];
+            }
+            
+            
+            
+            
+            [self updateZeigerPosition];
+            
+            [self.collectionView addSubview:_zeiger];
+            
+        }
     }
 }
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
+    self.zeigerPositionTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updateZeigerPosition) userInfo:nil repeats:YES];
     
+}
+- (void)viewWillDisappear:(BOOL)animated{
     
+    [self.zeigerPositionTimer invalidate];
+    self.zeigerPositionTimer = nil;
+    
+    [super viewWillDisappear:animated];
 }
 - (void)setCurrentDate:(NSDate *)currentDate{
     _currentDate = currentDate;
     
     self.navigationItem.title = [_defaultFormatter stringFromDate:self.currentDate];
+}
+- (void)loadNow{
+    self.now = [NSDate date];
+    
+    self.nowComponents = [[self.dataSource calendar] components:( NSCalendarUnitHour |
+                                                                 NSCalendarUnitMinute |
+                                                                 NSCalendarUnitSecond |
+                                                                 NSCalendarUnitDay |
+                                                                 NSCalendarUnitMonth |
+                                                                 NSCalendarUnitYear |
+                                                                 NSCalendarUnitWeekday   )
+                                                       fromDate:_now];
+}
+- (void)updateZeigerPosition{
+    
+    [self loadNow];
+    
+    _zeiger.frame = CGRectMake(60,
+                               _nowComponents.hour*kCalendarLayoutDaySectionHeight + kCalendarLayoutDayHeaderHalfHeight + (kCalendarLayoutDaySectionHeight / 60*_nowComponents.minute),
+                               self.collectionView.contentSize.width-70,
+                               1);
+    
+    
 }
 /*
 #pragma mark - Navigation
@@ -164,7 +242,7 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
-    NSLog(@"indexpath %ld section %ld", indexPath.item, indexPath.section);
+    NSLog(@"indexpath %ld section %ld", (long)indexPath.item, (long)indexPath.section);
 }
 /*
 // Uncomment this method to specify if the specified item should be highlighted during tracking
@@ -228,7 +306,7 @@
             [self.collectionView.collectionViewLayout invalidateLayout];
             
             __weak __typeof(self)weakSelf = self;
-            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutDay alloc] initWithWidth:CGRectGetWidth(self.collectionView.bounds) andEvents:[self.dataSource eventsAt:_currentDate]] animated:YES completion:^(BOOL finished) {
+            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutDay alloc] initWithWidth:CGRectGetWidth(self.collectionView.bounds) andEvents:[self.dataSource eventsAt:_currentDate] andCalendar:[self.dataSource calendar]] animated:YES completion:^(BOOL finished) {
                 
                 __strong __typeof(weakSelf)strongSelf = weakSelf;
                 

@@ -21,7 +21,7 @@
     self = [super init];
     
     if (self) {
-
+        
         CGFloat itemsPerRow = 7;
         
         CGFloat borders = 1.0f;

@@ -18,6 +18,8 @@
 @property (strong, nonatomic) id<JxCalendarDataSource> dataSource;
 @property (nonatomic, unsafe_unretained) id<JxCalendarDelegate> delegate;
 
+- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarStyle)style andWidth:(CGFloat)width;
+
 - (void)switchToYear:(NSInteger)year;
 
 - (void)switchToYearGridView;

@@ -8,8 +8,13 @@
 
 #import "JxCalendarLayout.h"
 
+#define kCalendarLayoutDaySectionHeight 120
+#define kCalendarLayoutDayHeaderHeight 49
+#define kCalendarLayoutDayHeaderHalfHeight 24
+#define kCalendarLayoutDayHeaderTextWidth 65
+
 @interface JxCalendarLayoutDay : JxCalendarLayout
 
-- (id)initWithWidth:(CGFloat)width andEvents:(NSArray *)events;
+- (id)initWithWidth:(CGFloat)width andEvents:(NSArray *)events andCalendar:(NSCalendar *)calendar;
 
 @end

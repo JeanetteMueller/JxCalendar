@@ -12,21 +12,12 @@
 #import "JxCalendarLayoutList.h"
 
 #import "JxCalendarHeader.h"
-#import "JxCalendarMonthGridCell.h"
 #import "JxCalendarYearGridCell.h"
 #import "JxCalendarListCell.h"
 #import "JxCalendarCell.h"
 
 #import "JxCalendarDay.h"
 #import "JxCalendarLayoutDay.h"
-#import "TestCalendarDataSource.h"
-
-typedef enum {
-    JxCalendarStyleYearGrid,
-    JxCalendarStyleMonthGrid,
-    JxCalendarStyleList
-} JxCalendarStyle;
-
 
 @interface JxCalendarOverview ()
 
@@ -36,6 +27,31 @@ typedef enum {
 
 @implementation JxCalendarOverview
 
+- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarStyle)style andWidth:(CGFloat)width{
+    
+    //CGFloat width = 200;// CGRectGetWidth(self.collectionView.bounds);
+    
+    UICollectionViewLayout *layout;
+    switch (style) {
+        case JxCalendarStyleYearGrid:
+            layout = [[JxCalendarLayoutYearGrid alloc] initWithWidth:width];
+            break;
+        case JxCalendarStyleMonthGrid:
+            layout = [[JxCalendarLayoutMonthGrid alloc] initWithWidth:width];
+            break;
+        case JxCalendarStyleList:
+            layout = [[JxCalendarLayoutList alloc] initWithWidth:width];
+            break;
+    }
+    
+    self = [super initWithCollectionViewLayout:layout];
+    
+    if (self) {
+        self.style = style;
+        self.dataSource = dataSource;
+    }
+    return self;
+}
 - (NSCalendar *)calendar{
     return [self.dataSource calendar];
 }
@@ -46,58 +62,51 @@ typedef enum {
     if (!_startYear) {
         self.startYear = 2015;
     }
-    self.dataSource = [[TestCalendarDataSource alloc] init];
+    //self.dataSource = [[TestCalendarDataSource alloc] init];
     
     if (!_dataSource) {
         NSLog(@"cant find a DataSource");
         abort();
     }
     
+    self.collectionView.backgroundColor = [UIColor whiteColor];
+    
+    
+    
     
     // Uncomment the following line to preserve selection between presentations
     // self.clearsSelectionOnViewWillAppear = NO;
     
-    self.style = JxCalendarStyleYearGrid;
-    
-    switch (self.style) {
-        case JxCalendarStyleYearGrid:
-            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutYearGrid alloc] initWithWidth:CGRectGetWidth(self.collectionView.bounds)]];
-            break;
-        case JxCalendarStyleMonthGrid:
-            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutMonthGrid alloc] initWithWidth:CGRectGetWidth(self.collectionView.bounds)]];
-            break;
-        case JxCalendarStyleList:
-            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutList alloc] initWithWidth:CGRectGetWidth(self.collectionView.bounds)]];
-            break;
-    }
-    
+    NSString* const frameworkBundleID = @"de.themaverick.JxCalendar";
+    NSBundle* bundle = [NSBundle bundleWithIdentifier:frameworkBundleID];
 
     // Register cell classes
     [self.collectionView registerClass:[JxCalendarCell class] forCellWithReuseIdentifier:@"JxCalendarCell"];
-    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarCell" bundle:nil] forCellWithReuseIdentifier:@"JxCalendarCell"];
-//    [self.collectionView registerClass:[JxCalendarMonthGridCell class] forCellWithReuseIdentifier:@"JxCalendarMonthGridCell"];
-//    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarMonthGridCell" bundle:nil] forCellWithReuseIdentifier:@"JxCalendarMonthGridCell"];
-//    
-//    [self.collectionView registerClass:[JxCalendarYearGridCell class] forCellWithReuseIdentifier:@"JxCalendarYearGridCell"];
-//    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarYearGridCell" bundle:nil] forCellWithReuseIdentifier:@"JxCalendarYearGridCell"];
-//    
-//    
-//    [self.collectionView registerClass:[JxCalendarListCell class] forCellWithReuseIdentifier:@"JxCalendarListCell"];
-//    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarListCell" bundle:nil] forCellWithReuseIdentifier:@"JxCalendarListCell"];
-    
+    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarCell" bundle:bundle] forCellWithReuseIdentifier:@"JxCalendarCell"];
+
     [self.collectionView registerClass:[JxCalendarHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarHeader"];
-    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarHeader" bundle:nil] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarHeader"];
+    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarHeader" bundle:bundle] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarHeader"];
     
     // Do any additional setup after loading the view.
+    
+    
+    
+}
+- (IBAction)closeCalendar:(id)sender{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     
     self.navigationItem.rightBarButtonItems = @[
                                                 [[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYearGridView)],
                                                 [[UIBarButtonItem alloc] initWithTitle:@"Month" style:UIBarButtonItemStylePlain target:self action:@selector(switchToMonthGridView)],
                                                 [[UIBarButtonItem alloc] initWithTitle:@"List" style:UIBarButtonItemStylePlain target:self action:@selector(switchToListView)]];
-}
-- (void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
     
+    if (self.presentingViewController) {
+        
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(closeCalendar:)];
+    }
     
     [self switchToYear:self.startYear];
     
@@ -105,8 +114,41 @@ typedef enum {
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
-    //TODO: REMOVE THIS, it is just for testing
-    //[self collectionView:self.collectionView didSelectItemAtIndexPath:[NSIndexPath indexPathForItem:6 inSection:2]];
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    
+    NSLog(@"viewWillTransitionToSize %f x %f", size.width, size.height);
+    
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        
+        NSLog(@"interaction ends");
+        switch (self.style) {
+            case JxCalendarStyleYearGrid:{
+                self.collectionView.pagingEnabled = NO;
+                [self.collectionView.collectionViewLayout invalidateLayout];
+                [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutYearGrid alloc] initWithWidth:CGRectGetWidth(self.collectionView.bounds)] animated:YES];
+                
+            }break;
+            case JxCalendarStyleMonthGrid:{
+                self.collectionView.pagingEnabled = NO;
+                [self.collectionView.collectionViewLayout invalidateLayout];
+                [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutMonthGrid alloc] initWithWidth:CGRectGetWidth(self.collectionView.bounds)] animated:YES];
+                
+            }break;
+            case JxCalendarStyleList:{
+                self.collectionView.pagingEnabled = NO;
+                [self.collectionView.collectionViewLayout invalidateLayout];
+                [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutList alloc] initWithWidth:CGRectGetWidth(self.collectionView.bounds)] animated:YES];
+                
+            }break;
+        }
+        
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        
+    }];
+    
+    
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -187,7 +229,7 @@ typedef enum {
         } completion:^(BOOL finished) {
             NSIndexPath *path = [NSIndexPath indexPathForItem:0 inSection:month-1];
             
-            NSLog(@"path %ld section %ld", path.item, path.section);
+            NSLog(@"path %ld section %ld", (long)path.item, (long)path.section);
             
             UICollectionViewLayoutAttributes *attributes = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:path];
             
@@ -199,7 +241,7 @@ typedef enum {
     }else{
         NSIndexPath *path = [NSIndexPath indexPathForItem:0 inSection:month-1];
         
-        NSLog(@"path %ld section %ld", path.item, path.section);
+        NSLog(@"path %ld section %ld", (long)path.item, (long)path.section);
         
         UICollectionViewLayoutAttributes *attributes = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:path];
         
@@ -213,7 +255,7 @@ typedef enum {
     
     NSIndexPath *path = [self getIndexPathForDate:date];
     
-    NSLog(@"path %ld section %ld", path.item, path.section);
+    NSLog(@"path %ld section %ld", (long)path.item, (long)path.section);
     
     [self.collectionView scrollToItemAtIndexPath:path atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
 }
@@ -416,24 +458,24 @@ typedef enum {
                                                            fromDate:firstDay];
     
     
-    NSLog(@"day %ld", components.day);
+    NSLog(@"day %ld", (long)components.day);
     
     NSInteger weekday = components.weekday-1;
     if (weekday < 1) {
         weekday = 7;
     }
     
-    NSLog(@"weekday %ld", weekday);
+    NSLog(@"weekday %ld", (long)weekday);
     
-    NSLog(@"month %ld", components.month);
+    NSLog(@"month %ld", (long)components.month);
     
     NSInteger extraCells = ([self normalizedWeekDay:firstComponents.weekday]-1);
     
-    NSLog(@"extraCells %ld", extraCells);
+    NSLog(@"extraCells %ld", (long)extraCells);
     
     NSInteger row = ceil(((extraCells + components.day)-1) / 7);
     
-    NSLog(@"row %ld", row);
+    NSLog(@"row %ld", (long)row);
     
     
     
@@ -460,7 +502,7 @@ typedef enum {
         }
         
         
-        titleLabel.text = [NSString stringWithFormat:@"%@ %ld", [[[self defaultFormatter] monthSymbols] objectAtIndex:month-1], base.year + moreYears];
+        titleLabel.text = [NSString stringWithFormat:@"%@ %ld", [[[self defaultFormatter] monthSymbols] objectAtIndex:month-1], (long)(base.year + moreYears)];
         
         switch (self.style) {
             case JxCalendarStyleYearGrid:
@@ -482,17 +524,7 @@ typedef enum {
     
     NSString *identifier = @"JxCalendarCell";
     
-//    switch (self.style) {
-//        case JxCalendarStyleYearGrid:
-//            identifier = @"JxCalendarYearGridCell";
-//            break;
-//        case JxCalendarStyleMonthGrid:
-//            identifier = @"JxCalendarMonthGridCell";
-//            break;
-//        case JxCalendarStyleList:
-//            identifier = @"JxCalendarListCell";
-//            break;
-//    }
+
     
     JxCalendarCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     
@@ -502,30 +534,28 @@ typedef enum {
 }
 - (void)updateCell:(JxCalendarCell *)cell atIndexPath:(NSIndexPath *)indexPath{
     
-    UILabel *textLabel = (UILabel *)[cell viewWithTag:333];
-    
     NSDate *thisDate = [self getDateForIndexPath:indexPath];
     
     if (thisDate) {
         
         NSDateComponents *dateComponents = [[self calendar] components:NSCalendarUnitDay|NSCalendarUnitWeekday
-                                                        fromDate:thisDate];
+                                                              fromDate:thisDate];
         
         switch (self.style) {
             case JxCalendarStyleYearGrid:
-                textLabel.text = [NSString stringWithFormat:@"%ld", dateComponents.day];
-                textLabel.font = [textLabel.font fontWithSize:10];
-                textLabel.textAlignment = NSTextAlignmentCenter;
+                cell.label.text = [NSString stringWithFormat:@"%ld", (long)dateComponents.day];
+                cell.label.font = [cell.label.font fontWithSize:10];
+                cell.label.textAlignment = NSTextAlignmentCenter;
                 break;
             case JxCalendarStyleMonthGrid:
-                textLabel.text = [NSString stringWithFormat:@"%ld", dateComponents.day];
-                textLabel.font = [textLabel.font fontWithSize:22];
-                textLabel.textAlignment = NSTextAlignmentCenter;
+                cell.label.text = [NSString stringWithFormat:@"%ld", (long)dateComponents.day];
+                cell.label.font = [cell.label.font fontWithSize:22];
+                cell.label.textAlignment = NSTextAlignmentCenter;
                 break;
             case JxCalendarStyleList:
-                textLabel.text = [NSString stringWithFormat:@"%@ (%lu)", [[self defaultFormatter] stringFromDate:thisDate], (unsigned long)[self.dataSource numberOfEventsAt:thisDate]];
-                textLabel.font = [textLabel.font fontWithSize:18];
-                textLabel.textAlignment = NSTextAlignmentLeft;
+                cell.label.text = [NSString stringWithFormat:@"%@ (%lu)", [[self defaultFormatter] stringFromDate:thisDate], (unsigned long)[self.dataSource numberOfEventsAt:thisDate]];
+                cell.label.font = [cell.label.font fontWithSize:18];
+                cell.label.textAlignment = NSTextAlignmentLeft;
                 break;
         }
         
@@ -535,9 +565,16 @@ typedef enum {
             cell.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.3];
         }
         
+        if ([self.dataSource numberOfEventsAt:thisDate] > 0) {
+            cell.eventMarker.hidden = NO;
+        }else{
+            cell.eventMarker.hidden = YES;
+        }
+        
     }else{
-        textLabel.text = @" ";
+        cell.label.text = @" ";
         cell.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.1];
+        cell.eventMarker.hidden = YES;
     }
 }
 #pragma mark <UICollectionViewDelegate>
@@ -567,7 +604,9 @@ typedef enum {
     
         [self.delegate calendar:self didSelectDate:date];
         
-        JxCalendarDay *day = [[JxCalendarDay alloc] initWithCollectionViewLayout:[[JxCalendarLayoutDay alloc] initWithWidth:CGRectGetWidth(self.collectionView.bounds) andEvents:[self.dataSource eventsAt:date]]];
+        JxCalendarDay *day = [[JxCalendarDay alloc] initWithCollectionViewLayout:[[JxCalendarLayoutDay alloc] initWithWidth:CGRectGetWidth(self.collectionView.bounds)
+                                                                                                                  andEvents:[self.dataSource eventsAt:date]
+                                                                                                                andCalendar:[self calendar]]];
         
         day.dataSource = self.dataSource;
         day.delegate = self.delegate;

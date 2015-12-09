@@ -18,9 +18,6 @@
         CGFloat borders = 2.0f;
         
         self.sectionInset = UIEdgeInsetsMake(borders, borders, 20, borders);
-        
-
-        
     
         CGFloat itemwidth = width - (2*borders);
         

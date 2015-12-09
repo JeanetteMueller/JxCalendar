@@ -58,7 +58,6 @@
     }
     return self;
 }
-
 - (void)setDuration:(NSTimeInterval)duration{
     _end = [NSDate dateWithTimeInterval:duration sinceDate:_start];
     _duration = duration;

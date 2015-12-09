@@ -23,6 +23,12 @@
 #define kJxCalendarDayLayoutHeader      @"JxCalendarDayLayoutHeader"
 #define kJxCalendarDayLayoutDecoration  @"JxCalendarDayLayoutDecoration"
 
+typedef enum {
+    JxCalendarStyleYearGrid,
+    JxCalendarStyleMonthGrid,
+    JxCalendarStyleList
+} JxCalendarStyle;
+
 @class JxCalendarOverview;
 
 
