@@ -49,6 +49,7 @@
     [self.collectionView registerClass:[JxCalendarDayHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarDayHeader"];
     [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarDayHeader" bundle:bundle] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarDayHeader"];
     
+    
     self.view.backgroundColor = [UIColor whiteColor];
     self.collectionView.backgroundColor = self.view.backgroundColor;
     
@@ -79,7 +80,26 @@
     
     
     
-    
+    if (_nowComponents.year == _currentComponents.year && _nowComponents.month == _currentComponents.month && _nowComponents.day == _currentComponents.day) {
+        //aktueller tag ist heute
+        
+        //plaziere zeitzeiger
+        
+        if (!_zeiger) {
+            self.zeiger = [[UIView alloc] init];
+            _zeiger.backgroundColor = [UIColor redColor];
+        }
+        
+        
+        
+        
+        [self updateZeigerPosition];
+        
+        [self.collectionView addSubview:_zeiger];
+        
+    }else{
+        _zeiger.hidden = YES;
+    }
     
 }
 - (void)viewDidLayoutSubviews {
@@ -114,14 +134,17 @@
             
             [self.collectionView addSubview:_zeiger];
             
+        }else{
+            _zeiger.hidden = YES;
         }
     }
 }
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
-    self.zeigerPositionTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updateZeigerPosition) userInfo:nil repeats:YES];
-    
+    if (_nowComponents.year == _currentComponents.year && _nowComponents.month == _currentComponents.month && _nowComponents.day == _currentComponents.day) {
+        self.zeigerPositionTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updateZeigerPosition) userInfo:nil repeats:YES];
+    }
 }
 - (void)viewWillDisappear:(BOOL)animated{
     
@@ -138,22 +161,28 @@
 - (void)loadNow{
     self.now = [NSDate date];
     
-    self.nowComponents = [[self.dataSource calendar] components:( NSCalendarUnitHour |
+    self.nowComponents = [[self.dataSource calendar] components:(NSCalendarUnitHour |
                                                                  NSCalendarUnitMinute |
                                                                  NSCalendarUnitSecond |
                                                                  NSCalendarUnitDay |
                                                                  NSCalendarUnitMonth |
                                                                  NSCalendarUnitYear |
-                                                                 NSCalendarUnitWeekday   )
+                                                                 NSCalendarUnitWeekday)
                                                        fromDate:_now];
 }
 - (void)updateZeigerPosition{
     
     [self loadNow];
     
-    _zeiger.frame = CGRectMake(60,
+    CGFloat positionFromLeft = kCalendarLayoutDayHeaderTextWidth;
+    if (self.scrollViewDelegate) {
+        positionFromLeft = 0;
+    }
+    
+    _zeiger.hidden = NO;
+    _zeiger.frame = CGRectMake(positionFromLeft,
                                _nowComponents.hour*kCalendarLayoutDaySectionHeight + kCalendarLayoutDayHeaderHalfHeight + (kCalendarLayoutDaySectionHeight / 60*_nowComponents.minute),
-                               self.collectionView.contentSize.width-70,
+                               self.collectionView.contentSize.width-kCalendarLayoutDayHeaderTextWidth,
                                1);
     
     
@@ -209,8 +238,10 @@
     UILabel *textLabel = (UILabel *)[cell viewWithTag:333];
     
     textLabel.textColor = event.fontColor;
-    
     textLabel.text = event.title;
+
+    
+    
     
     
     cell.backgroundColor = event.backgroundColor;
@@ -227,11 +258,17 @@
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         JxCalendarDayHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarDayHeader" forIndexPath:indexPath];
         
-        UILabel *titleLabel = [header viewWithTag:333];
+        UILabel *textLabel = [header viewWithTag:333];
+        
+        if (self.scrollViewDelegate) {
+            textLabel.hidden = YES;
+        }else{
+            textLabel.hidden = NO;
+        }
+
         
         
-        
-        titleLabel.text = [NSString stringWithFormat:@"%ld Uhr", (long)indexPath.section % 24];
+        textLabel.text = [NSString stringWithFormat:@"%ld Uhr", (long)indexPath.section % 24];
         header.backgroundColor = [UIColor clearColor];
         return header;
     }
@@ -274,7 +311,7 @@
 */
 #pragma mark <UIScrollViewDelegate>
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    //NSLog(@"scrollView.contentOffset.y %f", scrollView.contentOffset.y + scrollView.contentInset.top);
+    [self.scrollViewDelegate scrollViewDidScroll:scrollView];
 }
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     if (decelerate) {
@@ -306,7 +343,7 @@
             [self.collectionView.collectionViewLayout invalidateLayout];
             
             __weak __typeof(self)weakSelf = self;
-            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutDay alloc] initWithWidth:CGRectGetWidth(self.collectionView.bounds) andEvents:[self.dataSource eventsAt:_currentDate] andCalendar:[self.dataSource calendar]] animated:YES completion:^(BOOL finished) {
+            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutDay alloc] initWithSize:self.collectionView.bounds.size andEvents:[self.dataSource eventsAt:_currentDate] andCalendar:[self.dataSource calendar]] animated:YES completion:^(BOOL finished) {
                 
                 __strong __typeof(weakSelf)strongSelf = weakSelf;
                 

@@ -15,7 +15,23 @@
 		26B67C891C18566B000FC387 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26B67C871C18566B000FC387 /* Main.storyboard */; };
 		26B67C8B1C18566B000FC387 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26B67C8A1C18566B000FC387 /* Assets.xcassets */; };
 		26B67C8E1C18566B000FC387 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26B67C8C1C18566B000FC387 /* LaunchScreen.storyboard */; };
+		26FAA3EC1C1ECB04001C4DA6 /* JxCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2673E84D1C18594F0070D2C5 /* JxCalendar.framework */; };
+		26FAA3ED1C1ECB04001C4DA6 /* JxCalendar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2673E84D1C18594F0070D2C5 /* JxCalendar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		26FAA3EE1C1ECB04001C4DA6 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				26FAA3ED1C1ECB04001C4DA6 /* JxCalendar.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		260D6F7C1C18575100904A44 /* TestCalendarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCalendarDataSource.h; sourceTree = "<group>"; };
@@ -38,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26FAA3EC1C1ECB04001C4DA6 /* JxCalendar.framework in Frameworks */,
 				2673E84E1C18594F0070D2C5 /* JxCalendar.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -98,6 +115,7 @@
 				26B67C771C18566B000FC387 /* Sources */,
 				26B67C781C18566B000FC387 /* Frameworks */,
 				26B67C791C18566B000FC387 /* Resources */,
+				26FAA3EE1C1ECB04001C4DA6 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

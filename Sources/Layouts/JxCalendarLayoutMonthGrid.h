@@ -6,10 +6,8 @@
 //  Copyright © 2015 Jeanette Müller. All rights reserved.
 //
 
-#import "JxCalendarLayout.h"
+#import "JxCalendarLayoutOverview.h"
 
-@interface JxCalendarLayoutMonthGrid : JxCalendarLayout
-
-- (id)initWithWidth:(CGFloat)width;
+@interface JxCalendarLayoutMonthGrid : JxCalendarLayoutOverview
 
 @end

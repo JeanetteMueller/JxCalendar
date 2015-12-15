@@ -8,6 +8,7 @@
 
 #import "JxCalendarLayoutYearGrid.h"
 #import "JxCalendarDefinitions.h"
+#import "JxCalendarViewController.h"
 
 
 
@@ -17,7 +18,7 @@
 
 @implementation JxCalendarLayoutYearGrid
 
-- (id)initWithWidth:(CGFloat)width{
+- (id)initWithViewController:(JxCalendarViewController *)vc andSize:(CGSize)size{
     self = [super init];
     
     if (self) {
@@ -29,7 +30,7 @@
         
         self.sectionInset = UIEdgeInsetsMake(5, 5, 10, 5);
         
-        self.headerReferenceSize = CGSizeMake(width/3 - self.sectionInset.left-self.sectionInset.right,
+        self.headerReferenceSize = CGSizeMake(size.width/3 - self.sectionInset.left-self.sectionInset.right,
                                               40);
         
         self.minimumInteritemSpacing = borders;

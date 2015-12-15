@@ -25,8 +25,7 @@
 
 typedef enum {
     JxCalendarStyleYearGrid,
-    JxCalendarStyleMonthGrid,
-    JxCalendarStyleList
+    JxCalendarStyleMonthGrid
 } JxCalendarStyle;
 
 @class JxCalendarOverview;

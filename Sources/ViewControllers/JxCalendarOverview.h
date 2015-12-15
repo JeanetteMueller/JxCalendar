@@ -8,25 +8,21 @@
 
 #import <UIKit/UIKit.h>
 #import "JxCalendarDefinitions.h"
+#import "JxCalendarViewController.h"
 
 @protocol JxCalendarDataSource, JxCalendarDelegate;
 
-@interface JxCalendarOverview : UICollectionViewController
+@interface JxCalendarOverview : JxCalendarViewController
 
 @property (nonatomic, readonly) NSInteger startYear;
 
-@property (strong, nonatomic) id<JxCalendarDataSource> dataSource;
-@property (nonatomic, unsafe_unretained) id<JxCalendarDelegate> delegate;
 
-- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarStyle)style andWidth:(CGFloat)width;
+
+- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarStyle)style andSize:(CGSize)size;
 
 - (void)switchToYear:(NSInteger)year;
 
-- (void)switchToYearGridView;
-- (void)switchToMonthGridView;
-- (void)switchToMonthGridViewWithCallback:(void (^)(BOOL finished))callback;
 
-- (void)switchToListView;
 
 - (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year;
 - (void)scrollToDate:(NSDate *)date;

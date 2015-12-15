@@ -39,12 +39,16 @@
     self.dataSource = [[TestCalendarDataSource alloc] init];
     
     
+    NSLog(@"usable size %f x %f", self.view.frame.size.width, self.view.frame.size.height);
+    
+    
     JxCalendarOverview *overview = [[JxCalendarOverview alloc] initWithDataSource:_dataSource
-                                                                         andStyle:JxCalendarStyleYearGrid
-                                                                         andWidth:self.view.frame.size.width];
+                                                                         andStyle:JxCalendarStyleMonthGrid
+                                                                         andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)];
     
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:overview];
+    [nav.navigationBar setTranslucent:NO];
     
     [self presentViewController:nav animated:YES completion:nil];
 }

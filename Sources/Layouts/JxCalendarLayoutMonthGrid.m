@@ -17,16 +17,16 @@
 @implementation JxCalendarLayoutMonthGrid
 
 
-- (id)initWithWidth:(CGFloat)width
+- (id)initWithViewController:(JxCalendarViewController *)vc andSize:(CGSize)size
 {
     self = [self init];
     if (self) {
-        self.headerReferenceSize = CGSizeMake(width, 64.0f);
+        self.headerReferenceSize = CGSizeMake(size.width, 64.0f);
         
         CGFloat minSpacingWidth = 1.;
-        CGFloat maxWidth = floor((width - minSpacingWidth * 6) / 7.);
+        CGFloat maxWidth = floor((size.width - minSpacingWidth * 6) / 7.);
         self.itemSize = CGSizeMake(maxWidth, maxWidth);
-        self.minimumLineSpacing = (width - (maxWidth * 7.)) / 6.;
+        self.minimumLineSpacing = (size.width - (maxWidth * 7.)) / 6.;
         self.minimumInteritemSpacing = self.minimumLineSpacing;
     }
     return self;
@@ -73,8 +73,7 @@
         for (NSInteger item = 0; item < itemCount; item++) {
             indexPath = [NSIndexPath indexPathForItem:item inSection:section];
             
-            UICollectionViewLayoutAttributes *itemAttributes =
-            [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
+            UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
             itemAttributes.frame = [self frameForItemAtIndexPath:indexPath previousRect:previousRect previousIndexPath:previousIndexPath];
             previousRect = itemAttributes.frame;
             //JMOLog(@"indexPath(%@) -> %@",indexPath, NSStringFromCGRect(previousRect));

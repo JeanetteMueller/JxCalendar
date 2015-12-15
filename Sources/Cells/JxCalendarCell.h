@@ -8,9 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+@class JxCalendarDay;
+
 @interface JxCalendarCell : UICollectionViewCell
 
 @property (strong, nonatomic) IBOutlet UILabel *label;
 @property (strong, nonatomic) IBOutlet UIView *eventMarker;
+
+@property (strong, nonatomic) JxCalendarDay *vc;
 
 @end

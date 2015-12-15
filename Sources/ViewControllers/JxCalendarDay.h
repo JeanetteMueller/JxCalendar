@@ -13,6 +13,7 @@
 
 @property (nonatomic, unsafe_unretained) id<JxCalendarDataSource> dataSource;
 @property (nonatomic, unsafe_unretained) id<JxCalendarDelegate> delegate;
+@property (nonatomic, unsafe_unretained) id<UIScrollViewDelegate> scrollViewDelegate;
 
 @property (strong, nonatomic) NSDate *currentDate;
 @property (strong, nonatomic) NSDateFormatter *defaultFormatter;

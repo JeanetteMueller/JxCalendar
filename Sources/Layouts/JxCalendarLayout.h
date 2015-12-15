@@ -10,4 +10,8 @@
 
 @interface JxCalendarLayout : UICollectionViewFlowLayout
 
+@property (nonatomic, readwrite) CGSize size;
+
+- (void)setNewSize:(CGSize)size;
+
 @end

@@ -13,8 +13,10 @@
 #define kCalendarLayoutDayHeaderHalfHeight 24
 #define kCalendarLayoutDayHeaderTextWidth 65
 
+#define kCalendarLayoutDayWidthIndicatorForTitleLess 200
+
 @interface JxCalendarLayoutDay : JxCalendarLayout
 
-- (id)initWithWidth:(CGFloat)width andEvents:(NSArray *)events andCalendar:(NSCalendar *)calendar;
+- (id)initWithSize:(CGSize)size andEvents:(NSArray *)events andCalendar:(NSCalendar *)calendar;
 
 @end

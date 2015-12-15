@@ -10,7 +10,11 @@
 
 @implementation JxCalendarLayout
 
-
+- (void)setNewSize:(CGSize)size{
+    self.size = size;
+    
+    NSLog(@"set new itemSize: %f x %f", self.size.width, self.size.height);
+}
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds
 {
 //    CGRect oldBounds = self.collectionView.bounds;

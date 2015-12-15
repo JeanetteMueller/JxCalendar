@@ -16,22 +16,31 @@
 @property (nonatomic, strong) NSCalendar *calendar;
 @property (nonatomic, strong) NSDictionary *layoutInfo;
 @property (nonatomic, strong) NSArray *events;
+
+@property (nonatomic, readwrite) CGFloat leftExtraSize;
 @end
 
 @implementation JxCalendarLayoutDay
 
-- (id)initWithWidth:(CGFloat)width andEvents:(NSArray *)events andCalendar:(NSCalendar *)calendar
+- (id)initWithSize:(CGSize)size andEvents:(NSArray *)events andCalendar:(NSCalendar *)calendar
 {
     self = [self init];
     if (self) {
+        self.size = size;
         self.calendar = calendar;
         self.events = events;
         
-        self.headerReferenceSize = CGSizeMake(width, kCalendarLayoutDayHeaderHeight);
-        self.minimumInteritemSpacing = 5;
+        CGFloat multiplier = 3;
+        if (self.size.width > kCalendarLayoutDayWidthIndicatorForTitleLess) {
+            self.leftExtraSize = kCalendarLayoutDayHeaderTextWidth;
+            multiplier = 3.5;
+        }
+        
+        self.headerReferenceSize = CGSizeMake(self.size.width, kCalendarLayoutDayHeaderHeight);
+        self.minimumInteritemSpacing = 4;
 
         
-        CGFloat maxWidth = floor((width-kCalendarLayoutDayHeaderTextWidth) / 3.5) - self.minimumInteritemSpacing;
+        CGFloat maxWidth = floor((self.size.width-self.leftExtraSize) / multiplier) - self.minimumInteritemSpacing;
         if (maxWidth > 150) {
             maxWidth = 150;
         }
@@ -161,6 +170,10 @@
         attributes.frame = frame;
     }
     
+    if (self.size.width <= kCalendarLayoutDayWidthIndicatorForTitleLess) {
+        maxWidth = self.size.width;
+    }
+    
     CGSize contentSize = CGSizeMake(maxWidth,
                                     (numOfSections * kCalendarLayoutDaySectionHeight) - kCalendarLayoutDaySectionHeight + kCalendarLayoutDayHeaderHeight);
     
@@ -189,7 +202,7 @@
         }
     }
     NSDateComponents *startComponents;
-    NSDateComponents *endComponents;
+//    NSDateComponents *endComponents;
     if (event) {
         startComponents = [self.calendar components:( NSCalendarUnitHour |
                                                                        NSCalendarUnitMinute |
@@ -200,14 +213,14 @@
                                                                        NSCalendarUnitWeekday   )
                                                              fromDate:event.start];
         
-        endComponents = [self.calendar components:( NSCalendarUnitHour |
-                                                     NSCalendarUnitMinute |
-                                                     NSCalendarUnitSecond |
-                                                     NSCalendarUnitDay |
-                                                     NSCalendarUnitMonth |
-                                                     NSCalendarUnitYear |
-                                                     NSCalendarUnitWeekday   )
-                                           fromDate:event.end];
+//        endComponents = [self.calendar components:( NSCalendarUnitHour |
+//                                                     NSCalendarUnitMinute |
+//                                                     NSCalendarUnitSecond |
+//                                                     NSCalendarUnitDay |
+//                                                     NSCalendarUnitMonth |
+//                                                     NSCalendarUnitYear |
+//                                                     NSCalendarUnitWeekday   )
+//                                           fromDate:event.end];
     }
     
 
@@ -219,7 +232,7 @@
     
     if (CGRectEqualToRect(CGRectZero, previousRect)) {
         NSLog(@"1 event %@", event.title);
-        CGRect theoricalRect = CGRectMake(kCalendarLayoutDayHeaderTextWidth,
+        CGRect theoricalRect = CGRectMake(self.leftExtraSize,
                                           (indexPath.section * kCalendarLayoutDaySectionHeight)+ self.headerReferenceSize.height- kCalendarLayoutDayHeaderHalfHeight +self.minimumInteritemSpacing + (startComponents.minute * 2),
                                           self.itemSize.width,
                                           itemHeight);
@@ -234,7 +247,7 @@
         NSLog(@"2 event %@", event.title);
         CGRect theoricalRect = previousRect;
         
-        theoricalRect.origin.x = kCalendarLayoutDayHeaderTextWidth;
+        theoricalRect.origin.x = self.leftExtraSize;
         theoricalRect.origin.y = (indexPath.section * kCalendarLayoutDaySectionHeight) + self.headerReferenceSize.height- kCalendarLayoutDayHeaderHalfHeight + self.minimumInteritemSpacing + (startComponents.minute * 2);
         theoricalRect.size.height = itemHeight;
         
