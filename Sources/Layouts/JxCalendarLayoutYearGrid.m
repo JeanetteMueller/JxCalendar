@@ -93,7 +93,6 @@
             UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
             itemAttributes.frame = [self frameForItemAtIndexPath:indexPath previousRect:previousRect previousIndexPath:previousIndexPath];
             previousRect = itemAttributes.frame;
-            //JMOLog(@"indexPath(%@) -> %@",indexPath, NSStringFromCGRect(previousRect));
             cellLayoutInfo[indexPath] = itemAttributes;
             previousIndexPath = indexPath;
         }

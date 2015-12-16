@@ -16,12 +16,23 @@
 #define kJxCalendarYearLayoutCells @"JxCalendarYearLayoutCells"
 #define kJxCalendarYearLayoutHeader @"JxCalendarYearLayoutHeader"
 
+#define kJxCalendarWeekLayoutCells @"JxCalendarWeekLayoutCells"
+#define kJxCalendarWeekLayoutWholeDay @"JxCalendarWeekLayoutWholeDay"
+#define kJxCalendarWeekLayoutHeader @"JxCalendarWeekLayoutHeader"
+
 #define kJxCalendarMonthLayoutCells @"JxCalendarMonthLayoutCells"
 #define kJxCalendarMonthLayoutHeader @"JxCalendarMonthLayoutHeader"
 
 #define kJxCalendarDayLayoutCells       @"JxCalendarDayLayoutCells"
+#define kJxCalendarDayLayoutWholeDay @"JxCalendarDayLayoutWholeDay"
 #define kJxCalendarDayLayoutHeader      @"JxCalendarDayLayoutHeader"
-#define kJxCalendarDayLayoutDecoration  @"JxCalendarDayLayoutDecoration"
+
+#define kCalendarLayoutDaySectionHeightMultiplier 2
+#define kCalendarLayoutDayHeaderHeight 49
+#define kCalendarLayoutDayHeaderHalfHeight 24
+#define kCalendarLayoutDayHeaderTextWidth 65
+
+#define kCalendarLayoutWholeDayHeight 20
 
 typedef enum {
     JxCalendarStyleYearGrid,

@@ -9,6 +9,7 @@
 #import "JxCalendarLayoutDay.h"
 #import "JxCalendarDefinitions.h"
 #import "JxCalendarEvent.h"
+#import "JxCalendarEventDuration.h"
 
 
 
@@ -30,22 +31,19 @@
         self.calendar = calendar;
         self.events = events;
         
-        CGFloat multiplier = 3;
-        if (self.size.width > kCalendarLayoutDayWidthIndicatorForTitleLess) {
-            self.leftExtraSize = kCalendarLayoutDayHeaderTextWidth;
-            multiplier = 3.5;
-        }
+        CGFloat multiplier = 3.5;
+        self.leftExtraSize = kCalendarLayoutDayHeaderTextWidth;
         
         self.headerReferenceSize = CGSizeMake(self.size.width, kCalendarLayoutDayHeaderHeight);
-        self.minimumInteritemSpacing = 4;
+        self.minimumInteritemSpacing = 1;
 
         
         CGFloat maxWidth = floor((self.size.width-self.leftExtraSize) / multiplier) - self.minimumInteritemSpacing;
         if (maxWidth > 150) {
             maxWidth = 150;
         }
-        self.itemSize = CGSizeMake(maxWidth, kCalendarLayoutDaySectionHeight);
-        self.minimumLineSpacing = 0;
+        self.itemSize = CGSizeMake(maxWidth, (60*kCalendarLayoutDaySectionHeightMultiplier));
+        self.minimumLineSpacing = 1;
         
     }
     return self;
@@ -79,10 +77,13 @@
     NSLog(@"prepareLayout");
     
     NSMutableDictionary *newLayoutInfo = [NSMutableDictionary dictionary];
+    
     NSMutableDictionary *cellLayoutInfo = [NSMutableDictionary dictionary];
+    NSMutableDictionary *wholeDayLayoutInfo = [NSMutableDictionary dictionary];
     NSMutableDictionary *headerLayoutInfo = [NSMutableDictionary dictionary];
     
     newLayoutInfo[kJxCalendarDayLayoutCells] = cellLayoutInfo;
+    newLayoutInfo[kJxCalendarDayLayoutWholeDay] = wholeDayLayoutInfo;
     newLayoutInfo[kJxCalendarDayLayoutHeader] = headerLayoutInfo;
     
     NSInteger sectionCount = [self.collectionView numberOfSections];
@@ -96,7 +97,7 @@
         indexPath = [NSIndexPath indexPathForItem:0 inSection:section];
         UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:indexPath];
         itemAttributes.frame = [self frameForHeaderAtSection:indexPath.section previousRect:previousRect previousIndexPath:previousIndexPath];
-        
+        itemAttributes.zIndex = 0;
         headerLayoutInfo[indexPath] = itemAttributes;
         
         for (NSInteger item = 0; item < itemCount; item++) {
@@ -104,13 +105,25 @@
             
             
             UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-            itemAttributes.frame = [self frameForItemAtIndexPath:indexPath previousRect:previousRect previousIndexPath:previousIndexPath];
+            
+            itemAttributes.frame = CGRectZero;
+            
+            JxCalendarEvent *e = [self eventForIndexPath:indexPath];
+            
+            if ([e isKindOfClass:[JxCalendarEventDay class]]) {
+                itemAttributes.frame = [self frameForDayEvent:(JxCalendarEventDay *)e atIndexPath:indexPath];
+                itemAttributes.zIndex = 20;
+                wholeDayLayoutInfo[indexPath] = itemAttributes;
+            }else if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
+                itemAttributes.frame = [self frameForDurationEvent:(JxCalendarEventDuration *)e atIndexPath:indexPath];
+                itemAttributes.zIndex = 10;
+                cellLayoutInfo[indexPath] = itemAttributes;
+            }
             previousRect = itemAttributes.frame;
-            //JMOLog(@"indexPath(%@) -> %@",indexPath, NSStringFromCGRect(previousRect));
-            cellLayoutInfo[indexPath] = itemAttributes;
             previousIndexPath = indexPath;
 
             newLayoutInfo[kJxCalendarDayLayoutCells] = cellLayoutInfo;
+            newLayoutInfo[kJxCalendarDayLayoutWholeDay] = wholeDayLayoutInfo;
             newLayoutInfo[kJxCalendarDayLayoutHeader] = headerLayoutInfo;
             
             self.layoutInfo = newLayoutInfo;
@@ -119,6 +132,7 @@
     }
     
     newLayoutInfo[kJxCalendarDayLayoutCells] = cellLayoutInfo;
+    newLayoutInfo[kJxCalendarDayLayoutWholeDay] = wholeDayLayoutInfo;
     newLayoutInfo[kJxCalendarDayLayoutHeader] = headerLayoutInfo;
     
     self.layoutInfo = newLayoutInfo;
@@ -142,15 +156,9 @@
     
     return allAttributes;
 }
-
-- (CGSize)collectionViewContentSize
-{
-    NSLog(@"collectionViewContentSize");
-    
-    NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
-
+- (CGSize)collectionViewContentSize{
     CGFloat maxWidth = self.collectionView.frame.size.width;
-    
+    CGFloat maxHeight = self.collectionView.frame.size.height;
     if (!self.layoutInfo) {
         [self prepareLayout];
         
@@ -163,21 +171,12 @@
     }
     
     for (UICollectionViewLayoutAttributes *attributes in [self.layoutInfo[kJxCalendarDayLayoutHeader] allValues]) {
-        CGRect frame = attributes.frame;
-        
-        frame.size.width = maxWidth;
-        
-        attributes.frame = frame;
+        if (attributes.frame.origin.y + attributes.frame.size.height > maxHeight) {
+            maxHeight = attributes.frame.origin.y + attributes.frame.size.height;
+        }
     }
     
-    if (self.size.width <= kCalendarLayoutDayWidthIndicatorForTitleLess) {
-        maxWidth = self.size.width;
-    }
-    
-    CGSize contentSize = CGSizeMake(maxWidth,
-                                    (numOfSections * kCalendarLayoutDaySectionHeight) - kCalendarLayoutDaySectionHeight + kCalendarLayoutDayHeaderHeight);
-    
-    return contentSize;
+    return CGSizeMake(maxWidth, maxHeight);
 }
 
 #pragma mark - Cells Layout
@@ -187,81 +186,118 @@
     return self.layoutInfo[kJxCalendarDayLayoutCells][indexPath];
 }
 
-
-- (CGRect)frameForItemAtIndexPath:(NSIndexPath *)indexPath previousRect:(CGRect)previousRect previousIndexPath:(NSIndexPath*)previousIndexPath
-{
+- (NSArray *)eventsForWholeDay{
+    NSMutableArray *items = [NSMutableArray array];
     
-    JxCalendarEvent *event;
-    
-    if (_events.count > indexPath.section) {
-        NSArray *eventsOfThisHour = [_events objectAtIndex:indexPath.section];
-        NSLog(@"eventsOfThisHour %@", eventsOfThisHour);
-        
-        if (eventsOfThisHour.count > indexPath.item) {
-            event = [eventsOfThisHour objectAtIndex:indexPath.item];
+    for (JxCalendarEvent *e in _events) {
+        if ([e isKindOfClass:[JxCalendarEventDay class]]) {
+            JxCalendarEventDay *event = (JxCalendarEventDay *)e;
+            
+            [items addObject:event];
+            
         }
     }
+
+    return items;
+}
+- (JxCalendarEventDuration *)eventForIndexPath:(NSIndexPath *)indexPath{
+   
+    NSMutableArray *items = [NSMutableArray array];
+    
+    for (JxCalendarEvent *e in _events) {
+        if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
+            JxCalendarEventDuration *event = (JxCalendarEventDuration *)e;
+            
+            NSDateComponents *components = [[self calendar] components:NSCalendarUnitHour fromDate:event.start];
+            
+            if (components.hour == indexPath.section) {
+                [items addObject:event];
+            }
+        }else if ([e isKindOfClass:[JxCalendarEventDay class]]) {
+            if (indexPath.section == 0) {
+                JxCalendarEventDay *event = (JxCalendarEventDay *)e;
+                [items addObject:event];
+            }
+        }
+    }
+    
+    if (items.count > indexPath.item) {
+        return [items objectAtIndex:indexPath.item];
+        
+        
+    }
+    return nil;
+}
+- (CGRect)frameForDurationEvent:(JxCalendarEventDuration *)event atIndexPath:(NSIndexPath *)indexPath{
+
     NSDateComponents *startComponents;
-//    NSDateComponents *endComponents;
+    //    NSDateComponents *endComponents;
     if (event) {
         startComponents = [self.calendar components:( NSCalendarUnitHour |
-                                                                       NSCalendarUnitMinute |
-                                                                       NSCalendarUnitSecond |
-                                                                       NSCalendarUnitDay |
-                                                                       NSCalendarUnitMonth |
-                                                                       NSCalendarUnitYear |
-                                                                       NSCalendarUnitWeekday   )
-                                                             fromDate:event.start];
-        
-//        endComponents = [self.calendar components:( NSCalendarUnitHour |
-//                                                     NSCalendarUnitMinute |
-//                                                     NSCalendarUnitSecond |
-//                                                     NSCalendarUnitDay |
-//                                                     NSCalendarUnitMonth |
-//                                                     NSCalendarUnitYear |
-//                                                     NSCalendarUnitWeekday   )
-//                                           fromDate:event.end];
+                                                     NSCalendarUnitMinute |
+                                                     NSCalendarUnitSecond |
+                                                     NSCalendarUnitDay |
+                                                     NSCalendarUnitMonth |
+                                                     NSCalendarUnitYear |
+                                                     NSCalendarUnitWeekday   )
+                                           fromDate:event.start];
     }
     
+    
+    CGFloat itemHeight = event.duration*kCalendarLayoutDaySectionHeightMultiplier - (2*self.minimumLineSpacing) - 1;
+    
+//    if (itemHeight < (60*kCalendarLayoutDaySectionHeightMultiplier)/3) {
+//        itemHeight = (60*kCalendarLayoutDaySectionHeightMultiplier)/3;
+//    }
+    CGRect rect = CGRectMake(self.leftExtraSize,
+                             indexPath.section * (60*kCalendarLayoutDaySectionHeightMultiplier) + (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing)) + self.minimumLineSpacing + 1 + startComponents.minute*kCalendarLayoutDaySectionHeightMultiplier
+                             /*
+                             self.headerReferenceSize.height - kCalendarLayoutDayHeaderHalfHeight +
+                             (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing)) +
+                             (indexPath.section * (60*kCalendarLayoutDaySectionHeightMultiplier)) +
+                             self.minimumLineSpacing +
+                             (startComponents.minute * kCalendarLayoutDaySectionHeightMultiplier) */,
+                             
+                             
+                             self.itemSize.width,
+                             itemHeight);
+    
+    while (![self checkIfRectIsAvailable:rect forType:kJxCalendarDayLayoutCells]){
+        rect.origin.x = rect.origin.x + self.itemSize.width+ self.minimumInteritemSpacing;
+    }
+    
+    return rect;
 
-    CGFloat itemHeight = event.duration*2 - (2*self.minimumInteritemSpacing);
-    
-    if (itemHeight < kCalendarLayoutDaySectionHeight/3) {
-        itemHeight = kCalendarLayoutDaySectionHeight/3;
-    }
-    
-    if (CGRectEqualToRect(CGRectZero, previousRect)) {
-        NSLog(@"1 event %@", event.title);
-        CGRect theoricalRect = CGRectMake(self.leftExtraSize,
-                                          (indexPath.section * kCalendarLayoutDaySectionHeight)+ self.headerReferenceSize.height- kCalendarLayoutDayHeaderHalfHeight +self.minimumInteritemSpacing + (startComponents.minute * 2),
-                                          self.itemSize.width,
-                                          itemHeight);
-        
-        while (![self checkIfRectIsAvailable:theoricalRect]){
-            theoricalRect.origin.x = theoricalRect.origin.x + self.itemSize.width+ self.minimumInteritemSpacing;
-        }
+}
+- (CGRect)frameForDayEvent:(JxCalendarEventDay *)event atIndexPath:(NSIndexPath *)indexPath{
 
-        return theoricalRect;
-    }
-    else {
-        NSLog(@"2 event %@", event.title);
-        CGRect theoricalRect = previousRect;
-        
-        theoricalRect.origin.x = self.leftExtraSize;
-        theoricalRect.origin.y = (indexPath.section * kCalendarLayoutDaySectionHeight) + self.headerReferenceSize.height- kCalendarLayoutDayHeaderHalfHeight + self.minimumInteritemSpacing + (startComponents.minute * 2);
-        theoricalRect.size.height = itemHeight;
-        
-        while (![self checkIfRectIsAvailable:theoricalRect]){
-            theoricalRect.origin.x = theoricalRect.origin.x + self.itemSize.width + self.minimumInteritemSpacing;
-        }
-        
-        return theoricalRect;
-    }
+    CGRect rect = CGRectMake(self.leftExtraSize,
+                             self.collectionView.contentOffset.y,
+                             self.itemSize.width*2 + self.minimumInteritemSpacing,
+                             kCalendarLayoutWholeDayHeight);
     
+    int count = 0;
+    while (![self checkIfRectIsAvailable:rect forType:kJxCalendarDayLayoutWholeDay]){
+        
+        rect.origin.y = rect.origin.y + kCalendarLayoutWholeDayHeight+self.minimumLineSpacing;
+    
+        count++;
+        
+        if (count == 3) {
+            count = 0;
+            
+            rect.origin.x = rect.origin.x + self.itemSize.width+ self.minimumInteritemSpacing;
+            rect.origin.y = self.collectionView.contentOffset.y;
+        }
+    }
+    if (count < 3) {
+        return rect;
+    }
+        
+        
     
     return CGRectZero;
 }
-
 #pragma mark - Headers Layout
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
@@ -273,8 +309,8 @@
 {
     
     CGRect theoricalRect = previousRect;
-    theoricalRect.origin.x = 0.0f;
-    theoricalRect.origin.y = section * kCalendarLayoutDaySectionHeight;
+    theoricalRect.origin.x = self.collectionView.contentOffset.x;
+    theoricalRect.origin.y = section * (60*kCalendarLayoutDaySectionHeightMultiplier) + (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing))- kCalendarLayoutDayHeaderHalfHeight;
     theoricalRect.size.width = self.headerReferenceSize.width;
     theoricalRect.size.height = self.headerReferenceSize.height;
     return theoricalRect;
@@ -282,12 +318,12 @@
     
     return CGRectZero;
 }
-- (BOOL)checkIfRectIsAvailable:(CGRect)rect{
+- (BOOL)checkIfRectIsAvailable:(CGRect)rect forType:(NSString *)type{
     
-    NSLog(@"rect %f x %f size %f x %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
+    //NSLog(@"rect %f x %f size %f x %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
     
     if (self.layoutInfo) {
-        for (UICollectionViewLayoutAttributes *attributes in [self.layoutInfo[kJxCalendarDayLayoutCells] allValues]) {
+        for (UICollectionViewLayoutAttributes *attributes in [self.layoutInfo[type] allValues]) {
             
             if (CGRectIntersectsRect(attributes.frame, rect)) {
                 return NO;

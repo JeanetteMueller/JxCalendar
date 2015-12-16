@@ -10,10 +10,14 @@
 #import "JxCalendarBasics.h"
 #import "JxCalendarLayoutWeek.h"
 #import "JxCalendarHeader.h"
-#import "JxCalendarEventCell.h"
+#import "JxCalendarWeekEventCell.h"
 #import "JxCalendarEvent.h"
+#import "JxCalendarEventDay.h"
+#import "JxCalendarDayHeader.h"
 
 @interface JxCalendarWeek ()
+
+@property (nonatomic, readwrite) BOOL initialScrollDone;
 
 @end
 
@@ -63,13 +67,14 @@
 //    [self.collectionView registerClass:[JxCalendarCell class] forCellWithReuseIdentifier:@"JxCalendarCell"];
 //    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarCell" bundle:bundle] forCellWithReuseIdentifier:@"JxCalendarCell"];
     
-    [self.collectionView registerClass:[JxCalendarEventCell class] forCellWithReuseIdentifier:@"JxCalendarEventCell"];
-    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarEventCell" bundle:bundle] forCellWithReuseIdentifier:@"JxCalendarEventCell"];
+    [self.collectionView registerClass:[JxCalendarWeekEventCell class] forCellWithReuseIdentifier:@"JxCalendarWeekEventCell"];
+    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarWeekEventCell" bundle:bundle] forCellWithReuseIdentifier:@"JxCalendarWeekEventCell"];
     
     
     [self.collectionView registerClass:[JxCalendarHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarHeader"];
     [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarHeader" bundle:bundle] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarHeader"];
     
+
     // Do any additional setup after loading the view.
     
     
@@ -109,6 +114,68 @@
     //
     //    }];
     
+    
+}
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    
+    JxCalendarLayoutWeek *layout = (JxCalendarLayoutWeek *)self.collectionView.collectionViewLayout;
+    
+    if (!self.initialScrollDone) {
+        self.initialScrollDone = YES;
+        NSDate *now = [NSDate date];
+        NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:now];
+        
+
+        
+        [self.collectionView setContentOffset:CGPointMake(0, components.hour*(60*kCalendarLayoutDaySectionHeightMultiplier) + (3*(kCalendarLayoutWholeDayHeight+layout.minimumLineSpacing))-kCalendarLayoutDayHeaderHalfHeight) animated:NO];
+    }
+    UIColor *color = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
+    
+    
+    
+    for (int r = 0; r < 25; r++) {
+        
+        CGFloat baseTopDistance = layout.headerReferenceSize.height + (3*(kCalendarLayoutWholeDayHeight+layout.minimumLineSpacing)) + r * (60*kCalendarLayoutDaySectionHeightMultiplier);
+        
+        UILabel *time = [self.collectionView viewWithTag:9900+r];
+        if (!time) {
+            time = [[UILabel alloc] init];
+            time.tag = 9900+r;
+            time.backgroundColor = [UIColor whiteColor];
+            time.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
+            time.textColor = color;
+            time.textAlignment = NSTextAlignmentCenter;
+            time.text = [NSString stringWithFormat:@"%d Uhr", r];
+            
+            [self.collectionView addSubview:time];
+            
+            [self.collectionView sendSubviewToBack:time];
+        }
+        
+        UIView *row = [self.collectionView viewWithTag:9800+r];
+        if (!row) {
+            row = [[UIView alloc] init];
+            row.tag = 9800+r;
+            row.backgroundColor = color;
+            
+            [self.collectionView addSubview:row];
+            [self.collectionView sendSubviewToBack:row];
+        }
+        
+        time.frame = CGRectMake(self.collectionView.contentOffset.x + 5,
+                                baseTopDistance-10,
+                                40,
+                                20);
+        
+        row.frame = CGRectMake(self.collectionView.contentOffset.x,
+                               baseTopDistance,
+                               self.collectionView.frame.size.width,
+                               1);
+        
+        
+        
+    }
     
 }
 - (void)didReceiveMemoryWarning {
@@ -162,22 +229,31 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    JxCalendarEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"JxCalendarEventCell" forIndexPath:indexPath];
+    JxCalendarWeekEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"JxCalendarWeekEventCell" forIndexPath:indexPath];
     
     NSDate *thisDate = [self getDateForSection:indexPath.section];
     
     NSArray *events = [self.dataSource eventsAt:thisDate];
     
-    JxCalendarEvent *event = [events objectAtIndex:indexPath.item];
-    
-    cell.backgroundColor = event.backgroundColor;
+    JxCalendarEvent *e = [events objectAtIndex:indexPath.item];
     
     UILabel *textLabel = (UILabel *)[cell viewWithTag:333];
     textLabel.numberOfLines = 0;
-    textLabel.textColor = event.fontColor;
+    textLabel.textColor = e.fontColor;
     
-    textLabel.text = @"";// event.title;
+    if ([e isKindOfClass:[JxCalendarEventDay class]]) {
+        JxCalendarEventDay *event = (JxCalendarEventDay *)e;
+        textLabel.text = event.title;
+    }else{
+        textLabel.text = @"";
+    }
     
+    cell.backgroundColor = e.backgroundColor;
+    [cell.layer setBorderColor:e.borderColor.CGColor];
+    [cell.layer setBorderWidth:1.5f];
+    
+    
+    [cell.layer setCornerRadius:5];
     
     return cell;
 }
@@ -194,15 +270,29 @@
         if (thisDate) {
             NSDateComponents *dateComponents = [[self calendar] components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear|NSCalendarUnitWeekday
                                                                   fromDate:thisDate];
-
-            titleLabel.text = [NSString stringWithFormat:@"%li", (long)dateComponents.day];
+            
+            
+            NSDateFormatter *weekday = [[NSDateFormatter alloc] init];
+            [weekday setDateFormat: @"EEEE"];
+            
+            
+            titleLabel.text = [NSString stringWithFormat:@"%li.\n%@", (long)dateComponents.day, [weekday stringFromDate:thisDate]];
+            
+            
+            if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
+                header.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
+            }else{
+                header.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.9 alpha:1];
+            }
+            
         }else{
             titleLabel.text = @"";
+            header.backgroundColor = [UIColor colorWithRed:.95 green:.95 blue:.95 alpha:1];
         }
         
         
-
-        header.backgroundColor = [UIColor redColor] ;//colorWithAlphaComponent:0.3];
+        
+        
         return header;
     }
     return nil;
@@ -261,4 +351,25 @@
     return nil;
 
 }
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+//    
+//    for (int r = 0; r < 25; r++) {
+//        UIView *label = [self.collectionView viewWithTag:9900+r];
+//        UIView *row = [self.collectionView viewWithTag:9800+r];
+//        
+//        CGRect labelRect = label.frame;
+//        
+//        labelRect.origin.x = scrollView.contentOffset.x + 5;
+//        
+//        label.frame = labelRect;
+//        
+//        
+//        CGRect rowRect = row.frame;
+//        
+//        rowRect.origin.x = scrollView.contentOffset.x ;
+//        
+//        row.frame = rowRect;
+//    }
+//    
+//}
 @end

@@ -416,9 +416,9 @@
         }
         
         if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
-            cell.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.6];
+            cell.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
         }else{
-            cell.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.3];
+            cell.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.9 alpha:1];
         }
         
         if ([self.dataSource numberOfEventsAt:thisDate] > 0) {
@@ -429,7 +429,7 @@
         
     }else{
         cell.label.text = @" ";
-        cell.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.1];
+        cell.backgroundColor = [UIColor colorWithRed:.95 green:.95 blue:.95 alpha:1];
         cell.eventMarker.hidden = YES;
     }
 }

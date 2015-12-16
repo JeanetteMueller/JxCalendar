@@ -18,11 +18,8 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vBD-5J-e45">
-                                <rect key="frame" x="196" y="230" width="208" height="139"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <animations/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="208" id="f4c-VQ-1kr"/>
-                                </constraints>
                                 <state key="normal" title="Open Calendar"/>
                                 <connections>
                                     <action selector="openCalendar:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Pak-J8-jao"/>
@@ -32,9 +29,10 @@
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="vBD-5J-e45" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="PVE-n5-LyS"/>
-                            <constraint firstItem="vBD-5J-e45" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="lLd-a8-TyG"/>
-                            <constraint firstItem="vBD-5J-e45" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="210" id="tlm-79-xyc"/>
+                            <constraint firstItem="vBD-5J-e45" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="FlI-e4-OVV"/>
+                            <constraint firstAttribute="trailing" secondItem="vBD-5J-e45" secondAttribute="trailing" id="QVh-Ft-RLa"/>
+                            <constraint firstItem="vBD-5J-e45" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="pYq-K6-Zic"/>
+                            <constraint firstItem="vBD-5J-e45" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" id="vsw-yZ-0tx"/>
                         </constraints>
                     </view>
                 </viewController>

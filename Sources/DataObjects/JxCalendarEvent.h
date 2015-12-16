@@ -10,18 +10,16 @@
 
 @interface JxCalendarEvent : NSObject
 
-@property (strong, nonatomic) NSDate *start;
-@property (strong, nonatomic, readonly) NSDate *end;
-@property (nonatomic, readonly) NSTimeInterval duration;
+@property (strong, nonatomic, readonly) NSString *identifier;
+@property (strong, nonatomic, readonly) NSCalendar *calendar;
 @property (strong, nonatomic) NSString *title;
 
 @property (strong, nonatomic) UIColor *fontColor;
 @property (strong, nonatomic) UIColor *backgroundColor;
 @property (strong, nonatomic) UIColor *borderColor;
 
-- (id)initWithStart:(NSDate *)start andEnd:(NSDate *)end andTitle:(NSString *)title;
-- (id)initWithStart:(NSDate *)start andDuration:(NSTimeInterval)duration andTitle:(NSString *)title;
+- (id)initWithIdentifier:(NSString *)identifier calendar:(NSCalendar *)calendar andTitle:(NSString *)title;
 
-- (void)setDuration:(NSTimeInterval)duration;
-- (void)setEnd:(NSDate *)end;
+
+
 @end

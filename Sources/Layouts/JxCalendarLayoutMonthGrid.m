@@ -76,7 +76,6 @@
             UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
             itemAttributes.frame = [self frameForItemAtIndexPath:indexPath previousRect:previousRect previousIndexPath:previousIndexPath];
             previousRect = itemAttributes.frame;
-            //JMOLog(@"indexPath(%@) -> %@",indexPath, NSStringFromCGRect(previousRect));
             cellLayoutInfo[indexPath] = itemAttributes;
             previousIndexPath = indexPath;
         }
@@ -110,38 +109,31 @@
 - (CGSize)collectionViewContentSize
 {
     if (self.scrollDirection == UICollectionViewScrollDirectionVertical) {
-        //compute the worst case
         NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
         NSIndexPath *lastHeaderIndexPath = [NSIndexPath indexPathForRow:0 inSection:numOfSections-1];
         UICollectionViewLayoutAttributes *lastLayoutAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:lastHeaderIndexPath];
         CGSize contentSize = CGSizeMake(CGRectGetMaxX(lastLayoutAttributes.frame),CGRectGetMaxY(lastLayoutAttributes.frame) + 6*self.itemSize.height);
 
         return contentSize;
-    }
-    else {
-        //compute the worst case
+    }else {
         NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
         CGSize contentSize = CGSizeMake(7*self.headerReferenceSize.width*numOfSections, self.headerReferenceSize.height + 6*self.itemSize.height + 7*self.minimumLineSpacing);
-        //JMOLog(@"COntent size -> %@", NSStringFromCGSize(contentSize));
         return contentSize;
     }
 }
 
 #pragma mark - Cells Layout
 
-- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath{
     return self.layoutInfo[kJxCalendarMonthLayoutCells][indexPath];
 }
 
 
-- (CGRect)frameForItemAtIndexPath:(NSIndexPath *)indexPath previousRect:(CGRect)previousRect previousIndexPath:(NSIndexPath*)previousIndexPath
-{
+- (CGRect)frameForItemAtIndexPath:(NSIndexPath *)indexPath previousRect:(CGRect)previousRect previousIndexPath:(NSIndexPath*)previousIndexPath{
     if (self.scrollDirection == UICollectionViewScrollDirectionVertical) {
         if (CGRectEqualToRect(CGRectZero, previousRect)) {
             return CGRectMake(0.0f, self.headerReferenceSize.height + self.minimumLineSpacing, self.itemSize.width, self.itemSize.height);
-        }
-        else {
+        }else {
             CGRect theoricalRect = previousRect;
             theoricalRect.origin.x = theoricalRect.origin.x + self.minimumInteritemSpacing + self.itemSize.width;
             if ((indexPath.section - previousIndexPath.section) > 0) {

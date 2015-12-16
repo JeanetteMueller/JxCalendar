@@ -9,17 +9,22 @@
 #import "JxCalendarEvent.h"
 
 @interface JxCalendarEvent ()
+@property (strong, nonatomic, readwrite) NSString *identifier;
+@property (strong, nonatomic, readwrite) NSCalendar *calendar;
 
-@property (strong, nonatomic, readwrite) NSDate *end;
-@property (nonatomic, readwrite) NSTimeInterval duration;
+
 
 @end
 
 @implementation JxCalendarEvent
 
-- (id)init{
+- (id)initWithIdentifier:(NSString *)identifier calendar:(NSCalendar *)calendar andTitle:(NSString *)title{
     self = [super init];
     if (self) {
+        
+        self.identifier = identifier;
+        self.calendar = calendar;
+        self.title = title;
         
         self.fontColor = [UIColor whiteColor];
         
@@ -31,50 +36,13 @@
         self.borderColor = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
         
         //self.borderColor = [UIColor blueColor];
-        self.backgroundColor = [self.borderColor colorWithAlphaComponent:0.5f];
+        self.backgroundColor = [self.borderColor colorWithAlphaComponent:0.75f];
     }
     return self;
-}
-- (id)initWithStart:(NSDate *)start andEnd:(NSDate *)end andTitle:(NSString *)title{
-    self = [self init];
-    if (self) {
-        
-        self.start = start;
-        [self setEnd:end];
-        
-        if (!title) {
-            title = @"";
-        }
-        self.title = title;
-        
-    }
-    return self;
-}
-- (id)initWithStart:(NSDate *)start andDuration:(NSTimeInterval)duration andTitle:(NSString *)title{
-    self = [self init];
-    if (self) {
-        
-        self.start = start;
-        [self setDuration:duration];
-        
-        if (!title) {
-            title = @"";
-        }
-        self.title = title;
-        
-    }
-    return self;
-}
-- (void)setDuration:(NSTimeInterval)duration{
-    _end = [NSDate dateWithTimeInterval:duration sinceDate:_start];
-    _duration = duration;
-}
-- (void)setEnd:(NSDate *)end{
-    _end = end;
-    _duration = [end timeIntervalSinceDate:_start];
 }
 
+
 - (NSString *)description{
-    return [NSString stringWithFormat:@"von %@ bis %@: %@", _start, _end, _title];
+    return [NSString stringWithFormat:@"Event %@ (%@)", _title, _identifier];
 }
 @end

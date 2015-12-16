@@ -13,6 +13,8 @@
 #import "JxCalendarEvent.h"
 #import "JxCalendarEventCell.h"
 #import "JxCalendarLayoutDay.h"
+#import "JxCalendarEventDuration.h"
+#import "JxCalendarEventDay.h"
 
 @interface JxCalendarDay ()
 
@@ -78,7 +80,7 @@
     
     [self setCurrentDate:_currentDate];
     
-    
+    [self.collectionView setScrollIndicatorInsets:UIEdgeInsetsMake(3*(kCalendarLayoutWholeDayHeight+[(JxCalendarLayoutDay *)self.collectionView.collectionViewLayout minimumLineSpacing]), 0, 0, 0)];
     
     if (_nowComponents.year == _currentComponents.year && _nowComponents.month == _currentComponents.month && _nowComponents.day == _currentComponents.day) {
         //aktueller tag ist heute
@@ -112,7 +114,7 @@
         NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:now];
         
         CGFloat offset = [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                                                                  atIndexPath:[NSIndexPath indexPathForItem:0 inSection:components.hour]].frame.origin.y - 64;
+                                                                                                  atIndexPath:[NSIndexPath indexPathForItem:0 inSection:components.hour]].frame.origin.y;
         
         [self.collectionView setContentOffset:CGPointMake(0, offset) animated:NO];
     
@@ -175,13 +177,10 @@
     [self loadNow];
     
     CGFloat positionFromLeft = kCalendarLayoutDayHeaderTextWidth;
-    if (self.scrollViewDelegate) {
-        positionFromLeft = 0;
-    }
     
     _zeiger.hidden = NO;
     _zeiger.frame = CGRectMake(positionFromLeft,
-                               _nowComponents.hour*kCalendarLayoutDaySectionHeight + kCalendarLayoutDayHeaderHalfHeight + (kCalendarLayoutDaySectionHeight / 60*_nowComponents.minute),
+                               _nowComponents.hour*(60*kCalendarLayoutDaySectionHeightMultiplier) + kCalendarLayoutDayHeaderHalfHeight + ((60*kCalendarLayoutDaySectionHeightMultiplier) / 60*_nowComponents.minute),
                                self.collectionView.contentSize.width-kCalendarLayoutDayHeaderTextWidth,
                                1);
     
@@ -198,14 +197,30 @@
 */
 
 - (JxCalendarEvent *)eventForIndexPath:(NSIndexPath *)indexPath{
-    NSArray *eventHours = [_dataSource eventsAt:_currentDate];
+    NSArray *events = [_dataSource eventsAt:_currentDate];
     
-    if (eventHours.count > indexPath.section) {
-        NSArray *events = [eventHours objectAtIndex:indexPath.section];
-        
-        if (events.count > indexPath.item) {
-            return [events objectAtIndex:indexPath.item];
+    NSMutableArray *items = [NSMutableArray array];
+    
+    for (JxCalendarEvent *e in events) {
+        if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
+            JxCalendarEventDuration *event = (JxCalendarEventDuration *)e;
+            
+            NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:event.start];
+            
+            if (components.hour == indexPath.section) {
+                [items addObject:event];
+            }
+        }else if ([e isKindOfClass:[JxCalendarEventDay class]]) {
+            if (indexPath.section == 0) {
+                JxCalendarEventDay *event = (JxCalendarEventDay *)e;
+                [items addObject:event];
+            }
         }
+    }
+    
+    if (items.count > indexPath.item) {
+        return [items objectAtIndex:indexPath.item];
+        
         
     }
     return nil;
@@ -220,14 +235,29 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    NSArray *eventHours = [_dataSource eventsAt:_currentDate];
+    NSArray *events = [_dataSource eventsAt:_currentDate];
     
-    if (eventHours.count > section) {
-        NSArray *events = [eventHours objectAtIndex:section];
-        
-        return events.count;
+    NSInteger count = 0;
+    
+    for (JxCalendarEvent *e in events) {
+        if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
+            JxCalendarEventDuration *event = (JxCalendarEventDuration *)e;
+            
+            NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:event.start];
+            
+            if (components.hour == section) {
+                count++;
+            }
+        }else if ([e isKindOfClass:[JxCalendarEventDay class]]) {
+            if (section == 0) {
+                count++;
+            }
+            
+            
+        }
     }
-    return 0;
+
+    return count;
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"JxCalendarEventCell" forIndexPath:indexPath];
@@ -259,15 +289,7 @@
         JxCalendarDayHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarDayHeader" forIndexPath:indexPath];
         
         UILabel *textLabel = [header viewWithTag:333];
-        
-        if (self.scrollViewDelegate) {
-            textLabel.hidden = YES;
-        }else{
-            textLabel.hidden = NO;
-        }
 
-        
-        
         textLabel.text = [NSString stringWithFormat:@"%ld Uhr", (long)indexPath.section % 24];
         header.backgroundColor = [UIColor clearColor];
         return header;
@@ -309,50 +331,6 @@
 	
 }
 */
-#pragma mark <UIScrollViewDelegate>
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    [self.scrollViewDelegate scrollViewDidScroll:scrollView];
-}
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
-    if (decelerate) {
-        
-        BOOL switchToDifferentDay = NO;
-        
-        
-        
-        if (scrollView.contentOffset.y + scrollView.contentInset.top < -kPullToSwitchContextOffset) {
-            NSLog(@"gehe einen Tag zurück");
-            
-            NSDate *newDate = [_currentDate dateByAddingTimeInterval:-(24 * 60 * 60)];
-            
-            [self setCurrentDate:newDate];
-            switchToDifferentDay = YES;
-        }else if (scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentInset.bottom > scrollView.contentSize.height+kPullToSwitchContextOffset){
-            NSLog(@"gehe einen Tag vor ");
-            
-            NSDate *newDate = [_currentDate dateByAddingTimeInterval:(24 * 60 * 60)];
-            
-            [self setCurrentDate:newDate];
-            switchToDifferentDay = YES;
-        }
-        
-        if (switchToDifferentDay) {
-            
-            [self.collectionView reloadData];
-            
-            [self.collectionView.collectionViewLayout invalidateLayout];
-            
-            __weak __typeof(self)weakSelf = self;
-            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutDay alloc] initWithSize:self.collectionView.bounds.size andEvents:[self.dataSource eventsAt:_currentDate] andCalendar:[self.dataSource calendar]] animated:YES completion:^(BOOL finished) {
-                
-                __strong __typeof(weakSelf)strongSelf = weakSelf;
-                
-                [strongSelf.collectionView setDirectionalLockEnabled:YES];
-                [strongSelf.collectionView scrollRectToVisible:CGRectMake(0, 0, 10, 10) animated:NO];
-            }];
-            
-        }
-        
-    }
-}
+
+
 @end

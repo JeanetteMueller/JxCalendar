@@ -8,12 +8,7 @@
 
 #import "JxCalendarLayout.h"
 
-#define kCalendarLayoutDaySectionHeight 120
-#define kCalendarLayoutDayHeaderHeight 49
-#define kCalendarLayoutDayHeaderHalfHeight 24
-#define kCalendarLayoutDayHeaderTextWidth 65
 
-#define kCalendarLayoutDayWidthIndicatorForTitleLess 200
 
 @interface JxCalendarLayoutDay : JxCalendarLayout
 

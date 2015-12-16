@@ -7,16 +7,15 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="JxCalendarEventCell" id="5uY-pw-kzs" customClass="JxCalendarEventCell">
-            <rect key="frame" x="0.0" y="0.0" width="245" height="155"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="JxCalendarWeekEventCell" id="gTV-IL-0wX" customClass="JxCalendarWeekEventCell">
+            <rect key="frame" x="0.0" y="0.0" width="200" height="100"/>
+            <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                <rect key="frame" x="0.0" y="0.0" width="245" height="155"/>
-                <autoresizingMask key="autoresizingMask"/>
+                <rect key="frame" x="0.0" y="0.0" width="200" height="100"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" tag="333" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Eventtitle" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="DY5-YD-qQV">
-                        <rect key="frame" x="3" y="3" width="239" height="14"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <label opaque="NO" userInteractionEnabled="NO" tag="333" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Eventtitle" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="tFA-NG-UcA">
+                        <rect key="frame" x="3" y="0.0" width="194" height="100"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -27,8 +26,8 @@
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             </view>
             <animations/>
-            <size key="customSize" width="245" height="155"/>
-            <point key="canvasLocation" x="377.5" y="263.5"/>
+            <size key="customSize" width="249" height="143"/>
+            <point key="canvasLocation" x="968.5" y="631.5"/>
         </collectionViewCell>
     </objects>
 </document>
