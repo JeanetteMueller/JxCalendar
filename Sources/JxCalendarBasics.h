@@ -14,4 +14,6 @@
 + (NSDate *)firstDayOfMonth:(NSInteger)month inCalendar:(NSCalendar *)calendar andYear:(NSInteger)year;
 + (NSDate *)lastDayOfMonth:(NSInteger)month inCalendar:(NSCalendar *)calendar andYear:(NSInteger)year;
 + (NSInteger)normalizedWeekDay:(NSInteger)weekday;
+
++ (NSDateFormatter *)defaultFormatter;
 @end

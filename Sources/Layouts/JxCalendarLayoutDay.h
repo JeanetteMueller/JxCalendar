@@ -8,10 +8,12 @@
 
 #import "JxCalendarLayout.h"
 
-
+@class JxCalendarDay;
 
 @interface JxCalendarLayoutDay : JxCalendarLayout
 
-- (id)initWithSize:(CGSize)size andEvents:(NSArray *)events andCalendar:(NSCalendar *)calendar;
+@property (strong, nonatomic) JxCalendarDay *source;
+
+- (id)initWithSize:(CGSize)size andDay:(NSDate *)day;
 
 @end

@@ -68,5 +68,10 @@
     
     return weekday;
 }
-
++ (NSDateFormatter *)defaultFormatter{
+    NSDateFormatter *formater = [[NSDateFormatter alloc] init];
+    [formater setLocale:[NSLocale currentLocale]];//  [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+    [formater setDateStyle:NSDateFormatterFullStyle];
+    return formater;
+}
 @end

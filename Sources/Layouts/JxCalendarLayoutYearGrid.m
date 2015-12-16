@@ -125,25 +125,18 @@
 
 - (CGSize)collectionViewContentSize
 {
-    if (self.scrollDirection == UICollectionViewScrollDirectionVertical) {
-        NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
-        NSIndexPath *lastHeaderIndexPath = [NSIndexPath indexPathForRow:0 inSection:numOfSections-1];
-        UICollectionViewLayoutAttributes *lastLayoutAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:lastHeaderIndexPath];
-        CGSize contentSize = CGSizeMake(CGRectGetMaxX(lastLayoutAttributes.frame),
-                                        CGRectGetMaxY(lastLayoutAttributes.frame) + ((self.itemSize.height+self.minimumLineSpacing) * 6 ) + self.sectionInset.bottom);
-        
-        if (contentSize.height < self.collectionView.frame.size.height) {
-            contentSize.height = self.collectionView.frame.size.height;
-        }
-        return contentSize;
-    }
-    else {
-        NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
-        CGSize contentSize = CGSizeMake(7*self.headerReferenceSize.width*numOfSections,
-                                        self.headerReferenceSize.height + 6*self.itemSize.height + 7*self.minimumLineSpacing);
 
-        return contentSize;
+    NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
+    NSIndexPath *lastHeaderIndexPath = [NSIndexPath indexPathForRow:0 inSection:numOfSections-1];
+    UICollectionViewLayoutAttributes *lastLayoutAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:lastHeaderIndexPath];
+    CGSize contentSize = CGSizeMake(CGRectGetMaxX(lastLayoutAttributes.frame),
+                                    CGRectGetMaxY(lastLayoutAttributes.frame) + ((self.itemSize.height+self.minimumLineSpacing) * 6 ) + self.sectionInset.bottom);
+    
+    if (contentSize.height < self.collectionView.frame.size.height) {
+        contentSize.height = self.collectionView.frame.size.height;
     }
+    return contentSize;
+
 }
 
 #pragma mark - Cells Layout
@@ -156,44 +149,28 @@
 
 - (CGRect)frameForItemAtIndexPath:(NSIndexPath *)indexPath previousRect:(CGRect)previousRect previousIndexPath:(NSIndexPath*)previousIndexPath
 {
-    if (self.scrollDirection == UICollectionViewScrollDirectionVertical) {
-        if (CGRectEqualToRect(CGRectZero, previousRect)) {
-            return CGRectMake(self.sectionInset.left, self.headerReferenceSize.height + self.minimumLineSpacing + self.sectionInset.top + self.sectionInset.bottom, self.itemSize.width, self.itemSize.height);
-        }
-        else {
-            CGRect theoricalRect = previousRect;
-            theoricalRect.origin.x = theoricalRect.origin.x + self.minimumInteritemSpacing + self.itemSize.width;
-            if ((indexPath.section - previousIndexPath.section) > 0) {
-                theoricalRect.origin.x = self.sectionInset.left + (indexPath.section % 3 * (self.headerReferenceSize.width + self.sectionInset.left + self.sectionInset.right));
-                theoricalRect.origin.y = floor(indexPath.section / 3) * ((self.itemSize.height+self.minimumLineSpacing) * 6 + self.headerReferenceSize.height + self.minimumInteritemSpacing + self.sectionInset.bottom) + self.headerReferenceSize.height+self.minimumInteritemSpacing + self.sectionInset.top;
-                
-            }else if ((theoricalRect.origin.x + self.itemSize.width) > ((indexPath.section % 3 * (self.headerReferenceSize.width + self.sectionInset.left + self.sectionInset.right)) + self.headerReferenceSize.width+self.sectionInset.left+self.minimumInteritemSpacing)) {
-                
-                theoricalRect.origin.x = self.sectionInset.left + (indexPath.section % 3 * (self.headerReferenceSize.width + self.sectionInset.left + self.sectionInset.right));
-                theoricalRect.origin.y = theoricalRect.origin.y + self.minimumLineSpacing + self.itemSize.height ;
-            }
-            return theoricalRect;
-        }
+
+    if (CGRectEqualToRect(CGRectZero, previousRect)) {
+        return CGRectMake(self.sectionInset.left,
+                          self.headerReferenceSize.height + self.minimumLineSpacing + self.sectionInset.top,
+                          self.itemSize.width,
+                          self.itemSize.height);
     }
     else {
-//        if (CGRectEqualToRect(CGRectZero, previousRect)) {
-//            return CGRectMake(self.sectionInset.left, self.headerReferenceSize.height + self.minimumLineSpacing + self.sectionInset.top + self.sectionInset.bottom, self.itemSize.width, self.itemSize.height);
-//        }
-//        else {
-//            CGRect theoricalRect = previousRect;
-//            theoricalRect.origin.x = theoricalRect.origin.x + self.minimumInteritemSpacing + self.itemSize.width;
-//            if ((theoricalRect.origin.x + self.itemSize.width) > self.headerReferenceSize.width * (indexPath.section+1)) {
-//                theoricalRect.origin.x =  self.headerReferenceSize.width * indexPath.section;
-//                theoricalRect.origin.y = theoricalRect.origin.y + self.minimumLineSpacing + self.itemSize.height;
-//            }
-//            if ((indexPath.section - previousIndexPath.section) > 0) {
-//                theoricalRect.origin.x = self.headerReferenceSize.width * indexPath.section;
-//                theoricalRect.origin.y = self.headerReferenceSize.height + self.minimumLineSpacing;
-//            }
-//            return theoricalRect;
-//        }
+        CGRect theoricalRect = previousRect;
+        theoricalRect.origin.x = theoricalRect.origin.x + self.minimumInteritemSpacing + self.itemSize.width;
+        if ((indexPath.section - previousIndexPath.section) > 0) {
+            theoricalRect.origin.x = self.sectionInset.left + (indexPath.section % 3 * (self.headerReferenceSize.width + self.sectionInset.left + self.sectionInset.right));
+            theoricalRect.origin.y = floor(indexPath.section / 3) * ((self.itemSize.height+self.minimumLineSpacing) * 6 + self.headerReferenceSize.height + self.minimumInteritemSpacing + self.sectionInset.bottom) + self.headerReferenceSize.height+self.minimumInteritemSpacing + self.sectionInset.top;
+            
+        }else if ((theoricalRect.origin.x + self.itemSize.width) > ((indexPath.section % 3 * (self.headerReferenceSize.width + self.sectionInset.left + self.sectionInset.right)) + self.headerReferenceSize.width+self.sectionInset.left+self.minimumInteritemSpacing)) {
+            
+            theoricalRect.origin.x = self.sectionInset.left + (indexPath.section % 3 * (self.headerReferenceSize.width + self.sectionInset.left + self.sectionInset.right));
+            theoricalRect.origin.y = theoricalRect.origin.y + self.minimumLineSpacing + self.itemSize.height ;
+        }
+        return theoricalRect;
     }
-    
+
     return CGRectZero;
 }
 

@@ -20,5 +20,4 @@
 - (void)switchToMonthGridView;
 - (void)switchToMonthGridViewWithCallback:(void (^)(BOOL finished))callback;
 
-- (NSDateFormatter *)defaultFormatter;
 @end

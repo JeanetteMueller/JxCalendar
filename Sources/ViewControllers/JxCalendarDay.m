@@ -15,6 +15,7 @@
 #import "JxCalendarLayoutDay.h"
 #import "JxCalendarEventDuration.h"
 #import "JxCalendarEventDay.h"
+#import "JxCalendarBasics.h"
 
 @interface JxCalendarDay ()
 
@@ -158,7 +159,7 @@
 - (void)setCurrentDate:(NSDate *)currentDate{
     _currentDate = currentDate;
     
-    self.navigationItem.title = [_defaultFormatter stringFromDate:self.currentDate];
+    self.navigationItem.title = [[JxCalendarBasics defaultFormatter] stringFromDate:self.currentDate];
 }
 - (void)loadNow{
     self.now = [NSDate date];

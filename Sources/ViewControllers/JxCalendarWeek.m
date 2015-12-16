@@ -84,7 +84,7 @@
     [super viewWillAppear:animated];
     
     if (self.navigationController) {
-        self.navigationItem.title = [NSString stringWithFormat:@"%@ %ld", [[[self defaultFormatter] monthSymbols] objectAtIndex:_startMonth-1], (long)_startYear];
+        self.navigationItem.title = [NSString stringWithFormat:@"%@ %ld", [[[JxCalendarBasics defaultFormatter] monthSymbols] objectAtIndex:_startMonth-1], (long)_startYear];
     }
     
     self.collectionView.scrollIndicatorInsets = UIEdgeInsetsMake([(JxCalendarLayoutWeek *)self.collectionView.collectionViewLayout headerReferenceSize].height, 0, 0, 0);

@@ -355,7 +355,7 @@
         
         NSInteger month = indexPath.section+1;
         
-        titleLabel.text = [NSString stringWithFormat:@"%@", [[[self defaultFormatter] monthSymbols] objectAtIndex:month-1]];
+        titleLabel.text = [NSString stringWithFormat:@"%@", [[[JxCalendarBasics defaultFormatter] monthSymbols] objectAtIndex:month-1]];
         
         switch (self.style) {
             case JxCalendarStyleYearGrid:
@@ -371,7 +371,7 @@
                 titleLabel.font = [titleLabel.font fontWithSize:16];
                 break;
         }
-        //header.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.3];
+        header.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.3];
         return header;
     }
     return nil;
@@ -464,15 +464,16 @@
     
         [self.delegate calendar:self didSelectDate:date];
         
-        JxCalendarDay *day = [[JxCalendarDay alloc] initWithCollectionViewLayout:[[JxCalendarLayoutDay alloc] initWithSize:self.collectionView.bounds.size
-                                                                                                                  andEvents:[self.dataSource eventsAt:date]
-                                                                                                                andCalendar:[self calendar]]];
+        JxCalendarLayoutDay *layout = [[JxCalendarLayoutDay alloc] initWithSize:self.collectionView.bounds.size
+                                                                         andDay:date];
+        
+        JxCalendarDay *day = [[JxCalendarDay alloc] initWithCollectionViewLayout:layout];
+        layout.source = day;
         
         day.dataSource = self.dataSource;
         day.delegate = self.delegate;
         
         [day setCurrentDate:date];
-        day.defaultFormatter = [self defaultFormatter];
         
         if (self.navigationController) {
             [self.navigationController pushViewController:day animated:YES];

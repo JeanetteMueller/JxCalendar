@@ -15,6 +15,5 @@
 @property (nonatomic, unsafe_unretained) id<JxCalendarDelegate> delegate;
 
 @property (strong, nonatomic) NSDate *currentDate;
-@property (strong, nonatomic) NSDateFormatter *defaultFormatter;
 
 @end
