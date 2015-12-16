@@ -23,8 +23,8 @@
     if (self) {
         self.headerReferenceSize = CGSizeMake(size.width, 64.0f);
         
-        CGFloat minSpacingWidth = 1.;
-        CGFloat maxWidth = floor((size.width - minSpacingWidth * 6) / 7.);
+        CGFloat border = 3.;
+        CGFloat maxWidth = floor((size.width - border * 6) / 7.);
         self.itemSize = CGSizeMake(maxWidth, maxWidth);
         self.minimumLineSpacing = (size.width - (maxWidth * 7.)) / 6.;
         self.minimumInteritemSpacing = self.minimumLineSpacing;

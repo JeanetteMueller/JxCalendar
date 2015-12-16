@@ -25,10 +25,10 @@
         
         CGFloat itemsPerRow = 7;
         
-        CGFloat borders = 1.0f;
+        CGFloat borders = 2.0f;
         
         
-        self.sectionInset = UIEdgeInsetsMake(5, 5, 10, 5);
+        self.sectionInset = UIEdgeInsetsMake(3, 3, 0, 3);
         
         self.headerReferenceSize = CGSizeMake(size.width/3 - self.sectionInset.left-self.sectionInset.right,
                                               40);

@@ -371,7 +371,7 @@
                 titleLabel.font = [titleLabel.font fontWithSize:16];
                 break;
         }
-        header.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.3];
+        //header.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.3];
         return header;
     }
     return nil;
