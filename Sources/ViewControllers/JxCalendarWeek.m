@@ -165,7 +165,7 @@
         
         time.frame = CGRectMake(self.collectionView.contentOffset.x + 5,
                                 baseTopDistance-10,
-                                40,
+                                45,
                                 20);
         
         row.frame = CGRectMake(self.collectionView.contentOffset.x,

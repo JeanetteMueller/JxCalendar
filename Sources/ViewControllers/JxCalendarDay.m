@@ -141,6 +141,17 @@
             _zeiger.hidden = YES;
         }
     }
+    
+    
+    if (_zeiger && !_zeiger.hidden) {
+        
+        CGRect zeigerFrame = _zeiger.frame;
+        
+        zeigerFrame.origin.x = self.collectionView.contentOffset.x+kCalendarLayoutDayHeaderTextWidth;
+        
+        _zeiger.frame = zeigerFrame;
+        
+    }
 }
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
@@ -177,12 +188,12 @@
     
     [self loadNow];
     
-    CGFloat positionFromLeft = kCalendarLayoutDayHeaderTextWidth;
+    CGFloat distanceFromTopBecauseOfWholeDayEvents = 3*(kCalendarLayoutWholeDayHeight+[(JxCalendarLayoutDay *)self.collectionView.collectionViewLayout minimumLineSpacing]);
     
     _zeiger.hidden = NO;
-    _zeiger.frame = CGRectMake(positionFromLeft,
-                               _nowComponents.hour*(60*kCalendarLayoutDaySectionHeightMultiplier) + kCalendarLayoutDayHeaderHalfHeight + ((60*kCalendarLayoutDaySectionHeightMultiplier) / 60*_nowComponents.minute),
-                               self.collectionView.contentSize.width-kCalendarLayoutDayHeaderTextWidth,
+    _zeiger.frame = CGRectMake(self.collectionView.contentOffset.x+kCalendarLayoutDayHeaderTextWidth,
+                               _nowComponents.hour*(60*kCalendarLayoutDaySectionHeightMultiplier) + (_nowComponents.minute*kCalendarLayoutDaySectionHeightMultiplier) + distanceFromTopBecauseOfWholeDayEvents,
+                               MAX(self.collectionView.frame.size.width, self.collectionView.frame.size.height),
                                1);
     
     

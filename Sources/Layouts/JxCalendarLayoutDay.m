@@ -298,7 +298,7 @@
 - (CGRect)frameForHeaderAtSection:(NSInteger)section{
     return CGRectMake(self.collectionView.contentOffset.x,
                       section * (60*kCalendarLayoutDaySectionHeightMultiplier) + (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing))- kCalendarLayoutDayHeaderHalfHeight,
-                      self.headerReferenceSize.width,
+                      MAX(self.collectionView.frame.size.width, self.collectionView.frame.size.height),
                       self.headerReferenceSize.height);
 }
 - (BOOL)checkIfRectIsAvailable:(CGRect)rect forType:(NSString *)type{

@@ -33,7 +33,7 @@
     
     NSDateComponents *nowComponents = [[self calendar] components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear fromDate:[NSDate date]];
     
-    if (components.year == nowComponents.year && components.month == 1 && components.day == 2) {
+    if (components.year == nowComponents.year && components.month == 12 && components.day == 17) {
 //    if (components.year == nowComponents.year && components.month == nowComponents.month && components.day == nowComponents.day) {
         
         [components setHour:0];
