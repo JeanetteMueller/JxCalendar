@@ -22,13 +22,16 @@
 
 @interface JxCalendarOverview ()
 
-
-@property (nonatomic, readwrite) NSInteger startYear;
 @end
 
 @implementation JxCalendarOverview
 
 - (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarStyle)style andSize:(CGSize)size{
+    
+    if (CGSizeEqualToSize(size, CGSizeZero)) {
+        size = [UIScreen mainScreen].bounds.size;
+    }
+    
     
     UICollectionViewLayout *layout;
     switch (style) {
@@ -48,6 +51,12 @@
     if (self) {
         self.style = style;
         self.dataSource = dataSource;
+        
+        if (!self.startYear) {
+            
+            NSDateComponents *startYearComponents = [[self.dataSource calendar] components:NSCalendarUnitYear fromDate:[NSDate date]];
+            self.startYear = [startYearComponents year];
+        }
     }
     return self;
 }
@@ -57,12 +66,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    if (!_startYear) {
-        self.startYear = 2015;
-    }
-    //self.dataSource = [[TestCalendarDataSource alloc] init];
-    
+
     if (!self.dataSource) {
         NSLog(@"cant find a DataSource");
         abort();
@@ -95,9 +99,22 @@
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
+    [self updateNavigationButtons];
     
     [self switchToYear:self.startYear];
     
+}
+- (void)updateNavigationButtons{
+    switch (self.style) {
+        case JxCalendarStyleMonthGrid:
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYearGridView)];
+            break;
+        case JxCalendarStyleYearGrid:
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Month" style:UIBarButtonItemStylePlain target:self action:@selector(switchToMonthGridView)];
+            break;
+        default:
+            break;
+    }
 }
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
@@ -143,7 +160,7 @@
     self.startYear = year;
     
     if (self.navigationController) {
-        self.navigationItem.title = [NSString stringWithFormat:@"%ld", (long)_startYear];
+        self.navigationItem.title = [NSString stringWithFormat:@"%ld", (long)self.startYear];
     }
 }
 - (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year{
@@ -200,7 +217,94 @@
     // Pass the selected object to the new view controller.
 }
 */
+#pragma mark Layout
+- (void)switchToYearGridView{
+    
+    if ([self isKindOfClass:[JxCalendarOverview class]]) {
+        self.style = JxCalendarStyleYearGrid;
+        
+        [self.collectionView reloadData];
+        
+        [self.collectionView performBatchUpdates:^{
+            
+            self.collectionView.pagingEnabled = NO;
+            [self.collectionView.collectionViewLayout invalidateLayout];
+            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutYearGrid alloc] initWithViewController:self andSize:self.view.frame.size] animated:YES];
+            
+            [self updateNavigationButtons];
+            
+        } completion:^(BOOL finished) {
+        }];
+    }else{
+        JxCalendarOverview *overview = [[JxCalendarOverview alloc] initWithDataSource:self.dataSource
+                                                                             andStyle:JxCalendarStyleYearGrid
+                                                                              andSize:self.view.frame.size];
+        NSMutableArray *viewControllers = [self.navigationController.viewControllers mutableCopy];
+        
+        [viewControllers removeLastObject];
+        
+        [viewControllers addObject:overview];
+        [self.navigationController setViewControllers:viewControllers animated:YES];
+    }
+}
 
+- (void)switchToMonthGridView{
+    [self switchToMonthGridViewWithCallback:nil];
+}
+- (void)switchToMonthGridViewWithCallback:(void (^)(BOOL finished))callback{
+    
+    if ([self isKindOfClass:[JxCalendarOverview class]]) {
+        self.style = JxCalendarStyleMonthGrid;
+        
+        [self.collectionView reloadData];
+        
+        [self.collectionView performBatchUpdates:^{
+            
+            self.collectionView.pagingEnabled = NO;
+            [self.collectionView.collectionViewLayout invalidateLayout];
+            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutMonthGrid alloc] initWithViewController:self andSize:self.view.frame.size] animated:YES];
+            
+            [self updateNavigationButtons];
+            
+        } completion:callback];
+    }else{
+        JxCalendarOverview *overview = [[JxCalendarOverview alloc] initWithDataSource:self.dataSource
+                                                                             andStyle:JxCalendarStyleMonthGrid
+                                                                              andSize:self.view.frame.size];
+        
+        NSMutableArray *viewControllers = [self.navigationController.viewControllers mutableCopy];
+        
+        [viewControllers removeLastObject];
+        
+        if (![[viewControllers lastObject] isKindOfClass:[JxCalendarOverview class]]) {
+            [viewControllers addObject:overview];
+        }
+        
+        [self.navigationController setViewControllers:viewControllers animated:YES];
+    }
+}
+- (void)switchToWeekView{
+    
+    if ([self isKindOfClass:[JxCalendarWeek class]]) {
+        
+        
+        
+    }else{
+        JxCalendarWeek *week = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.view.frame.size];
+        week.startYear = self.startYear;
+        week.startMonth = 1;
+        
+        NSMutableArray *viewControllers = [self.navigationController.viewControllers mutableCopy];
+        
+        [viewControllers removeLastObject];
+        
+        [viewControllers addObject:week];
+        
+        [self.navigationController setViewControllers:viewControllers animated:YES];
+        
+    }
+    
+}
 #pragma mark <UICollectionViewDataSource>
 
 
@@ -230,8 +334,8 @@
 }
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:section+1 inCalendar:[self calendar] andYear:_startYear];
-    NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:section+1 inCalendar:[self calendar] andYear:_startYear];
+    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:section+1 inCalendar:[self calendar] andYear:self.startYear];
+    NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:section+1 inCalendar:[self calendar] andYear:self.startYear];
     
     
     NSDateComponents *firstComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday   )
@@ -248,8 +352,8 @@
 
 - (NSDate *)getDateForIndexPath:(NSIndexPath *)indexPath{
     
-    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:indexPath.section+1 inCalendar:[self calendar] andYear:_startYear];
-    NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:indexPath.section+1 inCalendar:[self calendar] andYear:_startYear];
+    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:indexPath.section+1 inCalendar:[self calendar] andYear:self.startYear];
+    NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:indexPath.section+1 inCalendar:[self calendar] andYear:self.startYear];
     
     NSDateComponents *firstComponents = [[self calendar] components:(
                                                                NSCalendarUnitHour |
@@ -276,7 +380,7 @@
     NSInteger weekDay = [JxCalendarBasics normalizedWeekDay:firstComponents.weekday];
     
     if (indexPath.item+1 >= weekDay && lastComponents.day > (indexPath.item+1 - weekDay)) {
-        NSDateComponents *comp = [JxCalendarBasics baseComponentsWithCalendar:[self calendar] andYear:_startYear];
+        NSDateComponents *comp = [JxCalendarBasics baseComponentsWithCalendar:[self calendar] andYear:self.startYear];
         
         NSInteger month = indexPath.section+1;
         
@@ -314,7 +418,7 @@
                                                                 )
                                                       fromDate:date];
     
-    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:components.month inCalendar:[self calendar] andYear:_startYear];
+    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:components.month inCalendar:[self calendar] andYear:self.startYear];
     
     NSLog(@"firstDay %@", firstDay);
     
@@ -461,28 +565,42 @@
             return;
         }
     
-    
-        [self.delegate calendar:self didSelectDate:date];
+        //tagesansicht öffnen
+//        [self.delegate calendarDidSelectDate:date];
+//        
+//        JxCalendarLayoutDay *layout = [[JxCalendarLayoutDay alloc] initWithSize:self.collectionView.bounds.size
+//                                                                         andDay:date];
+//        
+//        JxCalendarDay *vc = [[JxCalendarDay alloc] initWithCollectionViewLayout:layout];
+//        layout.source = vc;
+//        
+//        vc.dataSource = self.dataSource;
+//        nv.delegate = self.delegate;
+//        
+//        [nv setCurrentDate:date];
         
-        JxCalendarLayoutDay *layout = [[JxCalendarLayoutDay alloc] initWithSize:self.collectionView.bounds.size
-                                                                         andDay:date];
         
-        JxCalendarDay *day = [[JxCalendarDay alloc] initWithCollectionViewLayout:layout];
-        layout.source = day;
+        //wochenansicht öffnen
+        NSDateComponents *dayComponents = [[self.dataSource calendar] components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:date];
         
-        day.dataSource = self.dataSource;
-        day.delegate = self.delegate;
         
-        [day setCurrentDate:date];
+        
+        
+        JxCalendarWeek *vc = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.view.frame.size];
+        vc.startYear = dayComponents.year;
+        vc.startMonth = dayComponents.month;
+        vc.startDay = dayComponents.day;
+        
+        NSLog(@"dayComponents %@", dayComponents);
         
         if (self.navigationController) {
-            [self.navigationController pushViewController:day animated:YES];
+            [self.navigationController pushViewController:vc animated:YES];
         }else{
-            [self presentViewController:day animated:YES completion:nil];
+            [self presentViewController:vc animated:YES completion:nil];
         }
     }else{
         
-        [self.collectionView setContentOffset:CGPointMake(18000, 0)];
+        //[self.collectionView setContentOffset:CGPointMake(18000, 0)];
     }
     
 }
@@ -535,12 +653,12 @@
         if (scrollView.contentOffset.y + scrollView.contentInset.top < -kPullToSwitchContextOffset) {
             NSLog(@"gehe ein jahr zurück");
             
-            [self switchToYear:_startYear-1];
+            [self switchToYear:self.startYear-1];
             switchToDifferentYear = YES;
         }else if (scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentInset.bottom > scrollView.contentSize.height+kPullToSwitchContextOffset){
             NSLog(@"gehe ein jahr vor ");
             
-            [self switchToYear:_startYear+1];
+            [self switchToYear:self.startYear+1];
             switchToDifferentYear = YES;
         }
         

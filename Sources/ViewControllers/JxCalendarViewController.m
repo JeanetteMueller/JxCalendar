@@ -38,10 +38,7 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
-    self.navigationItem.rightBarButtonItems = @[
-                                                [[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYearGridView)],
-                                                [[UIBarButtonItem alloc] initWithTitle:@"Month" style:UIBarButtonItemStylePlain target:self action:@selector(switchToMonthGridView)],
-                                                [[UIBarButtonItem alloc] initWithTitle:@"Week" style:UIBarButtonItemStylePlain target:self action:@selector(switchToWeekView)]];
+    
     
     if (self.presentingViewController) {
         
@@ -116,69 +113,8 @@ static NSString * const reuseIdentifier = @"Cell";
 
 
 #pragma mark Switch Layout
-- (void)switchToYearGridView{
-    
-    if ([self isKindOfClass:[JxCalendarOverview class]]) {
-        self.style = JxCalendarStyleYearGrid;
-        
-        [self.collectionView reloadData];
-        
-        [self.collectionView performBatchUpdates:^{
-            
-            self.collectionView.pagingEnabled = NO;
-            [self.collectionView.collectionViewLayout invalidateLayout];
-            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutYearGrid alloc] initWithViewController:self andSize:self.view.frame.size] animated:YES];
-            
-        } completion:^(BOOL finished) {
-            
-        }];
-    }else{
-        JxCalendarOverview *overview = [[JxCalendarOverview alloc] initWithDataSource:_dataSource
-                                                                             andStyle:JxCalendarStyleYearGrid
-                                                                              andSize:self.view.frame.size];
-        [self.navigationController setViewControllers:@[overview] animated:YES];
-    }
-}
 
-- (void)switchToMonthGridView{
-    [self switchToMonthGridViewWithCallback:nil];
-}
-- (void)switchToMonthGridViewWithCallback:(void (^)(BOOL finished))callback{
-    
-    if ([self isKindOfClass:[JxCalendarOverview class]]) {
-        self.style = JxCalendarStyleMonthGrid;
-        
-        [self.collectionView reloadData];
-        
-        [self.collectionView performBatchUpdates:^{
-            
-            self.collectionView.pagingEnabled = NO;
-            [self.collectionView.collectionViewLayout invalidateLayout];
-            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutMonthGrid alloc] initWithViewController:self andSize:self.view.frame.size] animated:YES];
-            
-        } completion:callback];
-    }else{
-        JxCalendarOverview *overview = [[JxCalendarOverview alloc] initWithDataSource:_dataSource
-                                                                             andStyle:JxCalendarStyleMonthGrid
-                                                                              andSize:self.view.frame.size];
-        [self.navigationController setViewControllers:@[overview] animated:YES];
-    }
-}
 
-- (void)switchToWeekView{
-    
-    if ([self isKindOfClass:[JxCalendarWeek class]]) {
-        
 
-        
-    }else{
-        JxCalendarWeek *week = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.view.frame.size];
-        week.startYear = 2015;
-        week.startMonth = 1;
-        [self.navigationController setViewControllers:@[week] animated:YES];
-        
-    }
-    
-}
 
 @end

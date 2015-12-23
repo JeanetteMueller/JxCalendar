@@ -16,8 +16,6 @@
 @property (strong, nonatomic) id<JxCalendarDataSource> dataSource;
 @property (nonatomic, unsafe_unretained) id<JxCalendarDelegate> delegate;
 
-- (void)switchToYearGridView;
-- (void)switchToMonthGridView;
-- (void)switchToMonthGridViewWithCallback:(void (^)(BOOL finished))callback;
+@property (nonatomic, readwrite) NSInteger startYear;
 
 @end

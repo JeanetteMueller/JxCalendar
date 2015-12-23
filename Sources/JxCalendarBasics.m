@@ -69,9 +69,17 @@
     return weekday;
 }
 + (NSDateFormatter *)defaultFormatter{
-    NSDateFormatter *formater = [[NSDateFormatter alloc] init];
-    [formater setLocale:[NSLocale currentLocale]];//  [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
-    [formater setDateStyle:NSDateFormatterFullStyle];
+    static NSDateFormatter *formater = nil;
+    static dispatch_once_t pred;
+    
+    if (formater) return formater;
+    
+    dispatch_once(&pred, ^{
+        formater = [[NSDateFormatter alloc] init];
+        [formater setLocale:[NSLocale currentLocale]];//  [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+        [formater setDateStyle:NSDateFormatterFullStyle];
+    });
+    
     return formater;
 }
 @end

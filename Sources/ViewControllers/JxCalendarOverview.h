@@ -14,9 +14,6 @@
 
 @interface JxCalendarOverview : JxCalendarViewController
 
-@property (nonatomic, readonly) NSInteger startYear;
-
-
 
 - (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarStyle)style andSize:(CGSize)size;
 

@@ -55,7 +55,7 @@ typedef enum {
 
 @protocol JxCalendarDelegate <NSObject>
 
-- (void)calendar:(JxCalendarOverview *)calendarOverview didSelectDate:(NSDate *)date;
+- (void)calendarDidSelectDate:(NSDate *)date;
 
 @end
 
