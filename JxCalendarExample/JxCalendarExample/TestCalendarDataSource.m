@@ -33,7 +33,7 @@
     
     NSDateComponents *nowComponents = [[self calendar] components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear fromDate:[NSDate date]];
     
-    if (components.year == nowComponents.year && components.month == 12 && components.day == 17) {
+    if (components.year == nowComponents.year && components.month == nowComponents.month && components.day == 17) {
 //    if (components.year == nowComponents.year && components.month == nowComponents.month && components.day == nowComponents.day) {
         
         [components setHour:0];
@@ -45,7 +45,7 @@
         JxCalendarEventDay *wholeDay3 = [[JxCalendarEventDay alloc] initWithIdentifier:@"day 3" calendar:[self calendar] andTitle:@"Geburtstag 3" andDay:[[self calendar] dateFromComponents:components]];
         JxCalendarEventDay *wholeDay4 = [[JxCalendarEventDay alloc] initWithIdentifier:@"day 4" calendar:[self calendar] andTitle:@"Geburtstag 4" andDay:[[self calendar] dateFromComponents:components]];
         
-        NSInteger startTime = 0;
+        NSInteger startTime = 15;
         
         [components setHour:startTime];
         

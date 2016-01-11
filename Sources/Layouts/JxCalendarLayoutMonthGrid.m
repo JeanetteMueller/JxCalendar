@@ -108,18 +108,18 @@
 
 - (CGSize)collectionViewContentSize
 {
-    if (self.scrollDirection == UICollectionViewScrollDirectionVertical) {
-        NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
-        NSIndexPath *lastHeaderIndexPath = [NSIndexPath indexPathForRow:0 inSection:numOfSections-1];
-        UICollectionViewLayoutAttributes *lastLayoutAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:lastHeaderIndexPath];
-        CGSize contentSize = CGSizeMake(CGRectGetMaxX(lastLayoutAttributes.frame),CGRectGetMaxY(lastLayoutAttributes.frame) + 6*self.itemSize.height);
 
-        return contentSize;
-    }else {
-        NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
-        CGSize contentSize = CGSizeMake(7*self.headerReferenceSize.width*numOfSections, self.headerReferenceSize.height + 6*self.itemSize.height + 7*self.minimumLineSpacing);
-        return contentSize;
-    }
+    NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
+    NSIndexPath *lastHeaderIndexPath = [NSIndexPath indexPathForRow:0 inSection:numOfSections-1];
+    UICollectionViewLayoutAttributes *lastLayoutAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:lastHeaderIndexPath];
+    
+    NSInteger numberOfCellsInDecember = [self.collectionView numberOfItemsInSection:numOfSections-1];
+    NSIndexPath *lastCellIndexPath = [NSIndexPath indexPathForItem:numberOfCellsInDecember-1 inSection:numOfSections-1];
+    UICollectionViewLayoutAttributes *lastCellAttributes = [self layoutAttributesForItemAtIndexPath:lastCellIndexPath];
+    
+    CGSize contentSize = CGSizeMake(CGRectGetMaxX(lastLayoutAttributes.frame), CGRectGetMaxY(lastCellAttributes.frame) + self.minimumLineSpacing);
+    
+    return contentSize;
 }
 
 #pragma mark - Cells Layout

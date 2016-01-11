@@ -590,8 +590,7 @@
         vc.startYear = dayComponents.year;
         vc.startMonth = dayComponents.month;
         vc.startDay = dayComponents.day;
-        
-        NSLog(@"dayComponents %@", dayComponents);
+        vc.delegate = self.delegate;
         
         if (self.navigationController) {
             [self.navigationController pushViewController:vc animated:YES];
@@ -650,11 +649,14 @@
         
         BOOL switchToDifferentYear = NO;
         
+        BOOL startFromTop = YES;
+        
         if (scrollView.contentOffset.y + scrollView.contentInset.top < -kPullToSwitchContextOffset) {
             NSLog(@"gehe ein jahr zurück");
             
             [self switchToYear:self.startYear-1];
             switchToDifferentYear = YES;
+            startFromTop = NO;
         }else if (scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentInset.bottom > scrollView.contentSize.height+kPullToSwitchContextOffset){
             NSLog(@"gehe ein jahr vor ");
             
@@ -670,7 +672,12 @@
                 [self.collectionView.collectionViewLayout invalidateLayout];
                 
             } completion:^(BOOL finished) {
-                [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 10, 10) animated:NO];
+                if (startFromTop) {
+                    [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 10, 10) animated:NO];
+                }else{
+                    [self.collectionView scrollRectToVisible:CGRectMake(0, self.collectionView.contentSize.height-10, 10, 10) animated:NO];
+                }
+                
             }];
         }
         

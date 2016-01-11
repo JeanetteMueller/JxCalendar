@@ -70,7 +70,6 @@
     if (self.layoutInfo) {
         return;
     }
-    NSLog(@"prepareLayout");
     
     NSMutableDictionary *newLayoutInfo = [NSMutableDictionary dictionary];
     

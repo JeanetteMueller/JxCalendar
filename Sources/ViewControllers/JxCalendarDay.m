@@ -311,7 +311,16 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
-    NSLog(@"indexpath %ld section %ld", (long)indexPath.item, (long)indexPath.section);
+    //NSLog(@"indexpath %ld section %ld", (long)indexPath.item, (long)indexPath.section);
+    
+    if (self.delegate) {
+        
+        JxCalendarEvent *event = [self eventForIndexPath:indexPath];
+        if (event) {
+            [self.delegate calendarDidSelectEvent:event];
+        }
+        
+    }
 }
 /*
 // Uncomment this method to specify if the specified item should be highlighted during tracking

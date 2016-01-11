@@ -33,7 +33,6 @@
 		26EBE2031C18446700A0DB2E /* JxCalendarHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26EBE1D91C18446700A0DB2E /* JxCalendarHeader.xib */; };
 		26EBE20A1C18446700A0DB2E /* JxCalendarEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1E11C18446700A0DB2E /* JxCalendarEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26EBE20B1C18446700A0DB2E /* JxCalendarEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1E21C18446700A0DB2E /* JxCalendarEvent.m */; };
-		26EBE20C1C18446700A0DB2E /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 26EBE1E31C18446700A0DB2E /* Info.plist */; };
 		26EBE20D1C18446700A0DB2E /* JxCalendar.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1E41C18446700A0DB2E /* JxCalendar.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26EBE20E1C18446700A0DB2E /* JxCalendarDefinitions.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1E51C18446700A0DB2E /* JxCalendarDefinitions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26EBE20F1C18446700A0DB2E /* JxCalendarLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1E71C18446700A0DB2E /* JxCalendarLayout.h */; };
@@ -335,7 +334,6 @@
 				26EBE2031C18446700A0DB2E /* JxCalendarHeader.xib in Resources */,
 				26EBE1FB1C18446700A0DB2E /* JxCalendarDayHeader.xib in Resources */,
 				265FD5FC1C217BA400FCC8AE /* JxCalendarWeekEventCell.xib in Resources */,
-				26EBE20C1C18446700A0DB2E /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

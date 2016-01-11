@@ -10,7 +10,7 @@
 #import <JxCalendar/JxCalendar.h>
 #import "TestCalendarDataSource.h"
 
-@interface ViewController ()
+@interface ViewController () <JxCalendarDelegate>
 
 @property (strong, nonatomic) TestCalendarDataSource *dataSource;
 
@@ -46,10 +46,22 @@
                                                                          andStyle:JxCalendarStyleMonthGrid
                                                                          andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)];
     
+    overview.delegate = self;
+    
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:overview];
     [nav.navigationBar setTranslucent:NO];
     
     [self presentViewController:nav animated:YES completion:nil];
+}
+
+#pragma mark <JxCalendarDelegate>
+
+- (void)calendarDidSelectDate:(NSDate *)date{
+    NSLog(@"calendarDidSelectDate %@", date);
+}
+
+- (void)calendarDidSelectEvent:(JxCalendarEvent *)event{
+    NSLog(@"calendarDidSelectEvent %@", event);
 }
 @end

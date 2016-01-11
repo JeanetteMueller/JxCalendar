@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		260D6F7E1C18575100904A44 /* TestCalendarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 260D6F7D1C18575100904A44 /* TestCalendarDataSource.m */; };
-		2673E84E1C18594F0070D2C5 /* JxCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2673E84D1C18594F0070D2C5 /* JxCalendar.framework */; };
+		266811BC1C43FB6900A96565 /* JxCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 266811BB1C43FB6900A96565 /* JxCalendar.framework */; };
+		266811BD1C43FB6900A96565 /* JxCalendar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 266811BB1C43FB6900A96565 /* JxCalendar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		26B67C801C18566B000FC387 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B67C7F1C18566B000FC387 /* main.m */; };
 		26B67C831C18566B000FC387 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B67C821C18566B000FC387 /* AppDelegate.m */; };
 		26B67C861C18566B000FC387 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B67C851C18566B000FC387 /* ViewController.m */; };
@@ -16,7 +17,6 @@
 		26B67C8B1C18566B000FC387 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26B67C8A1C18566B000FC387 /* Assets.xcassets */; };
 		26B67C8E1C18566B000FC387 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26B67C8C1C18566B000FC387 /* LaunchScreen.storyboard */; };
 		26FAA3EC1C1ECB04001C4DA6 /* JxCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2673E84D1C18594F0070D2C5 /* JxCalendar.framework */; };
-		26FAA3ED1C1ECB04001C4DA6 /* JxCalendar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2673E84D1C18594F0070D2C5 /* JxCalendar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,7 +26,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				26FAA3ED1C1ECB04001C4DA6 /* JxCalendar.framework in Embed Frameworks */,
+				266811BD1C43FB6900A96565 /* JxCalendar.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -36,7 +36,8 @@
 /* Begin PBXFileReference section */
 		260D6F7C1C18575100904A44 /* TestCalendarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCalendarDataSource.h; sourceTree = "<group>"; };
 		260D6F7D1C18575100904A44 /* TestCalendarDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCalendarDataSource.m; sourceTree = "<group>"; };
-		2673E84D1C18594F0070D2C5 /* JxCalendar.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JxCalendar.framework; path = "../../../../../../Library/Developer/Xcode/DerivedData/Gugus/Products/Debug-iphoneos/JxCalendar.framework"; sourceTree = "<group>"; };
+		266811BB1C43FB6900A96565 /* JxCalendar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = JxCalendar.framework; path = "/Users/themaverick/Library/Developer/Xcode/DerivedData/Gugus/Products/Debug-iphoneos/JxCalendar.framework"; sourceTree = "<absolute>"; };
+		2673E84D1C18594F0070D2C5 /* JxCalendar.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JxCalendar.framework; path = "/Users/themaverick/Dropbox/Programmierung/ios/Library/Developer/Xcode/DerivedData/Gugus/Products/Debug-iphoneos/JxCalendar.framework"; sourceTree = "<absolute>"; };
 		26B67C7B1C18566B000FC387 /* JxCalendarExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JxCalendarExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26B67C7F1C18566B000FC387 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		26B67C811C18566B000FC387 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -54,8 +55,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				266811BC1C43FB6900A96565 /* JxCalendar.framework in Frameworks */,
 				26FAA3EC1C1ECB04001C4DA6 /* JxCalendar.framework in Frameworks */,
-				2673E84E1C18594F0070D2C5 /* JxCalendar.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,7 +66,7 @@
 		26B67C721C18566B000FC387 = {
 			isa = PBXGroup;
 			children = (
-				2673E84D1C18594F0070D2C5 /* JxCalendar.framework */,
+				266811BB1C43FB6900A96565 /* JxCalendar.framework */,
 				26B67C7D1C18566B000FC387 /* JxCalendarExample */,
 				26B67C7C1C18566B000FC387 /* Products */,
 			);

@@ -278,10 +278,7 @@
 
 - (IBAction)openDayView:(UIButton *)sender{
     
-    
     NSDate *date = [self getDateForSection:sender.tag-1000];
-    
-    NSLog(@"open Day View for Day %@", date);
     
     if (date) {
         

@@ -39,7 +39,7 @@ typedef enum {
     JxCalendarStyleMonthGrid
 } JxCalendarStyle;
 
-@class JxCalendarOverview;
+@class JxCalendarOverview, JxCalendarEvent;
 
 
 @protocol JxCalendarDataSource <NSObject>
@@ -56,7 +56,7 @@ typedef enum {
 @protocol JxCalendarDelegate <NSObject>
 
 - (void)calendarDidSelectDate:(NSDate *)date;
-
+- (void)calendarDidSelectEvent:(JxCalendarEvent *)event;
 @end
 
 
