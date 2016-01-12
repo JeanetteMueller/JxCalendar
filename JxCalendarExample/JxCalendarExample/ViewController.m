@@ -47,6 +47,7 @@
                                                                          andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)];
     
     overview.delegate = self;
+    overview.startYear = 1982;
     
     
     UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:overview];

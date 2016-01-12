@@ -275,7 +275,24 @@
     
     return cell;
 }
-
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+    //NSLog(@"indexpath %ld section %ld", (long)indexPath.item, (long)indexPath.section);
+    
+    if (self.delegate) {
+        
+        NSDate *thisDate = [self getDateForSection:indexPath.section];
+        
+        
+        NSArray *events = [self.dataSource eventsAt:thisDate];
+        
+        JxCalendarEvent *event = [events objectAtIndex:indexPath.item];
+        if (event) {
+            [self.delegate calendarDidSelectEvent:event];
+        }
+        
+    }
+}
 - (IBAction)openDayView:(UIButton *)sender{
     
     NSDate *date = [self getDateForSection:sender.tag-1000];
