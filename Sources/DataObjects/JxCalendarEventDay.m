@@ -25,11 +25,11 @@
         components.minute = 0;
         components.second = 0;
         
-        self.day = [components date];
+        self.startDate = [calendar dateFromComponents:components];
     }
     return self;
 }
 - (NSString *)description{
-    return [NSString stringWithFormat:@"%@| Whole Day at %@", [super description], _day];
+    return [NSString stringWithFormat:@"%@| Whole Day at %@", [super description], self.startDate];
 }
 @end

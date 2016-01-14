@@ -10,7 +10,7 @@
 
 @interface JxCalendarEventDay : JxCalendarEvent
 
-@property (strong, nonatomic) NSDate *day;
+@property (strong, nonatomic) NSDate *startDate;
 
 - (id)initWithIdentifier:(NSString *)identifier calendar:(NSCalendar *)calendar andTitle:(NSString *)title andDay:(NSDate *)day;
 

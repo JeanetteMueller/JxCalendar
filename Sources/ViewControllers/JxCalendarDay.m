@@ -32,7 +32,24 @@
 
 @implementation JxCalendarDay
 
-
+- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andSize:(CGSize)size andStartDate:(NSDate *)start{
+    
+    JxCalendarLayoutDay *layout = [[JxCalendarLayoutDay alloc] initWithSize:size
+                                                                     andDay:start];
+    
+    self = [super initWithCollectionViewLayout:layout];
+    
+    layout.source = self;
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    
+    if (self) {
+        self.startDate = start;
+        self.dataSource = dataSource;
+        
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -64,7 +81,7 @@
                                                                                   NSCalendarUnitMonth |
                                                                                   NSCalendarUnitYear |
                                                                                   NSCalendarUnitWeekday   )
-                                                                        fromDate:_currentDate];
+                                                                        fromDate:_startDate];
     
     [self loadNow];
     
@@ -77,7 +94,7 @@
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
-    [self setCurrentDate:_currentDate];
+    [self setCurrentDate:_startDate];
     
     [self.collectionView setScrollIndicatorInsets:UIEdgeInsetsMake(3*(kCalendarLayoutWholeDayHeight+[(JxCalendarLayoutDay *)self.collectionView.collectionViewLayout minimumLineSpacing]), 0, 0, 0)];
     
@@ -166,9 +183,9 @@
     [super viewWillDisappear:animated];
 }
 - (void)setCurrentDate:(NSDate *)currentDate{
-    _currentDate = currentDate;
+    _startDate = currentDate;
     
-    self.navigationItem.title = [[JxCalendarBasics defaultFormatter] stringFromDate:self.currentDate];
+    self.navigationItem.title = [[JxCalendarBasics defaultFormatter] stringFromDate:self.startDate];
 }
 - (void)loadNow{
     self.now = [NSDate date];
@@ -207,7 +224,7 @@
 */
 
 - (JxCalendarEvent *)eventForIndexPath:(NSIndexPath *)indexPath{
-    NSArray *events = [_dataSource eventsAt:_currentDate];
+    NSArray *events = [_dataSource eventsAt:self.startDate];
     
     NSMutableArray *items = [NSMutableArray array];
     
@@ -245,7 +262,7 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    NSArray *events = [_dataSource eventsAt:_currentDate];
+    NSArray *events = [_dataSource eventsAt:self.startDate];
     
     NSInteger count = 0;
     

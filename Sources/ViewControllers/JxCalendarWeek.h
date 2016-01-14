@@ -14,11 +14,7 @@
 
 @interface JxCalendarWeek : JxCalendarViewController
 
-
-@property (nonatomic, readwrite) NSInteger startMonth;
-@property (nonatomic, readwrite) NSInteger startDay;
-
-- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andSize:(CGSize)size;
+- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andSize:(CGSize)size andStartDate:(NSDate *)start;
 
 - (NSDate *)getDateForSection:(NSInteger)section;
 @end

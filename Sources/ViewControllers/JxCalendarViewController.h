@@ -11,11 +11,14 @@
 
 @interface JxCalendarViewController : UICollectionViewController
 
-@property (nonatomic, readwrite) JxCalendarStyle style;
+@property (nonatomic, readwrite) JxCalendarOverviewStyle style;
 
 @property (strong, nonatomic) id<JxCalendarDataSource> dataSource;
 @property (nonatomic, unsafe_unretained) id<JxCalendarDelegate> delegate;
 
-@property (nonatomic, readwrite) NSInteger startYear;
+@property (strong, nonatomic) NSDate *startDate;
+@property (nonatomic, readwrite) JxCalendarStartAppearance startAppearance;
+
+- (NSDateComponents *)startComponents;
 
 @end

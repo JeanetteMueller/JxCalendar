@@ -15,13 +15,11 @@
 @interface JxCalendarOverview : JxCalendarViewController
 
 
-- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarStyle)style andSize:(CGSize)size;
+- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarOverviewStyle)style andSize:(CGSize)size andStartDate:(NSDate *)date andStartAppearance:(JxCalendarStartAppearance)appearance;
 
 - (void)switchToYear:(NSInteger)year;
-
-
-
 - (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year;
 - (void)scrollToDate:(NSDate *)date;
+
 @end
 

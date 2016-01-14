@@ -13,7 +13,9 @@
 @interface ViewController () <JxCalendarDelegate>
 
 @property (strong, nonatomic) TestCalendarDataSource *dataSource;
+@property (strong, nonatomic) UINavigationController *navRoot;
 
+@property (nonatomic, readwrite) BOOL startOpened;
 @end
 
 @implementation ViewController
@@ -25,10 +27,12 @@
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
+    self.view.backgroundColor = [UIColor lightGrayColor];
     
-    
-    [self openCalendar:nil];
-    
+    if (!_startOpened) {
+        _startOpened = YES;
+        [self openCalendar:nil];
+    }
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -43,17 +47,21 @@
     
     
     JxCalendarOverview *overview = [[JxCalendarOverview alloc] initWithDataSource:_dataSource
-                                                                         andStyle:JxCalendarStyleMonthGrid
-                                                                         andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)];
+                                                                         andStyle:JxCalendarOverviewStyleMonthGrid
+                                                                         andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)
+                                                                     andStartDate:[NSDate date]
+                                                               andStartAppearance:JxCalendarStartAppearanceDay];
     
     overview.delegate = self;
-    overview.startYear = 1982;
     
     
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:overview];
-    [nav.navigationBar setTranslucent:NO];
+    self.navRoot = [[UINavigationController alloc] initWithRootViewController:overview];
+    [self.navRoot.navigationBar setTranslucent:NO];
     
-    [self presentViewController:nav animated:YES completion:nil];
+    [self presentViewController:self.navRoot animated:YES completion:nil];
+    
+//    self.navRoot.view.frame = CGRectMake(20, 20, self.view.frame.size.width-40, self.view.frame.size.height-40);
+//    [self.view addSubview:self.navRoot.view];
 }
 
 #pragma mark <JxCalendarDelegate>

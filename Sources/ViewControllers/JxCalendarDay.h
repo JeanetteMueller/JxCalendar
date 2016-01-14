@@ -13,6 +13,8 @@
 
 @property (nonatomic, unsafe_unretained) id<JxCalendarDataSource> dataSource;
 @property (nonatomic, unsafe_unretained) id<JxCalendarDelegate> delegate;
-@property (strong, nonatomic) NSDate *currentDate;
+@property (strong, nonatomic) NSDate *startDate;
+
+- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andSize:(CGSize)size andStartDate:(NSDate *)start;
 
 @end

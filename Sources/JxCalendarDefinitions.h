@@ -35,9 +35,17 @@
 #define kCalendarLayoutWholeDayHeight 20
 
 typedef enum {
-    JxCalendarStyleYearGrid,
-    JxCalendarStyleMonthGrid
-} JxCalendarStyle;
+    JxCalendarStartAppearanceNone,
+    JxCalendarStartAppearanceYear,
+    JxCalendarStartAppearanceMonth,
+    JxCalendarStartAppearanceWeek,
+    JxCalendarStartAppearanceDay
+} JxCalendarStartAppearance;
+
+typedef enum {
+    JxCalendarOverviewStyleYearGrid,
+    JxCalendarOverviewStyleMonthGrid
+} JxCalendarOverviewStyle;
 
 @class JxCalendarOverview, JxCalendarEvent;
 

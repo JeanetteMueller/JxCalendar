@@ -25,7 +25,7 @@
 
 @implementation JxCalendarWeek
 
-- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andSize:(CGSize)size{
+- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andSize:(CGSize)size andStartDate:(NSDate *)start{
     
     JxCalendarLayoutWeek *layout = [[JxCalendarLayoutWeek alloc] initWithSize:size];
     
@@ -37,11 +37,11 @@
     
     if (self) {
         self.dataSource = dataSource;
+        self.startDate = start;
         
-        if (!self.startYear) {
+        if (!self.startDate) {
             
-            NSDateComponents *startYearComponents = [[self.dataSource calendar] components:NSCalendarUnitYear fromDate:[NSDate date]];
-            self.startYear = [startYearComponents year];
+            self.startDate = [NSDate date];
         }
     }
     return self;
@@ -87,7 +87,16 @@
     [super viewWillAppear:animated];
     
     if (self.navigationController) {
-        self.navigationItem.title = [NSString stringWithFormat:@"%@ %ld", [[[JxCalendarBasics defaultFormatter] monthSymbols] objectAtIndex:self.startMonth-1], (long)self.startYear];
+        
+        NSDateComponents *startComponents = [self startComponents];
+        
+        NSArray *symbols = [[JxCalendarBasics defaultFormatter] monthSymbols];
+        
+        NSLog(@"symbols %@", symbols);
+        
+        NSString *monthName = [symbols objectAtIndex:startComponents.month-1];
+        
+        self.navigationItem.title = [NSString stringWithFormat:@"%@ %ld", monthName, startComponents.year];
     }
     
     self.collectionView.scrollIndicatorInsets = UIEdgeInsetsMake([(JxCalendarLayoutWeek *)self.collectionView.collectionViewLayout headerReferenceSize].height, 0, 0, 0);
@@ -131,7 +140,7 @@
         NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:now];
         
         
-        NSInteger section = [self sectionForDay:self.startDay];
+        NSInteger section = [self sectionForDay:[self startComponents].day];
         
         NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:floor(section/7)*7];
         
@@ -205,7 +214,7 @@
 
 - (NSInteger)sectionForDay:(NSInteger)day{
     
-    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:_startMonth inCalendar:[self calendar] andYear:self.startYear];
+    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:[self startComponents].month inCalendar:[self calendar] andYear:[self startComponents].year];
     
     NSDateComponents *firstComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday   )
                                                            fromDate:firstDay];
@@ -216,8 +225,8 @@
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
 
-    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:_startMonth inCalendar:[self calendar] andYear:self.startYear];
-    NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:_startMonth inCalendar:[self calendar] andYear:self.startYear];
+    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:[self startComponents].month inCalendar:[self calendar] andYear:[self startComponents].year];
+    NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:[self startComponents].month inCalendar:[self calendar] andYear:[self startComponents].year];
     
     
     NSDateComponents *firstComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday   )
@@ -301,16 +310,9 @@
         
         [self.delegate calendarDidSelectDate:date];
         
-        JxCalendarLayoutDay *layout = [[JxCalendarLayoutDay alloc] initWithSize:self.collectionView.bounds.size
-                                                                         andDay:date];
-        
-        JxCalendarDay *day = [[JxCalendarDay alloc] initWithCollectionViewLayout:layout];
-        layout.source = day;
-        
-        day.dataSource = self.dataSource;
+        JxCalendarDay *day = [[JxCalendarDay alloc] initWithDataSource:self.dataSource andSize:self.collectionView.bounds.size andStartDate:date];
+
         day.delegate = self.delegate;
-        
-        [day setCurrentDate:date];
         
         if (self.navigationController) {
             [self.navigationController pushViewController:day animated:YES];
@@ -364,8 +366,8 @@
 }
 - (NSDate *)getDateForSection:(NSInteger)section{
     
-    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:_startMonth inCalendar:[self calendar] andYear:self.startYear];
-    NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:_startMonth inCalendar:[self calendar] andYear:self.startYear];
+    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:[self startComponents].month inCalendar:[self calendar] andYear:[self startComponents].year];
+    NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:[self startComponents].month inCalendar:[self calendar] andYear:[self startComponents].year];
     
     NSDateComponents *firstComponents = [[self calendar] components:(
                                                                      NSCalendarUnitHour |
@@ -392,9 +394,9 @@
     NSInteger weekDay = [JxCalendarBasics normalizedWeekDay:firstComponents.weekday];
     
     if (section+1 >= weekDay && lastComponents.day > (section+1 - weekDay)) {
-        NSDateComponents *comp = [JxCalendarBasics baseComponentsWithCalendar:[self calendar] andYear:self.startYear];
+        NSDateComponents *comp = [JxCalendarBasics baseComponentsWithCalendar:[self calendar] andYear:[self startComponents].year];
         
-        NSInteger month = _startMonth;
+        NSInteger month = [self startComponents].month;
         
         if (month > 12) {
             
