@@ -18,6 +18,10 @@
 @property (strong, nonatomic) UIColor *backgroundColor;
 @property (strong, nonatomic) UIColor *borderColor;
 
+@property (strong, nonatomic) UIColor *fontColorSelected;
+@property (strong, nonatomic) UIColor *backgroundColorSelected;
+@property (strong, nonatomic) UIColor *borderColorSelected;
+
 - (id)initWithIdentifier:(NSString *)identifier calendar:(NSCalendar *)calendar andTitle:(NSString *)title;
 
 

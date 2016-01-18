@@ -272,7 +272,7 @@
     
     UILabel *textLabel = (UILabel *)[cell viewWithTag:333];
     textLabel.numberOfLines = 0;
-    textLabel.textColor = e.fontColor;
+    
     
     if ([e isKindOfClass:[JxCalendarEventDay class]]) {
         JxCalendarEventDay *event = (JxCalendarEventDay *)e;
@@ -281,18 +281,20 @@
         textLabel.text = @"";
     }
     
-    cell.backgroundColor = e.backgroundColor;
+    
     
     if ([self.dataSource respondsToSelector:@selector(isEventSelected:)] && [self.dataSource isEventSelected:e]) {
+        textLabel.textColor = e.fontColorSelected;
+        cell.backgroundColor = e.backgroundColorSelected;
         [cell.layer setBorderColor:[UIColor redColor].CGColor];
     }else{
+        textLabel.textColor = e.fontColor;
+        cell.backgroundColor = e.backgroundColor;
         [cell.layer setBorderColor:e.borderColor.CGColor];
     }
     
     
     [cell.layer setBorderWidth:1.5f];
-    
-    
     [cell.layer setCornerRadius:5];
     
     return cell;
@@ -358,17 +360,21 @@
             
             titleLabel.text = [NSString stringWithFormat:@"%li.\n%@", (long)dateComponents.day, [weekday stringFromDate:thisDate]];
             
-            
+            if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
+                header.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
+            }else{
+                header.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.9 alpha:1];
+            }
             
             if ([self.dataSource respondsToSelector:@selector(isDaySelected:)] && [self.dataSource isDaySelected:thisDate]) {
-                header.backgroundColor = [UIColor redColor];
+                
+                header.layer.borderColor = [UIColor redColor].CGColor;
+                titleLabel.textColor = [UIColor redColor];
             }else{
-                if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
-                    header.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
-                }else{
-                    header.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.9 alpha:1];
-                }
+                header.layer.borderColor = [UIColor darkGrayColor].CGColor;
+                titleLabel.textColor = [UIColor darkGrayColor];
             }
+            header.layer.borderWidth = 1.0f;
             
             header.eventMarker.hidden = !([self.dataSource eventsAt:thisDate].count > 0);
             

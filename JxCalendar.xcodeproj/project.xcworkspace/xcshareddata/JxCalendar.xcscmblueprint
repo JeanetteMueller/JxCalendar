@@ -1,0 +1,32 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "6E0DDEC6D1D7257430A8AD998A8E7F29E25A7D8F",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++9674" : {
+
+    }
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++9674" : 0,
+    "6E0DDEC6D1D7257430A8AD998A8E7F29E25A7D8F" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "5E7CFFB1-ED91-4895-8AEB-365B87B82742",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++9674" : "..",
+    "6E0DDEC6D1D7257430A8AD998A8E7F29E25A7D8F" : "JxCalendar\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "JxCalendar",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "JxCalendar.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/JeanetteMueller\/JxCalendar",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "6E0DDEC6D1D7257430A8AD998A8E7F29E25A7D8F"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/svn.abacus.ch\/repos\/abacus",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "f10edb16-b8e6-0310-952f-8ec78df1de6a++9674"
+    }
+  ]
+}

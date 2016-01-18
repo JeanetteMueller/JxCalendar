@@ -298,15 +298,16 @@
     JxCalendarEvent *event = [self eventForIndexPath:indexPath];
     
     UILabel *textLabel = (UILabel *)[cell viewWithTag:333];
-    
-    textLabel.textColor = event.fontColor;
-    textLabel.text = event.title;
 
-    cell.backgroundColor = event.backgroundColor;
+    textLabel.text = event.title;
     
     if ([self.dataSource respondsToSelector:@selector(isEventSelected:)] && [self.dataSource isEventSelected:event]) {
-        [cell.layer setBorderColor:[UIColor redColor].CGColor];
+        textLabel.textColor = event.fontColorSelected;
+        cell.backgroundColor = event.backgroundColorSelected;
+        [cell.layer setBorderColor:event.borderColorSelected.CGColor];
     }else{
+        textLabel.textColor = event.fontColor;
+        cell.backgroundColor = event.backgroundColor;
         [cell.layer setBorderColor:event.borderColor.CGColor];
     }
     

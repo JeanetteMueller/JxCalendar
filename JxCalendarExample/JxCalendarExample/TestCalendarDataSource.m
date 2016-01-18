@@ -95,5 +95,10 @@
     
     return @[];
 }
-
+- (BOOL)isEventSelected:(JxCalendarEvent *)event{
+    return ( arc4random() % 256 / 256.0 ) >= 0.5f;
+}
+- (BOOL)isDaySelected:(NSDate *)date{
+    return ( arc4random() % 256 / 256.0 ) >= 0.5f ;
+}
 @end

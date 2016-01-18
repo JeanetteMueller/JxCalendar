@@ -37,6 +37,12 @@
         
         //self.borderColor = [UIColor blueColor];
         self.backgroundColor = [self.borderColor colorWithAlphaComponent:0.75f];
+        
+        
+        
+        self.fontColorSelected = [UIColor whiteColor];
+        self.borderColorSelected = [UIColor redColor];
+        self.backgroundColorSelected = [self.borderColorSelected colorWithAlphaComponent:0.75f];
     }
     return self;
 }

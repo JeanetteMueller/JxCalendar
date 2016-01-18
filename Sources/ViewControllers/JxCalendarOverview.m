@@ -574,14 +574,21 @@
             }break;
         }
         
-        if ([self.dataSource respondsToSelector:@selector(isDaySelected:)] && [self.dataSource isDaySelected:thisDate]) {
-            cell.backgroundColor = [UIColor redColor];
+        if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
+            cell.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
         }else{
-            if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
-                cell.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
-            }else{
-                cell.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.9 alpha:1];
-            }
+            cell.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.9 alpha:1];
+        }
+        
+        if ([self.dataSource respondsToSelector:@selector(isDaySelected:)] && [self.dataSource isDaySelected:thisDate]) {
+            cell.layer.borderColor = [UIColor redColor].CGColor;
+            //cell.backgroundColor = [UIColor redColor];
+            cell.layer.borderWidth = 1.0f;
+            cell.label.textColor = [UIColor redColor];
+        }else{
+            cell.layer.borderColor = [UIColor redColor].CGColor;
+            cell.layer.borderWidth = .0f;
+            cell.label.textColor = [UIColor blackColor];
         }
         
         
