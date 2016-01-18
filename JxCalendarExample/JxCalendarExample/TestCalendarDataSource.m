@@ -24,7 +24,7 @@
     NSArray *eventDays = [self eventsAt:date];
     return eventDays.count;
 }
-- (NSArray *)eventsAt:(NSDate *)date{
+- (NSArray <JxCalendarEvent *> *)eventsAt:(NSDate *)date{
     
     if (!date) {
         return @[];

@@ -128,7 +128,7 @@
     self.layoutInfo = newLayoutInfo;
 }
 
-- (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect
+- (nullable NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect
 {
     NSMutableArray *allAttributes = [NSMutableArray arrayWithCapacity:self.layoutInfo.count];
     
@@ -176,7 +176,7 @@
     return self.layoutInfo[kJxCalendarDayLayoutCells][indexPath];
 }
 
-- (NSArray *)eventsForWholeDay{
+- (NSArray <JxCalendarEvent*> *)eventsForWholeDay{
     NSMutableArray *items = [NSMutableArray array];
     
     for (JxCalendarEvent *e in [self.source.dataSource eventsAt:_day]) {

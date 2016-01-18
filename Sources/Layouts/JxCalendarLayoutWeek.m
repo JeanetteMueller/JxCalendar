@@ -140,7 +140,7 @@
     self.layoutInfo = newLayoutInfo;
 }
 
-- (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect
+- (nullable NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect
 {
     NSMutableArray *allAttributes = [NSMutableArray arrayWithCapacity:self.layoutInfo.count];
     

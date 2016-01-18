@@ -57,7 +57,7 @@ typedef enum {
 
 - (NSUInteger)numberOfEventsAt:(NSDate *)date;
 
-- (NSArray *)eventsAt:(NSDate *)date;
+- (NSArray <JxCalendarEvent*> *)eventsAt:(NSDate *)date;
 
 @optional
 - (BOOL)isDaySelected:(NSDate *)date;
