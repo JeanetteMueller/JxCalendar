@@ -88,15 +88,21 @@
     
     if (self.navigationController) {
         
-        NSDateComponents *startComponents = [self startComponents];
+        if ([self.delegate respondsToSelector:@selector(calendarTitleOnDate:whileOnAppearance:)]) {
         
-        NSArray *symbols = [[JxCalendarBasics defaultFormatter] monthSymbols];
+            self.navigationItem.title = [self.delegate calendarTitleOnDate:self.startDate whileOnAppearance:JxCalendarAppearanceWeek];
+        }else{
+            NSDateComponents *startComponents = [self startComponents];
+            
+            NSArray *symbols = [[JxCalendarBasics defaultFormatter] monthSymbols];
+            
+            NSLog(@"symbols %@", symbols);
+            
+            NSString *monthName = [symbols objectAtIndex:startComponents.month-1];
+            
+            self.navigationItem.title = [NSString stringWithFormat:@"%@ %ld", monthName, startComponents.year];
+        }
         
-        NSLog(@"symbols %@", symbols);
-        
-        NSString *monthName = [symbols objectAtIndex:startComponents.month-1];
-        
-        self.navigationItem.title = [NSString stringWithFormat:@"%@ %ld", monthName, startComponents.year];
     }
     
     self.collectionView.scrollIndicatorInsets = UIEdgeInsetsMake([(JxCalendarLayoutWeek *)self.collectionView.collectionViewLayout headerReferenceSize].height, 0, 0, 0);
@@ -276,7 +282,14 @@
     }
     
     cell.backgroundColor = e.backgroundColor;
-    [cell.layer setBorderColor:e.borderColor.CGColor];
+    
+    if ([self.dataSource respondsToSelector:@selector(isEventSelected:)] && [self.dataSource isEventSelected:e]) {
+        [cell.layer setBorderColor:[UIColor redColor].CGColor];
+    }else{
+        [cell.layer setBorderColor:e.borderColor.CGColor];
+    }
+    
+    
     [cell.layer setBorderWidth:1.5f];
     
     
@@ -297,7 +310,7 @@
         
         JxCalendarEvent *event = [events objectAtIndex:indexPath.item];
         if (event) {
-            [self.delegate calendarDidSelectEvent:event];
+            [self.delegate calendarDidSelectEvent:event whileOnAppearance:JxCalendarAppearanceWeek];
         }
         
     }
@@ -308,7 +321,7 @@
     
     if (date) {
         
-        [self.delegate calendarDidSelectDate:date];
+        [self.delegate calendarDidSelectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
         
         JxCalendarDay *day = [[JxCalendarDay alloc] initWithDataSource:self.dataSource andSize:self.collectionView.bounds.size andStartDate:date];
 
@@ -341,16 +354,23 @@
             header.button.tag = indexPath.section+1000;
             
             NSDateFormatter *weekday = [JxCalendarBasics defaultFormatter];
-            [weekday setDateFormat: @"EEEE"];
+            [weekday setDateFormat: @"EEE"];
             
             titleLabel.text = [NSString stringWithFormat:@"%li.\n%@", (long)dateComponents.day, [weekday stringFromDate:thisDate]];
             
             
-            if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
-                header.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
+            
+            if ([self.dataSource respondsToSelector:@selector(isDaySelected:)] && [self.dataSource isDaySelected:thisDate]) {
+                header.backgroundColor = [UIColor redColor];
             }else{
-                header.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.9 alpha:1];
+                if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
+                    header.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
+                }else{
+                    header.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.9 alpha:1];
+                }
             }
+            
+            header.eventMarker.hidden = !([self.dataSource eventsAt:thisDate].count > 0);
             
         }else{
             titleLabel.text = @"";

@@ -15,7 +15,7 @@
 @interface JxCalendarOverview : JxCalendarViewController
 
 
-- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarOverviewStyle)style andSize:(CGSize)size andStartDate:(NSDate *)date andStartAppearance:(JxCalendarStartAppearance)appearance;
+- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarOverviewStyle)style andSize:(CGSize)size andStartDate:(NSDate *)date andStartAppearance:(JxCalendarAppearance)appearance;
 
 - (void)switchToYear:(NSInteger)year;
 - (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year;

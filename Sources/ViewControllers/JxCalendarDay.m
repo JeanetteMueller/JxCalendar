@@ -185,7 +185,12 @@
 - (void)setCurrentDate:(NSDate *)currentDate{
     _startDate = currentDate;
     
-    self.navigationItem.title = [[JxCalendarBasics defaultFormatter] stringFromDate:self.startDate];
+    if ([self.delegate respondsToSelector:@selector(calendarTitleOnDate:whileOnAppearance:)]) {
+        
+        self.navigationItem.title = [self.delegate calendarTitleOnDate:self.startDate whileOnAppearance:JxCalendarAppearanceDay];
+    }else{
+        self.navigationItem.title = [[JxCalendarBasics defaultFormatter] stringFromDate:self.startDate];
+    }
 }
 - (void)loadNow{
     self.now = [NSDate date];
@@ -297,12 +302,14 @@
     textLabel.textColor = event.fontColor;
     textLabel.text = event.title;
 
-    
-    
-    
-    
     cell.backgroundColor = event.backgroundColor;
-    [cell.layer setBorderColor:event.borderColor.CGColor];
+    
+    if ([self.dataSource respondsToSelector:@selector(isEventSelected:)] && [self.dataSource isEventSelected:event]) {
+        [cell.layer setBorderColor:[UIColor redColor].CGColor];
+    }else{
+        [cell.layer setBorderColor:event.borderColor.CGColor];
+    }
+    
     [cell.layer setBorderWidth:1.5f];
     
     
@@ -334,7 +341,7 @@
         
         JxCalendarEvent *event = [self eventForIndexPath:indexPath];
         if (event) {
-            [self.delegate calendarDidSelectEvent:event];
+            [self.delegate calendarDidSelectEvent:event whileOnAppearance:JxCalendarAppearanceDay];
         }
         
     }

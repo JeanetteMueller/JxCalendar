@@ -34,13 +34,14 @@
 
 #define kCalendarLayoutWholeDayHeight 20
 
+
 typedef enum {
-    JxCalendarStartAppearanceNone,
-    JxCalendarStartAppearanceYear,
-    JxCalendarStartAppearanceMonth,
-    JxCalendarStartAppearanceWeek,
-    JxCalendarStartAppearanceDay
-} JxCalendarStartAppearance;
+    JxCalendarAppearanceNone,
+    JxCalendarAppearanceYear,
+    JxCalendarAppearanceMonth,
+    JxCalendarAppearanceWeek,
+    JxCalendarAppearanceDay
+} JxCalendarAppearance;
 
 typedef enum {
     JxCalendarOverviewStyleYearGrid,
@@ -58,13 +59,18 @@ typedef enum {
 
 - (NSArray *)eventsAt:(NSDate *)date;
 
+@optional
+- (BOOL)isDaySelected:(NSDate *)date;
+- (BOOL)isEventSelected:(JxCalendarEvent *)event;
 @end
 
 
 @protocol JxCalendarDelegate <NSObject>
 
-- (void)calendarDidSelectDate:(NSDate *)date;
-- (void)calendarDidSelectEvent:(JxCalendarEvent *)event;
+- (void)calendarDidSelectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendarDidSelectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance;
+@optional
+- (NSString *)calendarTitleOnDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
 @end
 
 

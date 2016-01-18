@@ -17,7 +17,7 @@
 @property (nonatomic, unsafe_unretained) id<JxCalendarDelegate> delegate;
 
 @property (strong, nonatomic) NSDate *startDate;
-@property (nonatomic, readwrite) JxCalendarStartAppearance startAppearance;
+@property (nonatomic, readwrite) JxCalendarAppearance startAppearance;
 
 - (NSDateComponents *)startComponents;
 

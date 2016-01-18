@@ -21,9 +21,15 @@
                     <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                 </button>
+                <view contentMode="scaleToFill" id="xfu-aF-3zf">
+                    <rect key="frame" x="0.0" y="47" width="320" height="3"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                    <color key="backgroundColor" red="0.23753643930000001" green="0.87120282500000001" blue="0.83637977340000003" alpha="1" colorSpace="calibratedRGB"/>
+                </view>
             </subviews>
             <connections>
                 <outlet property="button" destination="xnX-wD-RtT" id="nXx-gJ-Xs5"/>
+                <outlet property="eventMarker" destination="xfu-aF-3zf" id="A3c-Te-bbx"/>
             </connections>
             <point key="canvasLocation" x="539" y="476"/>
         </collectionReusableView>

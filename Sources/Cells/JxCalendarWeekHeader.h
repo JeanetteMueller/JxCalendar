@@ -11,5 +11,5 @@
 @interface JxCalendarWeekHeader : UICollectionReusableView
 
 @property (strong, nonatomic) IBOutlet UIButton *button;
-
+@property (strong, nonatomic) IBOutlet UIView *eventMarker;
 @end

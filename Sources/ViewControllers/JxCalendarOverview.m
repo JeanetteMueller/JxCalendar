@@ -26,7 +26,7 @@
 
 @implementation JxCalendarOverview
 
-- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarOverviewStyle)style andSize:(CGSize)size andStartDate:(NSDate *)date andStartAppearance:(JxCalendarStartAppearance)appearance{
+- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarOverviewStyle)style andSize:(CGSize)size andStartDate:(NSDate *)date andStartAppearance:(JxCalendarAppearance)appearance{
     
     if (CGSizeEqualToSize(size, CGSizeZero)) {
         size = [UIScreen mainScreen].bounds.size;
@@ -105,14 +105,14 @@
     [self switchToYear:[self startComponents].year];
     
     
-    if (self.startAppearance == JxCalendarStartAppearanceWeek || self.startAppearance == JxCalendarStartAppearanceDay) {
+    if (self.startAppearance == JxCalendarAppearanceWeek || self.startAppearance == JxCalendarAppearanceDay) {
         
         JxCalendarWeek *vc = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.view.frame.size andStartDate:self.startDate];
         vc.delegate = self.delegate;
         
         [self.navigationController pushViewController:vc animated:NO];
         
-        if (self.startAppearance == JxCalendarStartAppearanceDay) {
+        if (self.startAppearance == JxCalendarAppearanceDay) {
 
             
             
@@ -124,7 +124,7 @@
         }
         
         
-        self.startAppearance = JxCalendarStartAppearanceNone;
+        self.startAppearance = JxCalendarAppearanceNone;
         
     }
 }
@@ -177,6 +177,19 @@
     
     
 }
+- (JxCalendarAppearance)getAppearance{
+    
+    JxCalendarAppearance appearance;
+    switch (self.style) {
+        case JxCalendarOverviewStyleMonthGrid:
+            appearance = JxCalendarAppearanceMonth;
+            break;
+        case JxCalendarOverviewStyleYearGrid:
+            appearance = JxCalendarAppearanceYear;
+            break;
+    }
+    return appearance;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -191,7 +204,16 @@
     self.startDate = [[self calendar] dateFromComponents:startComponents];
     
     if (self.navigationController) {
-        self.navigationItem.title = [NSString stringWithFormat:@"%ld", (long)startComponents.year];
+        
+        if ([self.delegate respondsToSelector:@selector(calendarTitleOnDate:whileOnAppearance:)]) {
+            
+            
+            
+            
+            self.navigationItem.title = [self.delegate calendarTitleOnDate:self.startDate whileOnAppearance:[self getAppearance]];
+        }else{
+            self.navigationItem.title = [NSString stringWithFormat:@"%ld", (long)startComponents.year];
+        }
     }
 }
 - (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year{
@@ -552,11 +574,16 @@
             }break;
         }
         
-        if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
-            cell.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
+        if ([self.dataSource respondsToSelector:@selector(isDaySelected:)] && [self.dataSource isDaySelected:thisDate]) {
+            cell.backgroundColor = [UIColor redColor];
         }else{
-            cell.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.9 alpha:1];
+            if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
+                cell.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
+            }else{
+                cell.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.9 alpha:1];
+            }
         }
+        
         
         if ([self.dataSource numberOfEventsAt:thisDate] > 0) {
             cell.eventMarker.hidden = NO;
@@ -602,7 +629,7 @@
         }
     
         //tagesansicht öffnen
-//        [self.delegate calendarDidSelectDate:date];
+//        [self.delegate calendarDidSelectDate:date whileOnAppearance:[self getAppearance]];
 //        
 //        JxCalendarLayoutDay *layout = [[JxCalendarLayoutDay alloc] initWithSize:self.collectionView.bounds.size
 //                                                                         andDay:date];

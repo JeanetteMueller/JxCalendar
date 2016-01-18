@@ -50,7 +50,7 @@
                                                                          andStyle:JxCalendarOverviewStyleMonthGrid
                                                                          andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)
                                                                      andStartDate:[NSDate date]
-                                                               andStartAppearance:JxCalendarStartAppearanceDay];
+                                                               andStartAppearance:JxCalendarAppearanceDay];
     
     overview.delegate = self;
     
@@ -66,11 +66,11 @@
 
 #pragma mark <JxCalendarDelegate>
 
-- (void)calendarDidSelectDate:(NSDate *)date{
+- (void)calendarDidSelectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
     NSLog(@"calendarDidSelectDate %@", date);
 }
 
-- (void)calendarDidSelectEvent:(JxCalendarEvent *)event{
+- (void)calendarDidSelectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance{
     NSLog(@"calendarDidSelectEvent %@", event);
 }
 @end
