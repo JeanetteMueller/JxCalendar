@@ -129,15 +129,20 @@
     }
 }
 - (void)updateNavigationButtons{
-    switch (self.style) {
-        case JxCalendarOverviewStyleMonthGrid:
-            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYearGridView)];
-            break;
-        case JxCalendarOverviewStyleYearGrid:
-            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Month" style:UIBarButtonItemStylePlain target:self action:@selector(switchToMonthGridView)];
-            break;
-        default:
-            break;
+    
+    if (![self.dataSource respondsToSelector:@selector(shouldDisplayNavbarButtonsWhileOnAppearance:)] ||
+        [self.dataSource shouldDisplayNavbarButtonsWhileOnAppearance:[self getAppearance]]) {
+        
+        switch (self.style) {
+            case JxCalendarOverviewStyleMonthGrid:
+                self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYearGridView)];
+                break;
+            case JxCalendarOverviewStyleYearGrid:
+                self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Month" style:UIBarButtonItemStylePlain target:self action:@selector(switchToMonthGridView)];
+                break;
+            default:
+                break;
+        }
     }
 }
 - (void)viewDidAppear:(BOOL)animated{

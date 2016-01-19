@@ -62,6 +62,8 @@ typedef enum {
 @optional
 - (BOOL)isDaySelected:(NSDate *)date;
 - (BOOL)isEventSelected:(JxCalendarEvent *)event;
+
+- (BOOL)shouldDisplayNavbarButtonsWhileOnAppearance:(JxCalendarAppearance)appearance;
 @end
 
 
