@@ -11,49 +11,49 @@
 		265FD5F21C2170E000FCC8AE /* JxCalendarEventDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 265FD5F01C2170E000FCC8AE /* JxCalendarEventDay.m */; };
 		265FD5F51C2170F100FCC8AE /* JxCalendarEventDuration.h in Headers */ = {isa = PBXBuildFile; fileRef = 265FD5F31C2170F100FCC8AE /* JxCalendarEventDuration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		265FD5F61C2170F100FCC8AE /* JxCalendarEventDuration.m in Sources */ = {isa = PBXBuildFile; fileRef = 265FD5F41C2170F100FCC8AE /* JxCalendarEventDuration.m */; };
-		265FD5FA1C217BA400FCC8AE /* JxCalendarWeekEventCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 265FD5F71C217BA400FCC8AE /* JxCalendarWeekEventCell.h */; };
+		265FD5FA1C217BA400FCC8AE /* JxCalendarWeekEventCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 265FD5F71C217BA400FCC8AE /* JxCalendarWeekEventCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		265FD5FB1C217BA400FCC8AE /* JxCalendarWeekEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 265FD5F81C217BA400FCC8AE /* JxCalendarWeekEventCell.m */; };
 		265FD5FC1C217BA400FCC8AE /* JxCalendarWeekEventCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265FD5F91C217BA400FCC8AE /* JxCalendarWeekEventCell.xib */; };
-		266D38131C2AAE64004FEBF1 /* JxCalendarWeekHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 266D38101C2AAE64004FEBF1 /* JxCalendarWeekHeader.h */; };
+		266D38131C2AAE64004FEBF1 /* JxCalendarWeekHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 266D38101C2AAE64004FEBF1 /* JxCalendarWeekHeader.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		266D38141C2AAE64004FEBF1 /* JxCalendarWeekHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 266D38111C2AAE64004FEBF1 /* JxCalendarWeekHeader.m */; };
 		266D38151C2AAE64004FEBF1 /* JxCalendarWeekHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 266D38121C2AAE64004FEBF1 /* JxCalendarWeekHeader.xib */; };
-		26EBE1F61C18446700A0DB2E /* JxCalendarCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1CC1C18446700A0DB2E /* JxCalendarCell.h */; };
+		26EBE1F61C18446700A0DB2E /* JxCalendarCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1CC1C18446700A0DB2E /* JxCalendarCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE1F71C18446700A0DB2E /* JxCalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1CD1C18446700A0DB2E /* JxCalendarCell.m */; };
 		26EBE1F81C18446700A0DB2E /* JxCalendarCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26EBE1CE1C18446700A0DB2E /* JxCalendarCell.xib */; };
-		26EBE1F91C18446700A0DB2E /* JxCalendarDayHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1CF1C18446700A0DB2E /* JxCalendarDayHeader.h */; };
+		26EBE1F91C18446700A0DB2E /* JxCalendarDayHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1CF1C18446700A0DB2E /* JxCalendarDayHeader.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE1FA1C18446700A0DB2E /* JxCalendarDayHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1D01C18446700A0DB2E /* JxCalendarDayHeader.m */; };
 		26EBE1FB1C18446700A0DB2E /* JxCalendarDayHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26EBE1D11C18446700A0DB2E /* JxCalendarDayHeader.xib */; };
-		26EBE1FC1C18446700A0DB2E /* JxCalendarEventCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1D21C18446700A0DB2E /* JxCalendarEventCell.h */; };
+		26EBE1FC1C18446700A0DB2E /* JxCalendarEventCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1D21C18446700A0DB2E /* JxCalendarEventCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE1FD1C18446700A0DB2E /* JxCalendarEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1D31C18446700A0DB2E /* JxCalendarEventCell.m */; };
 		26EBE1FE1C18446700A0DB2E /* JxCalendarEventCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26EBE1D41C18446700A0DB2E /* JxCalendarEventCell.xib */; };
-		26EBE1FF1C18446700A0DB2E /* JxCalendarGridCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1D51C18446700A0DB2E /* JxCalendarGridCell.h */; };
+		26EBE1FF1C18446700A0DB2E /* JxCalendarGridCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1D51C18446700A0DB2E /* JxCalendarGridCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE2001C18446700A0DB2E /* JxCalendarGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1D61C18446700A0DB2E /* JxCalendarGridCell.m */; };
-		26EBE2011C18446700A0DB2E /* JxCalendarHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1D71C18446700A0DB2E /* JxCalendarHeader.h */; };
+		26EBE2011C18446700A0DB2E /* JxCalendarHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1D71C18446700A0DB2E /* JxCalendarHeader.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE2021C18446700A0DB2E /* JxCalendarHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1D81C18446700A0DB2E /* JxCalendarHeader.m */; };
 		26EBE2031C18446700A0DB2E /* JxCalendarHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26EBE1D91C18446700A0DB2E /* JxCalendarHeader.xib */; };
 		26EBE20A1C18446700A0DB2E /* JxCalendarEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1E11C18446700A0DB2E /* JxCalendarEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26EBE20B1C18446700A0DB2E /* JxCalendarEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1E21C18446700A0DB2E /* JxCalendarEvent.m */; };
 		26EBE20D1C18446700A0DB2E /* JxCalendar.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1E41C18446700A0DB2E /* JxCalendar.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26EBE20E1C18446700A0DB2E /* JxCalendarDefinitions.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1E51C18446700A0DB2E /* JxCalendarDefinitions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		26EBE20F1C18446700A0DB2E /* JxCalendarLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1E71C18446700A0DB2E /* JxCalendarLayout.h */; };
+		26EBE20F1C18446700A0DB2E /* JxCalendarLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1E71C18446700A0DB2E /* JxCalendarLayout.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE2101C18446700A0DB2E /* JxCalendarLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1E81C18446700A0DB2E /* JxCalendarLayout.m */; };
-		26EBE2111C18446700A0DB2E /* JxCalendarLayoutDay.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1E91C18446700A0DB2E /* JxCalendarLayoutDay.h */; };
+		26EBE2111C18446700A0DB2E /* JxCalendarLayoutDay.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1E91C18446700A0DB2E /* JxCalendarLayoutDay.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE2121C18446700A0DB2E /* JxCalendarLayoutDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1EA1C18446700A0DB2E /* JxCalendarLayoutDay.m */; };
-		26EBE2131C18446700A0DB2E /* JxCalendarLayoutWeekGrid.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1EB1C18446700A0DB2E /* JxCalendarLayoutWeekGrid.h */; };
+		26EBE2131C18446700A0DB2E /* JxCalendarLayoutWeekGrid.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1EB1C18446700A0DB2E /* JxCalendarLayoutWeekGrid.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE2141C18446700A0DB2E /* JxCalendarLayoutWeekGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1EC1C18446700A0DB2E /* JxCalendarLayoutWeekGrid.m */; };
-		26EBE2151C18446700A0DB2E /* JxCalendarLayoutMonthGrid.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1ED1C18446700A0DB2E /* JxCalendarLayoutMonthGrid.h */; };
+		26EBE2151C18446700A0DB2E /* JxCalendarLayoutMonthGrid.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1ED1C18446700A0DB2E /* JxCalendarLayoutMonthGrid.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE2161C18446700A0DB2E /* JxCalendarLayoutMonthGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1EE1C18446700A0DB2E /* JxCalendarLayoutMonthGrid.m */; };
-		26EBE2171C18446700A0DB2E /* JxCalendarLayoutYearGrid.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1EF1C18446700A0DB2E /* JxCalendarLayoutYearGrid.h */; };
+		26EBE2171C18446700A0DB2E /* JxCalendarLayoutYearGrid.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1EF1C18446700A0DB2E /* JxCalendarLayoutYearGrid.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE2181C18446700A0DB2E /* JxCalendarLayoutYearGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1F01C18446700A0DB2E /* JxCalendarLayoutYearGrid.m */; };
-		26EBE2191C18446700A0DB2E /* JxCalendarDay.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1F21C18446700A0DB2E /* JxCalendarDay.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		26EBE2191C18446700A0DB2E /* JxCalendarDay.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1F21C18446700A0DB2E /* JxCalendarDay.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE21A1C18446700A0DB2E /* JxCalendarDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1F31C18446700A0DB2E /* JxCalendarDay.m */; };
 		26EBE21B1C18446700A0DB2E /* JxCalendarOverview.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1F41C18446700A0DB2E /* JxCalendarOverview.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26EBE21C1C18446700A0DB2E /* JxCalendarOverview.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1F51C18446700A0DB2E /* JxCalendarOverview.m */; };
-		26FAA3EA1C1EC04F001C4DA6 /* JxCalendarLayoutOverview.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FAA3E81C1EC04F001C4DA6 /* JxCalendarLayoutOverview.h */; };
+		26FAA3EA1C1EC04F001C4DA6 /* JxCalendarLayoutOverview.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FAA3E81C1EC04F001C4DA6 /* JxCalendarLayoutOverview.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26FAA3EB1C1EC04F001C4DA6 /* JxCalendarLayoutOverview.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FAA3E91C1EC04F001C4DA6 /* JxCalendarLayoutOverview.m */; };
-		26FAA3F11C1F0F0F001C4DA6 /* JxCalendarLayoutWeek.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FAA3EF1C1F0F0F001C4DA6 /* JxCalendarLayoutWeek.h */; };
+		26FAA3F11C1F0F0F001C4DA6 /* JxCalendarLayoutWeek.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FAA3EF1C1F0F0F001C4DA6 /* JxCalendarLayoutWeek.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26FAA3F21C1F0F0F001C4DA6 /* JxCalendarLayoutWeek.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FAA3F01C1F0F0F001C4DA6 /* JxCalendarLayoutWeek.m */; };
-		26FAA3F51C1F135D001C4DA6 /* JxCalendarWeek.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FAA3F31C1F135D001C4DA6 /* JxCalendarWeek.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		26FAA3F51C1F135D001C4DA6 /* JxCalendarWeek.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FAA3F31C1F135D001C4DA6 /* JxCalendarWeek.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26FAA3F61C1F135D001C4DA6 /* JxCalendarWeek.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FAA3F41C1F135D001C4DA6 /* JxCalendarWeek.m */; };
 		26FAA3F91C1F13DB001C4DA6 /* JxCalendarBasics.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FAA3F71C1F13DB001C4DA6 /* JxCalendarBasics.h */; };
 		26FAA3FA1C1F13DB001C4DA6 /* JxCalendarBasics.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FAA3F81C1F13DB001C4DA6 /* JxCalendarBasics.m */; };
@@ -245,29 +245,29 @@
 			buildActionMask = 2147483647;
 			files = (
 				26EBE20D1C18446700A0DB2E /* JxCalendar.h in Headers */,
-				26FAA3F11C1F0F0F001C4DA6 /* JxCalendarLayoutWeek.h in Headers */,
-				26FAA3F51C1F135D001C4DA6 /* JxCalendarWeek.h in Headers */,
 				26EBE20A1C18446700A0DB2E /* JxCalendarEvent.h in Headers */,
-				265FD5FA1C217BA400FCC8AE /* JxCalendarWeekEventCell.h in Headers */,
-				266D38131C2AAE64004FEBF1 /* JxCalendarWeekHeader.h in Headers */,
 				26FAA3F91C1F13DB001C4DA6 /* JxCalendarBasics.h in Headers */,
+				26EBE2171C18446700A0DB2E /* JxCalendarLayoutYearGrid.h in Headers */,
+				26FAA3EA1C1EC04F001C4DA6 /* JxCalendarLayoutOverview.h in Headers */,
+				26EBE2151C18446700A0DB2E /* JxCalendarLayoutMonthGrid.h in Headers */,
 				26FAA3FD1C1F1AE0001C4DA6 /* JxCalendarViewController.h in Headers */,
 				26EBE2191C18446700A0DB2E /* JxCalendarDay.h in Headers */,
+				26FAA3F51C1F135D001C4DA6 /* JxCalendarWeek.h in Headers */,
+				26EBE2131C18446700A0DB2E /* JxCalendarLayoutWeekGrid.h in Headers */,
+				26FAA3F11C1F0F0F001C4DA6 /* JxCalendarLayoutWeek.h in Headers */,
 				265FD5F11C2170E000FCC8AE /* JxCalendarEventDay.h in Headers */,
+				265FD5FA1C217BA400FCC8AE /* JxCalendarWeekEventCell.h in Headers */,
 				265FD5F51C2170F100FCC8AE /* JxCalendarEventDuration.h in Headers */,
+				26EBE20F1C18446700A0DB2E /* JxCalendarLayout.h in Headers */,
+				26EBE2111C18446700A0DB2E /* JxCalendarLayoutDay.h in Headers */,
+				266D38131C2AAE64004FEBF1 /* JxCalendarWeekHeader.h in Headers */,
 				26EBE21B1C18446700A0DB2E /* JxCalendarOverview.h in Headers */,
-				26EBE20E1C18446700A0DB2E /* JxCalendarDefinitions.h in Headers */,
 				26EBE1F61C18446700A0DB2E /* JxCalendarCell.h in Headers */,
-				26EBE2171C18446700A0DB2E /* JxCalendarLayoutYearGrid.h in Headers */,
 				26EBE1FF1C18446700A0DB2E /* JxCalendarGridCell.h in Headers */,
 				26EBE1F91C18446700A0DB2E /* JxCalendarDayHeader.h in Headers */,
-				26EBE20F1C18446700A0DB2E /* JxCalendarLayout.h in Headers */,
 				26EBE2011C18446700A0DB2E /* JxCalendarHeader.h in Headers */,
-				26FAA3EA1C1EC04F001C4DA6 /* JxCalendarLayoutOverview.h in Headers */,
 				26EBE1FC1C18446700A0DB2E /* JxCalendarEventCell.h in Headers */,
-				26EBE2151C18446700A0DB2E /* JxCalendarLayoutMonthGrid.h in Headers */,
-				26EBE2131C18446700A0DB2E /* JxCalendarLayoutWeekGrid.h in Headers */,
-				26EBE2111C18446700A0DB2E /* JxCalendarLayoutDay.h in Headers */,
+				26EBE20E1C18446700A0DB2E /* JxCalendarDefinitions.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

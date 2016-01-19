@@ -10,7 +10,7 @@
 #import "JxCalendarDefinitions.h"
 #import "JxCalendarEvent.h"
 #import "JxCalendarEventDuration.h"
-
+#import "JxCalendarDay.h"
 
 
 @interface JxCalendarLayoutDay ()

@@ -38,8 +38,6 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
-    
-    
     if (self.presentingViewController) {
         
         if (self.navigationController.viewControllers.count == 1) {
