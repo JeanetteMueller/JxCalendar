@@ -10,6 +10,10 @@
 #import <JxCalendar/JxCalendar.h>
 #import "TestCalendarDataSource.h"
 
+#define DLog(fmt, ...)                               NSLog((@">>> %s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
+#define LLog()                                       NSLog((@">>> %s [Line %d] "), __PRETTY_FUNCTION__, __LINE__)
+
+
 @interface ViewController () <JxCalendarDelegate>
 
 @property (strong, nonatomic) TestCalendarDataSource *dataSource;
@@ -24,8 +28,13 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
 }
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    
+}
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    
     
     self.view.backgroundColor = [UIColor lightGrayColor];
     
@@ -34,6 +43,7 @@
         [self openCalendar:nil];
     }
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -50,7 +60,7 @@
                                                                          andStyle:JxCalendarOverviewStyleMonthGrid
                                                                          andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)
                                                                      andStartDate:[NSDate date]
-                                                               andStartAppearance:JxCalendarAppearanceDay];
+                                                               andStartAppearance:JxCalendarAppearanceMonth];
     
     overview.delegate = self;
     
@@ -67,10 +77,17 @@
 #pragma mark <JxCalendarDelegate>
 
 - (void)calendarDidSelectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
-    NSLog(@"calendarDidSelectDate %@", date);
+    DLog(@" %@", date);
 }
 
 - (void)calendarDidSelectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance{
-    NSLog(@"calendarDidSelectEvent %@", event);
+    DLog(@" %@", event);
+}
+
+- (void)calendarWillTransitionFrom:(JxCalendarAppearance)fromAppearance to:(JxCalendarAppearance)toAppearance{
+    DLog(@"from %d to %d", fromAppearance, toAppearance);
+}
+- (void)calendarDidTransitionTo:(JxCalendarAppearance)toAppearance{
+    DLog(@"to %d", toAppearance);
 }
 @end

@@ -16,6 +16,7 @@
 #import "JxCalendarEventDuration.h"
 #import "JxCalendarEventDay.h"
 #import "JxCalendarBasics.h"
+#import "UIViewController+CalendarBackButtonHandler.h"
 
 @interface JxCalendarDay ()
 
@@ -174,6 +175,10 @@
     if (_nowComponents.year == _currentComponents.year && _nowComponents.month == _currentComponents.month && _nowComponents.day == _currentComponents.day) {
         self.zeigerPositionTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updateZeigerPosition) userInfo:nil repeats:YES];
     }
+    
+    if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
+        [self.delegate calendarDidTransitionTo:JxCalendarAppearanceDay];
+    }
 }
 - (void)viewWillDisappear:(BOOL)animated{
     
@@ -181,6 +186,13 @@
     self.zeigerPositionTimer = nil;
     
     [super viewWillDisappear:animated];
+}
+- (BOOL)navigationShouldPopOnBackButton{
+    
+    if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
+        [self.delegate calendarWillTransitionFrom:JxCalendarAppearanceDay to:JxCalendarAppearanceWeek];
+    }
+    return YES;
 }
 - (void)setCurrentDate:(NSDate *)currentDate{
     _startDate = currentDate;

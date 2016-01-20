@@ -16,6 +16,7 @@
 #import "JxCalendarDayHeader.h"
 #import "JxCalendarLayoutDay.h"
 #import "JxCalendarDay.h"
+#import "UIViewController+CalendarBackButtonHandler.h"
 
 @interface JxCalendarWeek ()
 
@@ -96,8 +97,6 @@
             
             NSArray *symbols = [[JxCalendarBasics defaultFormatter] monthSymbols];
             
-            NSLog(@"symbols %@", symbols);
-            
             NSString *monthName = [symbols objectAtIndex:startComponents.month-1];
             
             self.navigationItem.title = [NSString stringWithFormat:@"%@ %ld", monthName, startComponents.year];
@@ -107,6 +106,13 @@
     
     self.collectionView.scrollIndicatorInsets = UIEdgeInsetsMake([(JxCalendarLayoutWeek *)self.collectionView.collectionViewLayout headerReferenceSize].height, 0, 0, 0);
     
+}
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+    if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
+        [self.delegate calendarDidTransitionTo:JxCalendarAppearanceWeek];
+    }
 }
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     
@@ -200,6 +206,18 @@
         
     }
     
+}
+- (BOOL)navigationShouldPopOnBackButton{
+    
+    if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
+        
+        JxCalendarOverview *overview = [self.navigationController.viewControllers objectAtIndex:self.navigationController.viewControllers.count-2];
+        
+        
+        
+        [self.delegate calendarWillTransitionFrom:JxCalendarAppearanceWeek to:[overview getAppearance]];
+    }
+    return YES;
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -324,6 +342,10 @@
     if (date) {
         
         [self.delegate calendarDidSelectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
+        
+        if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
+            [self.delegate calendarWillTransitionFrom:JxCalendarAppearanceWeek to:JxCalendarAppearanceDay];
+        }
         
         JxCalendarDay *day = [[JxCalendarDay alloc] initWithDataSource:self.dataSource andSize:self.collectionView.bounds.size andStartDate:date];
 

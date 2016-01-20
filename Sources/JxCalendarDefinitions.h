@@ -69,10 +69,18 @@ typedef enum {
 
 @protocol JxCalendarDelegate <NSObject>
 
+- (void)calendarWillTransitionFrom:(JxCalendarAppearance)fromAppearance to:(JxCalendarAppearance)toAppearance;
+- (void)calendarDidTransitionTo:(JxCalendarAppearance)toAppearance;
+
+
 - (void)calendarDidSelectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
 - (void)calendarDidSelectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance;
+
 @optional
+
+
 - (NSString *)calendarTitleOnDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
+
 @end
 
 

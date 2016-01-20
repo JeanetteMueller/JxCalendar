@@ -14,6 +14,8 @@
 		265FD5FA1C217BA400FCC8AE /* JxCalendarWeekEventCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 265FD5F71C217BA400FCC8AE /* JxCalendarWeekEventCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		265FD5FB1C217BA400FCC8AE /* JxCalendarWeekEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 265FD5F81C217BA400FCC8AE /* JxCalendarWeekEventCell.m */; };
 		265FD5FC1C217BA400FCC8AE /* JxCalendarWeekEventCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 265FD5F91C217BA400FCC8AE /* JxCalendarWeekEventCell.xib */; };
+		26614D521C4F9A7900591976 /* UIViewController+CalendarBackButtonHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 26614D501C4F9A7900591976 /* UIViewController+CalendarBackButtonHandler.h */; };
+		26614D531C4F9A7900591976 /* UIViewController+CalendarBackButtonHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 26614D511C4F9A7900591976 /* UIViewController+CalendarBackButtonHandler.m */; };
 		266D38131C2AAE64004FEBF1 /* JxCalendarWeekHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 266D38101C2AAE64004FEBF1 /* JxCalendarWeekHeader.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		266D38141C2AAE64004FEBF1 /* JxCalendarWeekHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 266D38111C2AAE64004FEBF1 /* JxCalendarWeekHeader.m */; };
 		266D38151C2AAE64004FEBF1 /* JxCalendarWeekHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 266D38121C2AAE64004FEBF1 /* JxCalendarWeekHeader.xib */; };
@@ -69,6 +71,8 @@
 		265FD5F71C217BA400FCC8AE /* JxCalendarWeekEventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarWeekEventCell.h; sourceTree = "<group>"; };
 		265FD5F81C217BA400FCC8AE /* JxCalendarWeekEventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarWeekEventCell.m; sourceTree = "<group>"; };
 		265FD5F91C217BA400FCC8AE /* JxCalendarWeekEventCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarWeekEventCell.xib; sourceTree = "<group>"; };
+		26614D501C4F9A7900591976 /* UIViewController+CalendarBackButtonHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+CalendarBackButtonHandler.h"; sourceTree = "<group>"; };
+		26614D511C4F9A7900591976 /* UIViewController+CalendarBackButtonHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+CalendarBackButtonHandler.m"; sourceTree = "<group>"; };
 		266D38101C2AAE64004FEBF1 /* JxCalendarWeekHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarWeekHeader.h; sourceTree = "<group>"; };
 		266D38111C2AAE64004FEBF1 /* JxCalendarWeekHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarWeekHeader.m; sourceTree = "<group>"; };
 		266D38121C2AAE64004FEBF1 /* JxCalendarWeekHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarWeekHeader.xib; sourceTree = "<group>"; };
@@ -157,6 +161,8 @@
 				26EBE1F11C18446700A0DB2E /* ViewControllers */,
 				26FAA3F71C1F13DB001C4DA6 /* JxCalendarBasics.h */,
 				26FAA3F81C1F13DB001C4DA6 /* JxCalendarBasics.m */,
+				26614D501C4F9A7900591976 /* UIViewController+CalendarBackButtonHandler.h */,
+				26614D511C4F9A7900591976 /* UIViewController+CalendarBackButtonHandler.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -265,6 +271,7 @@
 				26EBE1F61C18446700A0DB2E /* JxCalendarCell.h in Headers */,
 				26EBE1FF1C18446700A0DB2E /* JxCalendarGridCell.h in Headers */,
 				26EBE1F91C18446700A0DB2E /* JxCalendarDayHeader.h in Headers */,
+				26614D521C4F9A7900591976 /* UIViewController+CalendarBackButtonHandler.h in Headers */,
 				26EBE2011C18446700A0DB2E /* JxCalendarHeader.h in Headers */,
 				26EBE1FC1C18446700A0DB2E /* JxCalendarEventCell.h in Headers */,
 				26EBE20E1C18446700A0DB2E /* JxCalendarDefinitions.h in Headers */,
@@ -352,6 +359,7 @@
 				26FAA3F61C1F135D001C4DA6 /* JxCalendarWeek.m in Sources */,
 				26EBE2141C18446700A0DB2E /* JxCalendarLayoutWeekGrid.m in Sources */,
 				26EBE21A1C18446700A0DB2E /* JxCalendarDay.m in Sources */,
+				26614D531C4F9A7900591976 /* UIViewController+CalendarBackButtonHandler.m in Sources */,
 				26FAA3FA1C1F13DB001C4DA6 /* JxCalendarBasics.m in Sources */,
 				26EBE1F71C18446700A0DB2E /* JxCalendarCell.m in Sources */,
 				26FAA3FE1C1F1AE0001C4DA6 /* JxCalendarViewController.m in Sources */,

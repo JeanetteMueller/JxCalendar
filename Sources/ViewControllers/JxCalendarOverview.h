@@ -22,5 +22,7 @@
 - (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year;
 - (void)scrollToDate:(NSDate *)date;
 
+- (JxCalendarAppearance)getAppearance;
+
 @end
 
