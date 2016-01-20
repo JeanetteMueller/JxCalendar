@@ -199,7 +199,10 @@
     
     if ([self.delegate respondsToSelector:@selector(calendarTitleOnDate:whileOnAppearance:)]) {
         
-        self.navigationItem.title = [self.delegate calendarTitleOnDate:self.startDate whileOnAppearance:JxCalendarAppearanceDay];
+        NSString *newTitle = [self.delegate calendarTitleOnDate:self.startDate whileOnAppearance:JxCalendarAppearanceDay];
+        if (newTitle) {
+            self.navigationItem.title = newTitle;
+        }
     }else{
         self.navigationItem.title = [[JxCalendarBasics defaultFormatter] stringFromDate:self.startDate];
     }
@@ -355,6 +358,8 @@
         JxCalendarEvent *event = [self eventForIndexPath:indexPath];
         if (event) {
             [self.delegate calendarDidSelectEvent:event whileOnAppearance:JxCalendarAppearanceDay];
+            
+            [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
         }
         
     }

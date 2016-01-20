@@ -214,10 +214,12 @@
         
         if ([self.delegate respondsToSelector:@selector(calendarTitleOnDate:whileOnAppearance:)]) {
             
+            NSString *newTitle = [self.delegate calendarTitleOnDate:self.startDate whileOnAppearance:[self getAppearance]];
             
+            if (newTitle) {
+                self.navigationItem.title = newTitle;
+            }
             
-            
-            self.navigationItem.title = [self.delegate calendarTitleOnDate:self.startDate whileOnAppearance:[self getAppearance]];
         }else{
             self.navigationItem.title = [NSString stringWithFormat:@"%ld", (long)startComponents.year];
         }
@@ -688,7 +690,12 @@
 //        nv.delegate = self.delegate;
 //        
 //        [nv setCurrentDate:date];
-        
+            
+            if ([self.delegate respondsToSelector:@selector(calendarDidSelectDate:whileOnAppearance:)]) {
+                [self.delegate calendarDidSelectDate:date whileOnAppearance:[self getAppearance]];
+            }
+            [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+            
             if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
                 [self.delegate calendarWillTransitionFrom:[self getAppearance] to:JxCalendarAppearanceWeek];
             }
