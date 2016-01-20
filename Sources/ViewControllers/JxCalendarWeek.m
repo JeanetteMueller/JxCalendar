@@ -411,6 +411,7 @@
         }else{
             titleLabel.text = @"";
             header.backgroundColor = [UIColor colorWithRed:.95 green:.95 blue:.95 alpha:1];
+            header.layer.borderColor = self.collectionView.backgroundColor.CGColor;
         }
         
         

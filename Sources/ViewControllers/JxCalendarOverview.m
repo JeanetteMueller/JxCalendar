@@ -105,7 +105,7 @@
     
     [self updateNavigationButtons];
     
-    [self switchToYear:[self startComponents].year];
+    [self switchToNewYear:[self startComponents].year];
     
     
     if (self.startAppearance > JxCalendarAppearanceMonth) {
@@ -147,15 +147,21 @@
         
         switch (self.style) {
             case JxCalendarOverviewStyleMonthGrid:
-                self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYearGridView)];
+                self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYear:)];
                 break;
             case JxCalendarOverviewStyleYearGrid:
-                self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Month" style:UIBarButtonItemStylePlain target:self action:@selector(switchToMonthGridView)];
+                self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Month" style:UIBarButtonItemStylePlain target:self action:@selector(switchToMonth:)];
                 break;
             default:
                 break;
         }
     }
+}
+- (IBAction)switchToYear:(id)sender{
+    [self switchToAppearance:JxCalendarAppearanceYear withDate:nil];
+}
+- (IBAction)switchToMonth:(id)sender{
+    [self switchToAppearance:JxCalendarAppearanceMonth withDate:nil];
 }
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
@@ -197,12 +203,15 @@
     
 }
 - (JxCalendarAppearance)getAppearance{
-    
+    return [self getAppearanceFromStyle:self.style];
+}
+- (JxCalendarAppearance)getAppearanceFromStyle:(JxCalendarOverviewStyle)style{
     JxCalendarAppearance appearance;
-    switch (self.style) {
+    switch (style) {
         case JxCalendarOverviewStyleMonthGrid:
             appearance = JxCalendarAppearanceMonth;
             break;
+            
         case JxCalendarOverviewStyleYearGrid:
             appearance = JxCalendarAppearanceYear;
             break;
@@ -214,7 +223,7 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (void)switchToYear:(NSInteger)year{
+- (void)switchToNewYear:(NSInteger)year{
     
     NSDateComponents *startComponents = [self startComponents];
     
@@ -241,7 +250,7 @@
     
     if ([self startComponents].year != year) {
         
-        [self switchToYear:year];
+        [self switchToNewYear:year];
 
         [self.collectionView reloadData];
         
@@ -258,6 +267,9 @@
             
             CGFloat y = attributes.frame.origin.y - 64 - [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:path].frame.size.height;
             
+            if (y < 0) {
+                y = 0;
+            }
             [self.collectionView setContentOffset:CGPointMake(0, y) animated:YES];
         }];
         
@@ -270,6 +282,9 @@
         
         CGFloat y = attributes.frame.origin.y - 64 - [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:path].frame.size.height;
         
+        if (y < 0) {
+            y = 0;
+        }
         [self.collectionView setContentOffset:CGPointMake(0, y) animated:YES];
     }
     
@@ -289,11 +304,18 @@
 }
 - (void)switchToAppearance:(JxCalendarAppearance)newAppearance withDate:(NSDate *)newDate{
     
-    if (newDate) {
-        self.startDate = newDate;
+    if (!newDate) {
+        newDate = self.startDate;
     }
+    
+    NSDateComponents *newComponents =  [self componentsFromDate:newDate];
+    
+    
         
     if (newAppearance > JxCalendarAppearanceMonth) {
+        if (newDate) {
+            self.startDate = newDate;
+        }
         
         JxCalendarWeek *vc = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.startSize andStartDate:self.startDate];
         vc.delegate = self.delegate;
@@ -312,15 +334,25 @@
         }
 
         
-    }else if(newAppearance == JxCalendarAppearanceMonth){
+    }else if(newAppearance == JxCalendarAppearanceMonth && self.style != JxCalendarOverviewStyleMonthGrid){
         
-        NSDateComponents *components = [self startComponents];
+        [self switchToMonthGridViewWithCallback:^(BOOL finished) {
+            [self scrollToMonth:newComponents.month inYear:newComponents.year];
+            
+            if (newDate) {
+                self.startDate = newDate;
+            }
+        }];
         
-        [self scrollToMonth:components.month inYear:components.year];
-    }else{
         
-        NSDateComponents *components = [self startComponents];
-        [self switchToYear:components.year];
+        
+    }else if(newAppearance == JxCalendarAppearanceYear && self.style != JxCalendarOverviewStyleYearGrid){
+        
+        [self switchToNewYear:newComponents.year];
+        if (newDate) {
+            self.startDate = newDate;
+        }
+        [self switchToYearGridView];
     }
     
     
@@ -330,12 +362,14 @@
 - (void)switchToYearGridView{
     
     if ([self isKindOfClass:[JxCalendarOverview class]]) {
+        JxCalendarOverviewStyle oldStyle = self.style;
+        
         self.style = JxCalendarOverviewStyleYearGrid;
         
         [self.collectionView reloadData];
         
         if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
-            [self.delegate calendarWillTransitionFrom:JxCalendarAppearanceMonth to:JxCalendarAppearanceYear];
+            [self.delegate calendarWillTransitionFrom:[self getAppearanceFromStyle:oldStyle] to:JxCalendarAppearanceYear];
         }
         
         [self.collectionView performBatchUpdates:^{
@@ -377,11 +411,13 @@
 - (void)switchToMonthGridViewWithCallback:(void (^)(BOOL finished))callback{
     
     if ([self isKindOfClass:[JxCalendarOverview class]]) {
+        
+        JxCalendarOverviewStyle oldStyle = self.style;
         self.style = JxCalendarOverviewStyleMonthGrid;
         
         [self.collectionView reloadData];
         if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
-            [self.delegate calendarWillTransitionFrom:JxCalendarAppearanceYear to:JxCalendarAppearanceMonth];
+            [self.delegate calendarWillTransitionFrom:[self getAppearanceFromStyle:oldStyle] to:JxCalendarAppearanceMonth];
         }
         __block __typeof(callback)blockCallback = callback;
         
@@ -482,15 +518,8 @@
     NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:section+1 inCalendar:[self calendar] andYear:[self startComponents].year];
     NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:section+1 inCalendar:[self calendar] andYear:[self startComponents].year];
     
-    
-    NSDateComponents *firstComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday   )
-                                          fromDate:firstDay];
-    
-    NSDateComponents *lastComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday   )
-                                          fromDate:lastDay];
-    
-    
-
+    NSDateComponents *firstComponents = [self componentsFromDate:firstDay];
+    NSDateComponents *lastComponents = [self componentsFromDate:lastDay];
     
     return lastComponents.day + [JxCalendarBasics normalizedWeekDay:firstComponents.weekday]-1 + (7-[JxCalendarBasics normalizedWeekDay:lastComponents.weekday]);
 }
@@ -500,27 +529,8 @@
     NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:indexPath.section+1 inCalendar:[self calendar] andYear:[self startComponents].year];
     NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:indexPath.section+1 inCalendar:[self calendar] andYear:[self startComponents].year];
     
-    NSDateComponents *firstComponents = [[self calendar] components:(
-                                                               NSCalendarUnitHour |
-                                                               NSCalendarUnitMinute |
-                                                               NSCalendarUnitSecond |
-                                                               NSCalendarUnitDay |
-                                                               NSCalendarUnitMonth |
-                                                               NSCalendarUnitYear |
-                                                               NSCalendarUnitWeekday
-                                                               )
-                                                     fromDate:firstDay];
-    
-    NSDateComponents *lastComponents = [[self calendar] components:(
-                                                              NSCalendarUnitHour |
-                                                              NSCalendarUnitMinute |
-                                                              NSCalendarUnitSecond |
-                                                              NSCalendarUnitDay |
-                                                              NSCalendarUnitMonth |
-                                                              NSCalendarUnitYear |
-                                                              NSCalendarUnitWeekday
-                                                              )
-                                                    fromDate:lastDay];
+    NSDateComponents *firstComponents = [self componentsFromDate:firstDay];
+    NSDateComponents *lastComponents = [self componentsFromDate:lastDay];
     
     NSInteger weekDay = [JxCalendarBasics normalizedWeekDay:firstComponents.weekday];
     
@@ -552,23 +562,13 @@
 
     
     
-    NSDateComponents *components = [[self calendar] components:(
-                                                                NSCalendarUnitHour |
-                                                                NSCalendarUnitMinute |
-                                                                NSCalendarUnitSecond |
-                                                                NSCalendarUnitDay |
-                                                                NSCalendarUnitMonth |
-                                                                NSCalendarUnitYear |
-                                                                NSCalendarUnitWeekday
-                                                                )
-                                                      fromDate:date];
+    NSDateComponents *components = [self componentsFromDate:date];
     
     NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:components.month inCalendar:[self calendar] andYear:[self startComponents].year];
     
     NSLog(@"firstDay %@", firstDay);
     
-    NSDateComponents *firstComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday   )
-                                                           fromDate:firstDay];
+    NSDateComponents *firstComponents = [self componentsFromDate:firstDay];
     
     
     NSLog(@"day %ld", (long)components.day);
@@ -644,8 +644,7 @@
     
     if (thisDate) {
         
-        NSDateComponents *dateComponents = [[self calendar] components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear|NSCalendarUnitWeekday
-                                                              fromDate:thisDate];
+        NSDateComponents *dateComponents = [self componentsFromDate:thisDate];
         
         switch (self.style) {
             case JxCalendarOverviewStyleYearGrid:{
@@ -676,7 +675,7 @@
             cell.layer.borderWidth = 1.0f;
             cell.label.textColor = [UIColor redColor];
         }else{
-            cell.layer.borderColor = [UIColor redColor].CGColor;
+            cell.layer.borderColor = self.collectionView.backgroundColor.CGColor;
             cell.layer.borderWidth = .0f;
             cell.label.textColor = [UIColor blackColor];
         }
@@ -692,6 +691,8 @@
         cell.label.text = @" ";
         cell.backgroundColor = [UIColor colorWithRed:.95 green:.95 blue:.95 alpha:1];
         cell.eventMarker.hidden = YES;
+        cell.layer.borderColor = self.collectionView.backgroundColor.CGColor;
+        cell.layer.borderWidth = .0f;
     }
 }
 
@@ -714,11 +715,7 @@
                 //scroll to date
                 __strong __typeof(weakSelf)strongSelf = weakSelf;
                 
-                NSDateComponents *components = [[strongSelf calendar] components:(
-                                                                            NSCalendarUnitMonth |
-                                                                            NSCalendarUnitYear
-                                                                            )
-                                                                  fromDate:date];
+                NSDateComponents *components = [self componentsFromDate:date];
                 
                 [strongSelf scrollToMonth:components.month inYear:components.year];
             }];
@@ -812,13 +809,13 @@
         if (scrollView.contentOffset.y + scrollView.contentInset.top < -kPullToSwitchContextOffset) {
             NSLog(@"gehe ein jahr zurück");
             
-            [self switchToYear:[self startComponents].year-1];
+            [self switchToNewYear:[self startComponents].year-1];
             switchToDifferentYear = YES;
             startFromTop = NO;
         }else if (scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentInset.bottom > scrollView.contentSize.height+kPullToSwitchContextOffset){
             NSLog(@"gehe ein jahr vor ");
             
-            [self switchToYear:[self startComponents].year+1];
+            [self switchToNewYear:[self startComponents].year+1];
             switchToDifferentYear = YES;
         }
         

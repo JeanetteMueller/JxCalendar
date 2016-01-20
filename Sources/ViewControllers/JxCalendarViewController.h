@@ -20,5 +20,6 @@
 @property (nonatomic, readwrite) JxCalendarAppearance startAppearance;
 
 - (NSDateComponents *)startComponents;
+- (NSDateComponents *)componentsFromDate:(NSDate *)date;
 
 @end

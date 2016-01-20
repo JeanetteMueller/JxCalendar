@@ -48,14 +48,17 @@ static NSString * const reuseIdentifier = @"Cell";
     
 }
 - (NSDateComponents *)startComponents{
+    return [self componentsFromDate:self.startDate];
+}
+- (NSDateComponents *)componentsFromDate:(NSDate *)date{
     return [[self.dataSource calendar] components:( NSCalendarUnitHour |
-                                                                     NSCalendarUnitMinute |
-                                                                     NSCalendarUnitSecond |
-                                                                     NSCalendarUnitDay |
-                                                                     NSCalendarUnitMonth |
-                                                                     NSCalendarUnitYear |
-                                                                     NSCalendarUnitWeekday   )
-                                                           fromDate:self.startDate];
+                                                   NSCalendarUnitMinute |
+                                                   NSCalendarUnitSecond |
+                                                   NSCalendarUnitDay |
+                                                   NSCalendarUnitMonth |
+                                                   NSCalendarUnitYear |
+                                                   NSCalendarUnitWeekday   )
+                                         fromDate:date];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
