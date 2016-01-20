@@ -18,9 +18,12 @@
 
 - (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarOverviewStyle)style andSize:(CGSize)size andStartDate:(NSDate *)date andStartAppearance:(JxCalendarAppearance)appearance;
 
-- (void)switchToYear:(NSInteger)year;
+
 - (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year;
 - (void)scrollToDate:(NSDate *)date;
+
+- (void)switchToAppearance:(JxCalendarAppearance)newAppearance;
+- (void)switchToAppearance:(JxCalendarAppearance)newAppearance withDate:(NSDate *)newDate;
 
 - (JxCalendarAppearance)getAppearance;
 

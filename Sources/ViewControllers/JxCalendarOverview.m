@@ -108,7 +108,7 @@
     [self switchToYear:[self startComponents].year];
     
     
-    if (self.startAppearance == JxCalendarAppearanceWeek || self.startAppearance == JxCalendarAppearanceDay) {
+    if (self.startAppearance > JxCalendarAppearanceMonth) {
         
         JxCalendarWeek *vc = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.startSize andStartDate:self.startDate];
         vc.delegate = self.delegate;
@@ -282,15 +282,50 @@
     
     [self.collectionView scrollToItemAtIndexPath:path atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
 }
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+
+- (void)switchToAppearance:(JxCalendarAppearance)newAppearance{
+    [self switchToAppearance:newAppearance withDate:nil];
 }
-*/
+- (void)switchToAppearance:(JxCalendarAppearance)newAppearance withDate:(NSDate *)newDate{
+    
+    if (newDate) {
+        self.startDate = newDate;
+    }
+        
+    if (newAppearance > JxCalendarAppearanceMonth) {
+        
+        JxCalendarWeek *vc = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.startSize andStartDate:self.startDate];
+        vc.delegate = self.delegate;
+        
+        [self.navigationController pushViewController:vc animated:NO];
+        
+        if (newAppearance == JxCalendarAppearanceDay) {
+            
+            
+            
+            JxCalendarDay *day = [[JxCalendarDay alloc] initWithDataSource:self.dataSource andSize:self.startSize andStartDate:self.startDate];
+            
+            day.delegate = self.delegate;
+            
+            [self.navigationController pushViewController:day animated:NO];
+        }
+
+        
+    }else if(newAppearance == JxCalendarAppearanceMonth){
+        
+        NSDateComponents *components = [self startComponents];
+        
+        [self scrollToMonth:components.month inYear:components.year];
+    }else{
+        
+        NSDateComponents *components = [self startComponents];
+        [self switchToYear:components.year];
+    }
+    
+    
+}
+
 #pragma mark Layout
 - (void)switchToYearGridView{
     
