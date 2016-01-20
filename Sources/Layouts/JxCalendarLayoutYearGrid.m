@@ -14,6 +14,7 @@
 
 @interface JxCalendarLayoutYearGrid ()
 @property (nonatomic, strong) NSDictionary *layoutInfo;
+@property (nonatomic, readwrite) CGSize startSize;
 @end
 
 @implementation JxCalendarLayoutYearGrid
@@ -22,6 +23,8 @@
     self = [super init];
     
     if (self) {
+        
+        self.startSize = size;
         
         CGFloat itemsPerRow = 7;
         

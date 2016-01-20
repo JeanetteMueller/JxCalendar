@@ -22,6 +22,7 @@
 
 @interface JxCalendarOverview ()
 
+@property (nonatomic, readwrite) CGSize startSize;
 @end
 
 @implementation JxCalendarOverview
@@ -31,6 +32,7 @@
     if (CGSizeEqualToSize(size, CGSizeZero)) {
         size = [UIScreen mainScreen].bounds.size;
     }
+    
     
     
     UICollectionViewLayout *layout;
@@ -49,6 +51,7 @@
     self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     
     if (self) {
+        self.startSize = size;
         self.style = style;
         self.startDate = date;
         self.startAppearance = appearance;
@@ -107,7 +110,7 @@
     
     if (self.startAppearance == JxCalendarAppearanceWeek || self.startAppearance == JxCalendarAppearanceDay) {
         
-        JxCalendarWeek *vc = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.view.frame.size andStartDate:self.startDate];
+        JxCalendarWeek *vc = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.startSize andStartDate:self.startDate];
         vc.delegate = self.delegate;
         
         [self.navigationController pushViewController:vc animated:NO];
@@ -116,7 +119,7 @@
 
             
             
-            JxCalendarDay *day = [[JxCalendarDay alloc] initWithDataSource:self.dataSource andSize:self.collectionView.frame.size andStartDate:self.startDate];
+            JxCalendarDay *day = [[JxCalendarDay alloc] initWithDataSource:self.dataSource andSize:self.startSize andStartDate:self.startDate];
             
             day.delegate = self.delegate;
             
@@ -126,6 +129,15 @@
         
         self.startAppearance = JxCalendarAppearanceNone;
         
+    }
+    
+    if (self.view.frame.size.height > self.startSize.height) {
+        self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top,
+                                                            self.collectionView.contentInset.left,
+                                                            self.view.frame.size.height-self.startSize.height,
+                                                            self.collectionView.contentInset.right);
+        
+        self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
     }
 }
 - (void)updateNavigationButtons{
