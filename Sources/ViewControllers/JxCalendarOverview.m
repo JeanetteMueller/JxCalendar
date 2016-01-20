@@ -33,7 +33,11 @@
         size = [UIScreen mainScreen].bounds.size;
     }
     
-    
+    if (appearance == JxCalendarAppearanceYear){
+        style = JxCalendarOverviewStyleYearGrid;
+    }else if (appearance == JxCalendarAppearanceMonth){
+        style = JxCalendarOverviewStyleMonthGrid;
+    }
     
     UICollectionViewLayout *layout;
     switch (style) {
@@ -246,7 +250,7 @@
         }
     }
 }
-- (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year{
+- (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year animated:(BOOL)animated{
     
     if ([self startComponents].year != year) {
         
@@ -270,7 +274,7 @@
             if (y < 0) {
                 y = 0;
             }
-            [self.collectionView setContentOffset:CGPointMake(0, y) animated:YES];
+            [self.collectionView setContentOffset:CGPointMake(0, y) animated:animated];
         }];
         
     }else{
@@ -285,7 +289,7 @@
         if (y < 0) {
             y = 0;
         }
-        [self.collectionView setContentOffset:CGPointMake(0, y) animated:YES];
+        [self.collectionView setContentOffset:CGPointMake(0, y) animated:animated];
     }
     
 }
@@ -304,13 +308,96 @@
 }
 - (void)switchToAppearance:(JxCalendarAppearance)newAppearance withDate:(NSDate *)newDate{
     
+    NSDate *oldDate = self.startDate;
+    
     if (!newDate) {
         newDate = self.startDate;
+    }else{
+        self.startDate = newDate;
     }
     
+//    NSDateComponents *oldComponents =  [self componentsFromDate:oldDate];
     NSDateComponents *newComponents =  [self componentsFromDate:newDate];
     
+    JxCalendarAppearance oldAppearance = JxCalendarAppearanceYear;
     
+    if ([self.navigationController.viewControllers.lastObject isKindOfClass:[JxCalendarDay class]]) {
+        oldAppearance = JxCalendarAppearanceDay;
+    }else if ([self.navigationController.viewControllers.lastObject isKindOfClass:[JxCalendarWeek class]]) {
+        oldAppearance = JxCalendarAppearanceWeek;
+    }else if ([self.navigationController.viewControllers.lastObject isEqual:self]) {
+        oldAppearance = [self getAppearance];
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
+        [self.delegate calendarWillTransitionFrom:oldAppearance to:newAppearance];
+    }
+    
+    
+    if (oldAppearance < newAppearance && newAppearance > JxCalendarAppearanceMonth) {
+        //was drauf setzen
+        
+        if (oldAppearance < JxCalendarAppearanceWeek) {
+            JxCalendarWeek *vc = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.startSize andStartDate:self.startDate];
+            vc.delegate = self.delegate;
+            
+            [self.navigationController pushViewController:vc animated:NO];
+        }
+        
+        
+        if (newAppearance == JxCalendarAppearanceDay) {
+            
+            JxCalendarDay *day = [[JxCalendarDay alloc] initWithDataSource:self.dataSource andSize:self.startSize andStartDate:self.startDate];
+            
+            day.delegate = self.delegate;
+            
+            [self.navigationController pushViewController:day animated:NO];
+        }
+    }else{
+        //zurück wandern
+        if (newAppearance <= JxCalendarAppearanceMonth) {
+            [self.navigationController popToViewController:self animated:NO];
+            
+            
+            switch (newAppearance) {
+                case JxCalendarAppearanceMonth:{
+                    [self switchToMonthGridViewWithCallback:^(BOOL finished) {
+                        NSDateComponents *startComponents = [self startComponents];
+                        
+                        [self scrollToMonth:startComponents.month inYear:startComponents.year animated:NO];
+                    } animated:NO];
+            }break;
+                case JxCalendarAppearanceYear:{
+                    self.style = JxCalendarOverviewStyleYearGrid;
+                    
+                    [self.collectionView reloadData];
+                    [self.collectionView performBatchUpdates:^{
+                        
+                        self.collectionView.pagingEnabled = NO;
+                        [self.collectionView.collectionViewLayout invalidateLayout];
+                        [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutYearGrid alloc] initWithViewController:self andSize:self.view.frame.size] animated:NO];
+                        
+                        [self updateNavigationButtons];
+                        
+                    } completion:^(BOOL finished) {
+                        
+                        if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
+                            [self.delegate calendarDidTransitionTo:JxCalendarAppearanceYear];
+                        }
+                    }];
+                }break;
+                default:
+                    break;
+            }
+            
+        }else{
+            [self.navigationController popViewControllerAnimated:NO];
+        }
+        
+    }
+    
+    
+    /*
         
     if (newAppearance > JxCalendarAppearanceMonth) {
         if (newDate) {
@@ -335,6 +422,7 @@
 
         
     }else if(newAppearance == JxCalendarAppearanceMonth && self.style != JxCalendarOverviewStyleMonthGrid){
+        [self.navigationController popToViewController:self animated:YES];
         
         [self switchToMonthGridViewWithCallback:^(BOOL finished) {
             [self scrollToMonth:newComponents.month inYear:newComponents.year];
@@ -347,6 +435,7 @@
         
         
     }else if(newAppearance == JxCalendarAppearanceYear && self.style != JxCalendarOverviewStyleYearGrid){
+        [self.navigationController popToViewController:self animated:YES];
         
         [self switchToNewYear:newComponents.year];
         if (newDate) {
@@ -354,113 +443,74 @@
         }
         [self switchToYearGridView];
     }
-    
+    */
     
 }
 
 #pragma mark Layout
 - (void)switchToYearGridView{
     
-    if ([self isKindOfClass:[JxCalendarOverview class]]) {
-        JxCalendarOverviewStyle oldStyle = self.style;
-        
-        self.style = JxCalendarOverviewStyleYearGrid;
-        
-        [self.collectionView reloadData];
-        
-        if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
-            [self.delegate calendarWillTransitionFrom:[self getAppearanceFromStyle:oldStyle] to:JxCalendarAppearanceYear];
-        }
-        
-        [self.collectionView performBatchUpdates:^{
-            
-            self.collectionView.pagingEnabled = NO;
-            [self.collectionView.collectionViewLayout invalidateLayout];
-            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutYearGrid alloc] initWithViewController:self andSize:self.view.frame.size] animated:YES];
-            
-            [self updateNavigationButtons];
-            
-        } completion:^(BOOL finished) {
-            
-            if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
-                [self.delegate calendarDidTransitionTo:JxCalendarAppearanceYear];
-            }
-        }];
-    }else{
-        JxCalendarOverview *overview = [[JxCalendarOverview alloc] initWithDataSource:self.dataSource
-                                                                             andStyle:JxCalendarOverviewStyleYearGrid
-                                                                              andSize:self.view.frame.size
-                                                                         andStartDate:self.startDate
-                                                                   andStartAppearance:self.startAppearance];
-        
-        NSMutableArray *viewControllers = [self.navigationController.viewControllers mutableCopy];
-        
-        if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
-            [self.delegate calendarWillTransitionFrom:JxCalendarAppearanceWeek to:JxCalendarAppearanceYear];
-        }
-        
-        [viewControllers removeLastObject];
-        [viewControllers addObject:overview];
-        [self.navigationController setViewControllers:viewControllers animated:YES];
+
+    JxCalendarOverviewStyle oldStyle = self.style;
+    
+    self.style = JxCalendarOverviewStyleYearGrid;
+    
+    [self.collectionView reloadData];
+    
+    if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
+        [self.delegate calendarWillTransitionFrom:[self getAppearanceFromStyle:oldStyle] to:JxCalendarAppearanceYear];
     }
+    
+    [self.collectionView performBatchUpdates:^{
+        
+        self.collectionView.pagingEnabled = NO;
+        [self.collectionView.collectionViewLayout invalidateLayout];
+        [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutYearGrid alloc] initWithViewController:self andSize:self.view.frame.size] animated:YES];
+        
+        [self updateNavigationButtons];
+        
+    } completion:^(BOOL finished) {
+        
+        if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
+            [self.delegate calendarDidTransitionTo:JxCalendarAppearanceYear];
+        }
+    }];
+
 }
 
 - (void)switchToMonthGridView{
-    [self switchToMonthGridViewWithCallback:nil];
+    [self switchToMonthGridViewWithCallback:nil animated:YES];
 }
-- (void)switchToMonthGridViewWithCallback:(void (^)(BOOL finished))callback{
+- (void)switchToMonthGridViewWithCallback:(void (^)(BOOL finished))callback animated:(BOOL)animated{
     
-    if ([self isKindOfClass:[JxCalendarOverview class]]) {
+    self.style = JxCalendarOverviewStyleMonthGrid;
+    
+    [self.collectionView reloadData];
+
+    __block __typeof(callback)blockCallback = callback;
+    
+    [self.collectionView performBatchUpdates:^{
         
-        JxCalendarOverviewStyle oldStyle = self.style;
-        self.style = JxCalendarOverviewStyleMonthGrid;
+        self.collectionView.pagingEnabled = NO;
+        [self.collectionView.collectionViewLayout invalidateLayout];
+        [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutMonthGrid alloc] initWithViewController:self andSize:self.view.frame.size]
+                                            animated:animated];
         
-        [self.collectionView reloadData];
-        if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
-            [self.delegate calendarWillTransitionFrom:[self getAppearanceFromStyle:oldStyle] to:JxCalendarAppearanceMonth];
-        }
-        __block __typeof(callback)blockCallback = callback;
+        [self updateNavigationButtons];
         
-        [self.collectionView performBatchUpdates:^{
-            
-            self.collectionView.pagingEnabled = NO;
-            [self.collectionView.collectionViewLayout invalidateLayout];
-            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutMonthGrid alloc] initWithViewController:self andSize:self.view.frame.size] animated:YES];
-            
-            [self updateNavigationButtons];
-            
-        } completion:^(BOOL finished) {
-            
-            if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
-                [self.delegate calendarDidTransitionTo:JxCalendarAppearanceMonth];
-            }
-            
-            if (blockCallback) {
-                
-                blockCallback(finished);
-            }
-            
-        }];
-    }else{
-        if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
-            [self.delegate calendarWillTransitionFrom:JxCalendarAppearanceWeek to:JxCalendarAppearanceMonth];
-        }
-        JxCalendarOverview *overview = [[JxCalendarOverview alloc] initWithDataSource:self.dataSource
-                                                                             andStyle:JxCalendarOverviewStyleMonthGrid
-                                                                              andSize:self.view.frame.size
-                                                                         andStartDate:self.startDate
-                                                                   andStartAppearance:self.startAppearance];
+    } completion:^(BOOL finished) {
         
-        NSMutableArray *viewControllers = [self.navigationController.viewControllers mutableCopy];
-        
-        [viewControllers removeLastObject];
-        
-        if (![[viewControllers lastObject] isKindOfClass:[JxCalendarOverview class]]) {
-            [viewControllers addObject:overview];
+        if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
+            [self.delegate calendarDidTransitionTo:JxCalendarAppearanceMonth];
         }
         
-        [self.navigationController setViewControllers:viewControllers animated:YES];
-    }
+        if (blockCallback) {
+            
+            blockCallback(finished);
+        }
+        
+    }];
+    
 }
 - (void)switchToWeekView{
     
@@ -717,8 +767,12 @@
                 
                 NSDateComponents *components = [self componentsFromDate:date];
                 
-                [strongSelf scrollToMonth:components.month inYear:components.year];
-            }];
+                [strongSelf scrollToMonth:components.month inYear:components.year animated:YES];
+                if ([strongSelf.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
+                    [strongSelf.delegate calendarDidTransitionTo:JxCalendarAppearanceMonth];
+                }
+                
+            } animated:YES];
         }else{
     
         //tagesansicht öffnen
