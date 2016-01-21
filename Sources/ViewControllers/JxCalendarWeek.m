@@ -219,7 +219,7 @@
         
         
         
-        [self.delegate calendarWillTransitionFrom:JxCalendarAppearanceWeek to:[overview getAppearance]];
+        [self.delegate calendarWillTransitionFrom:JxCalendarAppearanceWeek to:[overview getOverviewAppearance]];
     }
     return YES;
 }

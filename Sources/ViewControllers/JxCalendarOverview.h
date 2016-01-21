@@ -25,7 +25,11 @@
 - (void)switchToAppearance:(JxCalendarAppearance)newAppearance;
 - (void)switchToAppearance:(JxCalendarAppearance)newAppearance withDate:(NSDate *)newDate;
 
+
 - (JxCalendarAppearance)getAppearance;
+
+//For internal use only;
+- (JxCalendarAppearance)getOverviewAppearance;
 
 @end
 
