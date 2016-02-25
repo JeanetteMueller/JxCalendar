@@ -347,7 +347,15 @@
     
     if (date) {
         
-        [self.delegate calendarDidSelectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
+        if ([self.dataSource isDaySelected:date]) {
+            if ([self.delegate respondsToSelector:@selector(calendarDidDeselectDate:whileOnAppearance:)]) {
+                [self.delegate calendarDidDeselectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
+            }
+        }else{
+            if ([self.delegate respondsToSelector:@selector(calendarDidSelectDate:whileOnAppearance:)]) {
+                [self.delegate calendarDidSelectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
+            }
+        }
         
         [self.collectionView reloadData];
         

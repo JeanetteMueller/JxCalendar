@@ -9,7 +9,22 @@
 #import "TestCalendarDataSource.h"
 #import <JxCalendar/JxCalendar.h>
 
-@implementation TestCalendarDataSource 
+@interface TestCalendarDataSource ()
+
+
+
+@end
+
+@implementation TestCalendarDataSource
+
+- (id)init{
+    self = [super init];
+    if (self) {
+        self.selectedDates = [NSMutableArray array];
+        self.selectedEvents = [NSMutableArray array];
+    }
+    return self;
+}
 
 #pragma mark - <JxCalendarDataSource>
 - (NSCalendar *)calendar{
@@ -93,9 +108,21 @@
     return @[];
 }
 - (BOOL)isEventSelected:(JxCalendarEvent *)event{
-    return ( arc4random() % 256 / 256.0 ) >= 0.5f;
+    return [self.selectedEvents containsObject:event]; //( arc4random() % 256 / 256.0 ) >= 0.5f;
+}
+- (BOOL)isDaySelectable:(NSDate *)date{
+    
+    NSDateComponents *components = [[self calendar] components:NSCalendarUnitWeekday fromDate:date];
+    
+    if ([JxCalendarBasics normalizedWeekDay:components.weekday] > 5) {
+        return NO;
+    }
+    if ([self eventsAt:date].count > 0) {
+        return NO;
+    }
+    return YES;
 }
 - (BOOL)isDaySelected:(NSDate *)date{
-    return ( arc4random() % 256 / 256.0 ) >= 0.5f ;
+    return [self.selectedDates containsObject:date]; //( arc4random() % 256 / 256.0 ) >= 0.5f ;
 }
 @end

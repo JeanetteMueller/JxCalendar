@@ -75,15 +75,31 @@
 }
 
 #pragma mark <JxCalendarDelegate>
-
+- (void)calendarShouldClearSelections{
+    
+    [self.dataSource.selectedDates removeAllObjects];
+    [self.dataSource.selectedEvents removeAllObjects];
+}
 - (void)calendarDidSelectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
     DLog(@" %@", date);
+    
+    [self.dataSource.selectedDates addObject:date];
 }
-
+- (void)calendarDidDeselectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
+    DLog(@" %@", date);
+    
+    [self.dataSource.selectedDates removeObject:date];
+}
 - (void)calendarDidSelectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance{
     DLog(@" %@", event);
+    
+    [self.dataSource.selectedEvents addObject:event];
 }
-
+- (void)calendarDidDeselectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance{
+    DLog(@" %@", event);
+    
+    [self.dataSource.selectedEvents removeObject:event];
+}
 - (void)calendarWillTransitionFrom:(JxCalendarAppearance)fromAppearance to:(JxCalendarAppearance)toAppearance{
     DLog(@"from %d to %d", fromAppearance, toAppearance);
 }

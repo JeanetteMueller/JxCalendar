@@ -60,19 +60,24 @@ typedef enum {
 - (NSArray <JxCalendarEvent*> *)eventsAt:(NSDate *)date;
 
 @optional
+- (BOOL)isDaySelectable:(NSDate *)date;
 - (BOOL)isDaySelected:(NSDate *)date;
 - (BOOL)isEventSelected:(JxCalendarEvent *)event;
 
 - (BOOL)shouldDisplayNavbarButtonsWhileOnAppearance:(JxCalendarAppearance)appearance;
+
+
 @end
 
 
 @protocol JxCalendarDelegate <NSObject>
 
 @optional
-
+- (void)calendarShouldClearSelections;
 - (void)calendarDidSelectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendarDidDeselectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
 - (void)calendarDidSelectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendarDidDeselectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance;
 
 - (void)calendarWillTransitionFrom:(JxCalendarAppearance)fromAppearance to:(JxCalendarAppearance)toAppearance;
 - (void)calendarDidTransitionTo:(JxCalendarAppearance)toAppearance;

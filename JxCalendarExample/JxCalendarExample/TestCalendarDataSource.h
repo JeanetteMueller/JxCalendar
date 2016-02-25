@@ -11,4 +11,7 @@
 
 @interface TestCalendarDataSource : NSObject <JxCalendarDataSource>
 
+@property (strong, nonatomic) NSMutableArray <NSDate*> *selectedDates;
+@property (strong, nonatomic) NSMutableArray <JxCalendarEvent*> *selectedEvents;
+
 @end

@@ -57,7 +57,7 @@
 		26FAA3F21C1F0F0F001C4DA6 /* JxCalendarLayoutWeek.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FAA3F01C1F0F0F001C4DA6 /* JxCalendarLayoutWeek.m */; };
 		26FAA3F51C1F135D001C4DA6 /* JxCalendarWeek.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FAA3F31C1F135D001C4DA6 /* JxCalendarWeek.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26FAA3F61C1F135D001C4DA6 /* JxCalendarWeek.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FAA3F41C1F135D001C4DA6 /* JxCalendarWeek.m */; };
-		26FAA3F91C1F13DB001C4DA6 /* JxCalendarBasics.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FAA3F71C1F13DB001C4DA6 /* JxCalendarBasics.h */; };
+		26FAA3F91C1F13DB001C4DA6 /* JxCalendarBasics.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FAA3F71C1F13DB001C4DA6 /* JxCalendarBasics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26FAA3FA1C1F13DB001C4DA6 /* JxCalendarBasics.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FAA3F81C1F13DB001C4DA6 /* JxCalendarBasics.m */; };
 		26FAA3FD1C1F1AE0001C4DA6 /* JxCalendarViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FAA3FB1C1F1AE0001C4DA6 /* JxCalendarViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26FAA3FE1C1F1AE0001C4DA6 /* JxCalendarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26FAA3FC1C1F1AE0001C4DA6 /* JxCalendarViewController.m */; };
@@ -252,11 +252,11 @@
 			files = (
 				26EBE20D1C18446700A0DB2E /* JxCalendar.h in Headers */,
 				26EBE20A1C18446700A0DB2E /* JxCalendarEvent.h in Headers */,
-				26FAA3F91C1F13DB001C4DA6 /* JxCalendarBasics.h in Headers */,
 				26EBE2171C18446700A0DB2E /* JxCalendarLayoutYearGrid.h in Headers */,
 				26FAA3EA1C1EC04F001C4DA6 /* JxCalendarLayoutOverview.h in Headers */,
 				26EBE2151C18446700A0DB2E /* JxCalendarLayoutMonthGrid.h in Headers */,
 				26FAA3FD1C1F1AE0001C4DA6 /* JxCalendarViewController.h in Headers */,
+				26FAA3F91C1F13DB001C4DA6 /* JxCalendarBasics.h in Headers */,
 				26EBE2191C18446700A0DB2E /* JxCalendarDay.h in Headers */,
 				26FAA3F51C1F135D001C4DA6 /* JxCalendarWeek.h in Headers */,
 				26EBE2131C18446700A0DB2E /* JxCalendarLayoutWeekGrid.h in Headers */,
