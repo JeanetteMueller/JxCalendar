@@ -137,13 +137,13 @@
             [self.collectionView setCollectionViewLayout:layout animated:NO];
             
    
-    
+    [self viewDidLayoutSubviews];
     
     //    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
     //
     //    }];
     
-    
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 - (void)viewDidLayoutSubviews{
     [super viewDidLayoutSubviews];

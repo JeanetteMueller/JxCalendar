@@ -194,6 +194,24 @@
     }
     return YES;
 }
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    
+    NSLog(@"viewWillTransitionToSize %f x %f", size.width, size.height);
+    
+    
+    
+    self.collectionView.pagingEnabled = NO;
+    
+    [self.collectionView.collectionViewLayout invalidateLayout];
+    
+    JxCalendarLayoutDay *layout = [[JxCalendarLayoutDay alloc] initWithSize:self.collectionView.bounds.size andDay:_now];
+    layout.source = self;
+    
+    [self.collectionView setCollectionViewLayout:layout animated:NO];
+
+    
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+}
 - (void)setCurrentDate:(NSDate *)currentDate{
     _startDate = currentDate;
     

@@ -180,31 +180,22 @@
     
     NSLog(@"viewWillTransitionToSize %f x %f", size.width, size.height);
     
-    
-    
-//    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-        
-        switch (self.style) {
-            case JxCalendarOverviewStyleYearGrid:{
-                self.collectionView.pagingEnabled = NO;
-                [self.collectionView.collectionViewLayout invalidateLayout];
-                [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutYearGrid alloc] initWithViewController:self andSize:size] animated:YES];
-                
-            }break;
-            case JxCalendarOverviewStyleMonthGrid:{
-                self.collectionView.pagingEnabled = NO;
-                [self.collectionView.collectionViewLayout invalidateLayout];
-                [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutMonthGrid alloc] initWithViewController:self andSize:size] animated:YES];
-                
-            }break;
-
-        }
-        
-//    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-//        
-//    }];
-    
-    
+    switch (self.style) {
+        case JxCalendarOverviewStyleYearGrid:{
+            self.collectionView.pagingEnabled = NO;
+            [self.collectionView.collectionViewLayout invalidateLayout];
+            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutYearGrid alloc] initWithViewController:self andSize:size] animated:YES];
+            
+        }break;
+        case JxCalendarOverviewStyleMonthGrid:{
+            self.collectionView.pagingEnabled = NO;
+            [self.collectionView.collectionViewLayout invalidateLayout];
+            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutMonthGrid alloc] initWithViewController:self andSize:size] animated:YES];
+            
+        }break;
+            
+    }
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 - (JxCalendarAppearance)getAppearance{
     if ([self.navigationController.viewControllers.lastObject isKindOfClass:[JxCalendarDay class]]) {
