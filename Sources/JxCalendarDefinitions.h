@@ -66,6 +66,10 @@ typedef enum {
 
 - (BOOL)shouldDisplayNavbarButtonsWhileOnAppearance:(JxCalendarAppearance)appearance;
 
+- (BOOL)isDayRangeable:(NSDate *)date;
+- (BOOL)isStartOfRange:(NSDate *)date;
+- (BOOL)isEndOfRange:(NSDate *)date;
+- (BOOL)isPartOfRange:(NSDate *)date;
 
 @end
 
@@ -83,6 +87,11 @@ typedef enum {
 - (void)calendarDidTransitionTo:(JxCalendarAppearance)toAppearance;
 
 - (NSString *)calendarTitleOnDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
+
+#pragma mark Range
+- (void)calendarShouldClearRange;
+- (void)calendarDidRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendarDidDeRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
 
 @end
 

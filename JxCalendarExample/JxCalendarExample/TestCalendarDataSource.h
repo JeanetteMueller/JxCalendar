@@ -13,5 +13,5 @@
 
 @property (strong, nonatomic) NSMutableArray <NSDate*> *selectedDates;
 @property (strong, nonatomic) NSMutableArray <JxCalendarEvent*> *selectedEvents;
-
+@property (strong, nonatomic) NSMutableArray <NSDate*> *rangedDates;
 @end

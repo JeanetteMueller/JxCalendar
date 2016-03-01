@@ -15,6 +15,10 @@
 @property (strong, nonatomic) IBOutlet UILabel *label;
 @property (strong, nonatomic) IBOutlet UIView *eventMarker;
 
+@property (strong, nonatomic) IBOutlet UIView *rangeTo;
+@property (strong, nonatomic) IBOutlet UIView *rangeFrom;
+@property (strong, nonatomic) IBOutlet UIView *rangeDot;
+
 @property (strong, nonatomic) JxCalendarDay *vc;
 
 @end

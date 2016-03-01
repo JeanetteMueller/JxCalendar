@@ -463,89 +463,95 @@
 - (void)longPressAction:(UILongPressGestureRecognizer *)sender{
     
     CGPoint point = [sender locationInView:self.collectionView];
-    
-    if (sender.state != UIGestureRecognizerStateChanged) {
 
-    }
-    
-    
-        
-        switch (sender.state) {
-            case UIGestureRecognizerStateBegan:{
-                NSLog(@"UIGestureRecognizerStateBegan");
+    switch (sender.state) {
+        case UIGestureRecognizerStateBegan:{
+            NSLog(@"UIGestureRecognizerStateBegan");
+            
+            NSIndexPath *path = [self.collectionView indexPathForItemAtPoint:point];
+            
+            if (path) {
+                
+                
+                if ([path isEqual:_longHoldStartIndexPath]) {
+                    _longHoldStartIndexPath = _longHoldEndIndexPath;
+                    _longHoldEndIndexPath = path;
+                    
+                }else if ([path isEqual:_longHoldEndIndexPath]){
+                    
+                }else{
+                    _longHoldStartIndexPath = nil;
+                    _longHoldEndIndexPath = nil;
+                    
+                    if ([self.dataSource respondsToSelector:@selector(isDayRangeable:)]) {
+                        NSDate *date = [self getDateForIndexPath:path];
+                        if (date) {
+                            
+                            if ([self.dataSource isDayRangeable:date]) {
+                                
+                                
+                                _longHoldStartIndexPath = path;
+                                
+                                
+                            }
+                        }
+                    }
+                }
+                
+                
+                [self updateLongHoldSelectedCells];
+            }
+            
+        }break;
+        case UIGestureRecognizerStateChanged:{
+            NSLog(@"UIGestureRecognizerStateChanged");
+            if (_longHoldStartIndexPath) {
+                
                 
                 NSIndexPath *path = [self.collectionView indexPathForItemAtPoint:point];
                 
                 if (path) {
                     
-                    
-                    if ([path isEqual:_longHoldStartIndexPath]) {
-                        _longHoldStartIndexPath = _longHoldEndIndexPath;
-                        _longHoldEndIndexPath = path;
-                        
-                    }else if ([path isEqual:_longHoldEndIndexPath]){
-                        
-                    }else{
-                        _longHoldStartIndexPath = nil;
-                        _longHoldEndIndexPath = nil;
-                        
-                        if ([self.dataSource respondsToSelector:@selector(isDaySelectable:)]) {
-                            NSDate *date = [self getDateForIndexPath:path];
-                            if (date) {
+                    if ([self.dataSource respondsToSelector:@selector(isDayRangeable:)]) {
+                        NSDate *date = [self getDateForIndexPath:path];
+                        if (date) {
+                            if ([self.dataSource isDayRangeable:date]) {
+                            
+                            
+                                _longHoldEndIndexPath = path;
                                 
-                                if ([self.dataSource isDaySelectable:date]) {
-                                    
-                                    
-                                    _longHoldStartIndexPath = path;
-                                    
-                                    
-                                }
+                                [self updateLongHoldSelectedCells];
                             }
                         }
                     }
-                    
-                    
-                    [self updateLongHoldSelectedCells];
                 }
                 
+                NSLog(@"point %f x %f", point.x, point.y);
+                
+                CGFloat triggerOffset = 50;
+                
+                if (point.y - self.collectionView.contentOffset.y < triggerOffset) {
+                    CGFloat move = triggerOffset - (point.y - self.collectionView.contentOffset.y);
+                    self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y - move);
+                }
+                
+                if (point.y - self.collectionView.contentOffset.y > self.collectionView.frame.size.height-triggerOffset) {
+                    CGFloat move = (point.y - self.collectionView.contentOffset.y)- (self.collectionView.frame.size.height-triggerOffset);
+                    self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y + move);
+                }
+            }
+            
             }break;
-            case UIGestureRecognizerStateChanged:{
-                NSLog(@"UIGestureRecognizerStateChanged");
-                if (_longHoldStartIndexPath) {
-                    
-                    
-                    NSIndexPath *path = [self.collectionView indexPathForItemAtPoint:point];
-                    
-                    if (path) {
-                        
-                        if ([self.dataSource respondsToSelector:@selector(isDaySelectable:)]) {
-                            NSDate *date = [self getDateForIndexPath:path];
-                            if (date) {
-                                if ([self.dataSource isDaySelectable:date]) {
-                                
-                                
-                                    _longHoldEndIndexPath = path;
-                                    
-                                    [self updateLongHoldSelectedCells];
-                                }
-                            }
-                        }
-                        
-                        
-                    }
-                }
-                
-                }break;
-            case UIGestureRecognizerStatePossible:
-            case UIGestureRecognizerStateEnded:
-            case UIGestureRecognizerStateFailed:
-            case UIGestureRecognizerStateCancelled:{
-                NSLog(@"UIGestureRecognizerState ended / failed / cancelled");
-                
-                [self updateLongHoldSelectedCells];
-                
-                
-                
+        case UIGestureRecognizerStatePossible:
+        case UIGestureRecognizerStateEnded:
+        case UIGestureRecognizerStateFailed:
+        case UIGestureRecognizerStateCancelled:{
+            NSLog(@"UIGestureRecognizerState ended / failed / cancelled");
+            
+            [self updateLongHoldSelectedCells];
+            
+            
+            
 //                _holdIndexPath = nil;
 //                
 //                if (_editing) {
@@ -555,16 +561,16 @@
 //                }
 //                
 //                self.pageViewController.view.userInteractionEnabled = YES;
-                
-            }break;
-        }
+            
+        }break;
+    }
 
 }
 - (void)updateLongHoldSelectedCells{
     
     NSMutableArray *updatePathes = [NSMutableArray array];
     
-    if ([self.delegate respondsToSelector:@selector(calendarShouldClearSelections)]) {
+    if ([self.delegate respondsToSelector:@selector(calendarShouldClearRange)]) {
         
         for (JxCalendarCell *cell in self.collectionView.visibleCells) {
             
@@ -572,12 +578,12 @@
             
             NSDate *thisDate = [self getDateForIndexPath:thisPath];
             
-            if ([self.dataSource respondsToSelector:@selector(isDaySelected:)] && [self.dataSource isDaySelected:thisDate]) {
+            if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:thisDate]) {
                 [updatePathes addObject:thisPath];
             }
         }
         
-        [self.delegate calendarShouldClearSelections];
+        [self.delegate calendarShouldClearRange];
     }
     
     
@@ -614,14 +620,12 @@
                     NSIndexPath *path = [NSIndexPath indexPathForItem:row inSection:section];
                     
                     NSDate *date = [self getDateForIndexPath:path];
-                    if (date && [self.dataSource isDaySelectable:date]) {
-                        [self.delegate calendarDidSelectDate:date whileOnAppearance:[self getAppearance]];
+                    if (date && [self.dataSource isDayRangeable:date]) {
+                        [self.delegate calendarDidRangeDate:date whileOnAppearance:[self getAppearance]];
                         
                         if (![updatePathes containsObject:path]) {
                             [updatePathes addObject:path];
                         }
-                        
-                        NSLog(@"path %@", path);
                     }
                     
                 }
@@ -631,7 +635,7 @@
             
             NSDate *date = [self getDateForIndexPath:_longHoldStartIndexPath];
             
-            [self.delegate calendarDidSelectDate:date whileOnAppearance:[self getAppearance]];
+            [self.delegate calendarDidRangeDate:date whileOnAppearance:[self getAppearance]];
         }
     }
 
@@ -876,8 +880,89 @@
     JxCalendarCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     
     [self updateCell:cell atIndexPath:indexPath];
+    
+    [self updateRangeForCell:cell atIndexPath:indexPath];
+    
 
     return cell;
+}
+- (void)updateRangeForCell:(JxCalendarCell *)cell atIndexPath:(NSIndexPath *)indexPath{
+    
+    NSDate *thisDate = [self getDateForIndexPath:indexPath];
+    
+    cell.rangeDot.hidden = YES;
+    cell.rangeFrom.hidden = YES;
+    cell.rangeTo.hidden = YES;
+    
+    if (thisDate) {
+        
+        if ([self.dataSource respondsToSelector:@selector(isDayRangeable:)] &&
+            [self.dataSource respondsToSelector:@selector(isPartOfRange:)] &&
+            [self.dataSource respondsToSelector:@selector(isStartOfRange:)] &&
+            [self.dataSource respondsToSelector:@selector(isEndOfRange:)]
+            ) {
+        
+            if([self.dataSource isPartOfRange:thisDate]) {
+                
+                [cell.rangeDot.layer setCornerRadius:cell.rangeDot.frame.size.height/2];
+        
+                if ([self nextCellIsInRangeWithIndexPath:indexPath]) {
+                    cell.rangeFrom.hidden = NO;
+                }
+                
+                if ([self lastCellIsInRangeWithIndexPath:indexPath]) {
+                    cell.rangeTo.hidden = NO;
+                }
+                
+                if ([self lastCellIsInRangeWithIndexPath:indexPath] && [self nextCellIsInRangeWithIndexPath:indexPath]) {
+                    cell.rangeDot.hidden = YES;
+                }else{
+                    cell.rangeDot.hidden = NO;
+                }
+            }
+        }
+    }
+}
+- (BOOL)nextCellIsInRangeWithIndexPath:(NSIndexPath *)indexPath{
+    NSIndexPath *nextPath;
+    
+    if ([self.collectionView numberOfItemsInSection:indexPath.section] > indexPath.item) {
+        nextPath = [NSIndexPath indexPathForItem:indexPath.item+1 inSection:indexPath.section];
+    }else if (self.collectionView.numberOfSections > indexPath.section){
+        nextPath = [NSIndexPath indexPathForItem:0 inSection:indexPath.section+1];
+    }
+    if (nextPath) {
+        NSDate *nextDate = [self getDateForIndexPath:nextPath];
+        
+        if (nextDate) {
+            if ([self.dataSource isPartOfRange:nextDate]) {
+                return YES;
+            }
+        }
+    }
+    
+    return NO;
+}
+- (BOOL)lastCellIsInRangeWithIndexPath:(NSIndexPath *)indexPath{
+    NSIndexPath *lastPath;
+    
+    if (indexPath.item > 0) {
+        lastPath = [NSIndexPath indexPathForItem:indexPath.item-1 inSection:indexPath.section];
+    }else if(indexPath.section > 0){
+        lastPath = [NSIndexPath indexPathForItem:[self.collectionView numberOfItemsInSection:indexPath.section-1]-1 inSection:indexPath.section-1];
+    }
+    
+    if (lastPath) {
+        NSDate *lastDate = [self getDateForIndexPath:lastPath];
+        
+        if (lastDate) {
+            if ([self.dataSource isPartOfRange:lastDate]) {
+                return YES;
+            }
+        }
+    }
+    
+    return NO;
 }
 - (void)updateCell:(JxCalendarCell *)cell atIndexPath:(NSIndexPath *)indexPath{
     

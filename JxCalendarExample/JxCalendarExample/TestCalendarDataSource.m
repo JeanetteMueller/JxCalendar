@@ -22,6 +22,7 @@
     if (self) {
         self.selectedDates = [NSMutableArray array];
         self.selectedEvents = [NSMutableArray array];
+        self.rangedDates = [NSMutableArray array];
     }
     return self;
 }
@@ -124,5 +125,38 @@
 }
 - (BOOL)isDaySelected:(NSDate *)date{
     return [self.selectedDates containsObject:date]; //( arc4random() % 256 / 256.0 ) >= 0.5f ;
+}
+
+
+#pragma mark Range Selection
+- (BOOL)isDayRangeable:(NSDate *)date{
+    
+    NSDateComponents *components = [[self calendar] components:NSCalendarUnitWeekday fromDate:date];
+    
+    if ([JxCalendarBasics normalizedWeekDay:components.weekday] > 5) {
+        return NO;
+    }
+    
+    return YES;
+}
+- (BOOL)isStartOfRange:(NSDate *)date{
+    
+    if ([self.rangedDates.firstObject isEqual:date]) {
+        return YES;
+    }
+    
+    return NO;
+}
+- (BOOL)isEndOfRange:(NSDate *)date{
+    
+    if ([self.rangedDates.lastObject isEqual:date]) {
+        return YES;
+    }
+    
+    return NO;
+}
+- (BOOL)isPartOfRange:(NSDate *)date{
+    
+    return [self.rangedDates containsObject:date];
 }
 @end

@@ -53,7 +53,7 @@
     self.dataSource = [[TestCalendarDataSource alloc] init];
     
     
-    NSLog(@"usable size %f x %f", self.view.frame.size.width, self.view.frame.size.height);
+    //NSLog(@"usable size %f x %f", self.view.frame.size.width, self.view.frame.size.height);
     
     
     JxCalendarOverview *overview = [[JxCalendarOverview alloc] initWithDataSource:_dataSource
@@ -81,29 +81,40 @@
     [self.dataSource.selectedEvents removeAllObjects];
 }
 - (void)calendarDidSelectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
-    DLog(@" %@", date);
+    //DLog(@" %@", date);
     
     [self.dataSource.selectedDates addObject:date];
 }
 - (void)calendarDidDeselectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
-    DLog(@" %@", date);
+    //DLog(@" %@", date);
     
     [self.dataSource.selectedDates removeObject:date];
 }
 - (void)calendarDidSelectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance{
-    DLog(@" %@", event);
+    //DLog(@" %@", event);
     
     [self.dataSource.selectedEvents addObject:event];
 }
 - (void)calendarDidDeselectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance{
-    DLog(@" %@", event);
+    //DLog(@" %@", event);
     
     [self.dataSource.selectedEvents removeObject:event];
 }
 - (void)calendarWillTransitionFrom:(JxCalendarAppearance)fromAppearance to:(JxCalendarAppearance)toAppearance{
-    DLog(@"from %d to %d", fromAppearance, toAppearance);
+    //DLog(@"from %d to %d", fromAppearance, toAppearance);
 }
 - (void)calendarDidTransitionTo:(JxCalendarAppearance)toAppearance{
-    DLog(@"to %d", toAppearance);
+    //DLog(@"to %d", toAppearance);
+}
+
+#pragma mark Range
+- (void)calendarShouldClearRange{
+    [self.dataSource.rangedDates removeAllObjects];
+}
+- (void)calendarDidRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
+    [self.dataSource.rangedDates addObject:date];
+}
+- (void)calendarDidDeRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
+    [self.dataSource.rangedDates removeObject:date];
 }
 @end
