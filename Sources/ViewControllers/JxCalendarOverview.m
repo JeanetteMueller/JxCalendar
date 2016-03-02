@@ -24,6 +24,8 @@
 
 @property (nonatomic, readwrite) CGSize startSize;
 
+@property (nonatomic, readwrite) JxCalendarSelectionStyle selectionStyle;
+
 @property (strong, nonatomic, readwrite) UILongPressGestureRecognizer *longPressGesture;
 @property (strong, nonatomic, readwrite) NSIndexPath *longHoldStartIndexPath;
 @property (strong, nonatomic, readwrite) NSIndexPath *longHoldEndIndexPath;
@@ -32,7 +34,7 @@
 
 @implementation JxCalendarOverview
 
-- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarOverviewStyle)style andSize:(CGSize)size andStartDate:(NSDate *)date andStartAppearance:(JxCalendarAppearance)appearance{
+- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarOverviewStyle)style andSize:(CGSize)size andStartDate:(NSDate *)date andStartAppearance:(JxCalendarAppearance)appearance andSelectionStyle:(JxCalendarSelectionStyle)selectionStyle{
     
     if (CGSizeEqualToSize(size, CGSizeZero)) {
         size = [UIScreen mainScreen].bounds.size;
@@ -65,6 +67,7 @@
         self.startDate = date;
         self.startAppearance = appearance;
         self.dataSource = dataSource;
+        self.selectionStyle = selectionStyle;
         
         if (!self.startDate) {
             
@@ -112,7 +115,8 @@
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
-    [self updateNavigationButtons];
+    [self updateSelectionStyle];
+    
     
     [self switchToNewYear:[self startComponents].year];
     
@@ -149,12 +153,38 @@
         self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
     }
     
-    self.longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
-    self.longPressGesture.numberOfTouchesRequired = 1;
-    self.longPressGesture.minimumPressDuration = 0.5;
-    [self.collectionView addGestureRecognizer:self.longPressGesture];
+}
+- (void)updateSelectionStyle{
     
-    NSLog(@"gesture %@", self.collectionView.gestureRecognizers);
+    int count = (int)self.collectionView.gestureRecognizers.count-1;
+    for (int i = count; i >= 0; i--) {
+        if ([self.collectionView.gestureRecognizers[i] isKindOfClass:[UILongPressGestureRecognizer class]]) {
+            [self.collectionView removeGestureRecognizer:self.collectionView.gestureRecognizers[i]];
+        }
+    }
+    if (self.style == JxCalendarOverviewStyleMonthGrid) {
+        switch (self.selectionStyle) {
+            case JxCalendarSelectionStyleDefault:
+            case JxCalendarSelectionStyleRangeOnly:{
+                self.longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
+                self.longPressGesture.numberOfTouchesRequired = 1;
+                if (self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
+                    self.longPressGesture.minimumPressDuration = 0.1f;
+                }else{
+                    self.longPressGesture.minimumPressDuration = 0.5f;
+                }
+                
+                [self.collectionView addGestureRecognizer:self.longPressGesture];
+            }break;
+                
+            default:
+                
+                
+                break;
+        }
+    }
+    
+    [self updateNavigationButtons];
 }
 - (void)updateNavigationButtons{
     
@@ -162,16 +192,58 @@
         [self.dataSource shouldDisplayNavbarButtonsWhileOnAppearance:[self getOverviewAppearance]]) {
         
         switch (self.style) {
-            case JxCalendarOverviewStyleMonthGrid:
-                self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYear:)];
-                break;
+            case JxCalendarOverviewStyleMonthGrid:{
+                
+                if ([self.delegate respondsToSelector:@selector(calendarSelectionStyleSwitchable)] && [self.delegate calendarSelectionStyleSwitchable]) {
+                    UIBarButtonItem *extraButton;
+                    
+                    switch (self.selectionStyle) {
+                        case JxCalendarSelectionStyleDefault:
+                            extraButton = [[UIBarButtonItem alloc] initWithTitle:@"Default" style:UIBarButtonItemStylePlain target:self action:@selector(switchToSelectOnly:)];
+                            break;
+                        case JxCalendarSelectionStyleSelectOnly:
+                            extraButton = [[UIBarButtonItem alloc] initWithTitle:@"Select" style:UIBarButtonItemStylePlain target:self action:@selector(switchToRangeOnly:)];
+                            break;
+                        case JxCalendarSelectionStyleRangeOnly:
+                            extraButton = [[UIBarButtonItem alloc] initWithTitle:@"Range" style:UIBarButtonItemStylePlain target:self action:@selector(switchToDefault:)];
+                            break;
+                    }
+                    
+                    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYear:)],
+                                                                extraButton];
+                }else{
+                    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYear:)]];
+                }
+                
+            }break;
             case JxCalendarOverviewStyleYearGrid:
-                self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Month" style:UIBarButtonItemStylePlain target:self action:@selector(switchToMonth:)];
+                self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithTitle:@"Month" style:UIBarButtonItemStylePlain target:self action:@selector(switchToMonth:)]];
                 break;
             default:
                 break;
         }
     }
+}
+- (IBAction)switchToSelectOnly:(id)sender{
+    NSLog(@"switchToSelectOnly");
+    
+    self.selectionStyle = JxCalendarSelectionStyleSelectOnly;
+    
+    [self updateSelectionStyle];
+}
+- (IBAction)switchToRangeOnly:(id)sender{
+    NSLog(@"switchToRangeOnly");
+    
+    self.selectionStyle = JxCalendarSelectionStyleRangeOnly;
+    
+    [self updateSelectionStyle];
+}
+- (IBAction)switchToDefault:(id)sender{
+    NSLog(@"switchToDefault");
+    
+    self.selectionStyle = JxCalendarSelectionStyleDefault;
+    
+    [self updateSelectionStyle];
 }
 - (IBAction)switchToYear:(id)sender{
     [self switchToAppearance:JxCalendarAppearanceYear withDate:nil];
@@ -376,7 +448,7 @@
                 case JxCalendarAppearanceMonth:{
                     [self switchToMonthGridViewWithCallback:^(BOOL finished) {
                         NSDateComponents *startComponents = [self startComponents];
-                        
+                        [self updateSelectionStyle];
                         [self scrollToMonth:startComponents.month inYear:startComponents.year animated:NO];
                     } animated:NO];
             }break;
@@ -394,6 +466,7 @@
                         
                     } completion:^(BOOL finished) {
                         
+                        [self updateSelectionStyle];
                         if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
                             [self.delegate calendarDidTransitionTo:JxCalendarAppearanceYear];
                         }
@@ -668,7 +741,7 @@
         [self updateNavigationButtons];
         
     } completion:^(BOOL finished) {
-        
+        [self updateSelectionStyle];
         if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
             [self.delegate calendarDidTransitionTo:JxCalendarAppearanceYear];
         }
@@ -698,6 +771,7 @@
         
     } completion:^(BOOL finished) {
         
+        [self updateSelectionStyle];
         if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
             [self.delegate calendarDidTransitionTo:JxCalendarAppearanceMonth];
         }
@@ -904,8 +978,7 @@
         
             if([self.dataSource isPartOfRange:thisDate]) {
                 
-                [cell.rangeDot.layer setCornerRadius:cell.rangeDot.frame.size.height/2];
-        
+                
                 if ([self nextCellIsInRangeWithIndexPath:indexPath]) {
                     cell.rangeFrom.hidden = NO;
                 }
@@ -922,11 +995,24 @@
             }
         }
     }
+    
+    CGSize cellSize = cell.frame.size;
+    
+    CGFloat borderHeightPercent = 60.0f;
+    CGFloat dotHeightPercent = 90.0f;
+    
+    cell.rangeFrom.frame = CGRectMake((cellSize.width/2), (cellSize.height-(cellSize.height/100*borderHeightPercent))/2 , cellSize.width/2 + 5, cellSize.height/100*borderHeightPercent);
+    cell.rangeTo.frame = CGRectMake(-5, (cellSize.height-(cellSize.height/100*borderHeightPercent))/2 , cellSize.width/2+5, cellSize.height/100*borderHeightPercent);
+    
+    cell.rangeDot.frame = CGRectMake((cellSize.width - (cellSize.height/100*dotHeightPercent))/2, (cellSize.height/100*((100-dotHeightPercent)/2)), (cellSize.height/100*dotHeightPercent), (cellSize.height/100*dotHeightPercent));
+    
+    [cell.rangeDot.layer setCornerRadius:cell.rangeDot.frame.size.height/2];
+    
 }
 - (BOOL)nextCellIsInRangeWithIndexPath:(NSIndexPath *)indexPath{
     NSIndexPath *nextPath;
     
-    if ([self.collectionView numberOfItemsInSection:indexPath.section] > indexPath.item) {
+    if ([self.collectionView numberOfItemsInSection:indexPath.section] > indexPath.item+1) {
         nextPath = [NSIndexPath indexPathForItem:indexPath.item+1 inSection:indexPath.section];
     }else if (self.collectionView.numberOfSections > indexPath.section){
         nextPath = [NSIndexPath indexPathForItem:0 inSection:indexPath.section+1];
@@ -970,6 +1056,7 @@
     
     [[cell viewWithTag:999] removeFromSuperview];
     cell.vc = nil;
+    
     
     if (thisDate) {
         
@@ -1028,6 +1115,10 @@
 #pragma mark <UICollectionViewDelegate>
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
+    if (self.style == JxCalendarOverviewStyleMonthGrid && self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
+        return;
+    }
+    
 //    if (self.style == JxCalendarStyleWeekGrid) {
 //        return;
 //    }
@@ -1047,6 +1138,7 @@
                 NSDateComponents *components = [self componentsFromDate:date];
                 
                 [strongSelf scrollToMonth:components.month inYear:components.year animated:YES];
+                
                 if ([strongSelf.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
                     [strongSelf.delegate calendarDidTransitionTo:JxCalendarAppearanceMonth];
                 }

@@ -58,9 +58,10 @@
     
     JxCalendarOverview *overview = [[JxCalendarOverview alloc] initWithDataSource:_dataSource
                                                                          andStyle:JxCalendarOverviewStyleMonthGrid
-                                                                         andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)
+                                                                          andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)
                                                                      andStartDate:[NSDate date]
-                                                               andStartAppearance:JxCalendarAppearanceMonth];
+                                                               andStartAppearance:JxCalendarAppearanceMonth
+                                                                andSelectionStyle:JxCalendarSelectionStyleRangeOnly];
     
     overview.delegate = self;
     
@@ -75,6 +76,9 @@
 }
 
 #pragma mark <JxCalendarDelegate>
+- (BOOL)calendarSelectionStyleSwitchable{
+    return YES;
+}
 - (void)calendarShouldClearSelections{
     
     [self.dataSource.selectedDates removeAllObjects];

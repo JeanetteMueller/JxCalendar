@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		260D6F7E1C18575100904A44 /* TestCalendarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 260D6F7D1C18575100904A44 /* TestCalendarDataSource.m */; };
-		269829C31C85EFD2006C523F /* JxCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269829C21C85EFD2006C523F /* JxCalendar.framework */; };
-		269829C41C85EFD2006C523F /* JxCalendar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 269829C21C85EFD2006C523F /* JxCalendar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		266E3F521C86E04000B5AC37 /* JxCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 266811BB1C43FB6900A96565 /* JxCalendar.framework */; };
+		266E3F531C86E04000B5AC37 /* JxCalendar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 266811BB1C43FB6900A96565 /* JxCalendar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		26B67C801C18566B000FC387 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B67C7F1C18566B000FC387 /* main.m */; };
 		26B67C831C18566B000FC387 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B67C821C18566B000FC387 /* AppDelegate.m */; };
 		26B67C861C18566B000FC387 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B67C851C18566B000FC387 /* ViewController.m */; };
@@ -20,13 +20,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		269829C51C85EFD2006C523F /* Embed Frameworks */ = {
+		266E3F541C86E04100B5AC37 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				269829C41C85EFD2006C523F /* JxCalendar.framework in Embed Frameworks */,
+				266E3F531C86E04000B5AC37 /* JxCalendar.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -56,7 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				269829C31C85EFD2006C523F /* JxCalendar.framework in Frameworks */,
+				266E3F521C86E04000B5AC37 /* JxCalendar.framework in Frameworks */,
 				26FAA3EC1C1ECB04001C4DA6 /* JxCalendar.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -118,7 +118,7 @@
 				26B67C771C18566B000FC387 /* Sources */,
 				26B67C781C18566B000FC387 /* Frameworks */,
 				26B67C791C18566B000FC387 /* Resources */,
-				269829C51C85EFD2006C523F /* Embed Frameworks */,
+				266E3F541C86E04100B5AC37 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

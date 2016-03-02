@@ -48,6 +48,18 @@ typedef enum {
     JxCalendarOverviewStyleMonthGrid
 } JxCalendarOverviewStyle;
 
+typedef enum {
+    /* touch on an item opens the detailview, long holf start range-selection */
+    JxCalendarSelectionStyleDefault,
+    
+    /* touch on an item opens the detailview, no aktive long-hold gesture */
+    JxCalendarSelectionStyleSelectOnly,
+    
+    /* touch on an item start a range-selection. another touch ends range-selection. touch and hold start and change range */
+    JxCalendarSelectionStyleRangeOnly
+    
+} JxCalendarSelectionStyle;
+
 @class JxCalendarOverview, JxCalendarEvent;
 
 
@@ -77,6 +89,8 @@ typedef enum {
 @protocol JxCalendarDelegate <NSObject>
 
 @optional
+- (BOOL)calendarSelectionStyleSwitchable;
+
 - (void)calendarShouldClearSelections;
 - (void)calendarDidSelectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
 - (void)calendarDidDeselectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
