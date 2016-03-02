@@ -10,6 +10,8 @@
 
 @interface JxCalendarEvent : NSObject
 
+@property (strong, nonatomic) NSDate *start;
+
 @property (strong, nonatomic, readonly) NSString *identifier;
 @property (strong, nonatomic, readonly) NSCalendar *calendar;
 @property (strong, nonatomic) NSString *title;

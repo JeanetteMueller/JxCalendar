@@ -18,6 +18,7 @@
 
 @property (strong, nonatomic) TestCalendarDataSource *dataSource;
 @property (strong, nonatomic) UINavigationController *navRoot;
+@property (strong, nonatomic) JxCalendarOverview *overview;
 
 @property (nonatomic, readwrite) BOOL startOpened;
 @end
@@ -43,7 +44,9 @@
         [self openCalendar:nil];
     }
 }
-
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskAll;
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -56,17 +59,17 @@
     //NSLog(@"usable size %f x %f", self.view.frame.size.width, self.view.frame.size.height);
     
     
-    JxCalendarOverview *overview = [[JxCalendarOverview alloc] initWithDataSource:_dataSource
+    _overview = [[JxCalendarOverview alloc] initWithDataSource:_dataSource
                                                                          andStyle:JxCalendarOverviewStyleMonthGrid
                                                                           andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)
                                                                      andStartDate:[NSDate date]
                                                                andStartAppearance:JxCalendarAppearanceMonth
-                                                                andSelectionStyle:JxCalendarSelectionStyleRangeOnly];
+                                                                andSelectionStyle:JxCalendarSelectionStyleDefault];
     
-    overview.delegate = self;
+    _overview.delegate = self;
     
     
-    self.navRoot = [[UINavigationController alloc] initWithRootViewController:overview];
+    self.navRoot = [[UINavigationController alloc] initWithRootViewController:_overview];
     [self.navRoot.navigationBar setTranslucent:NO];
     
     [self presentViewController:self.navRoot animated:YES completion:nil];
@@ -109,6 +112,24 @@
 }
 - (void)calendarDidTransitionTo:(JxCalendarAppearance)toAppearance{
     //DLog(@"to %d", toAppearance);
+    
+    if (toAppearance == JxCalendarAppearanceWeek || toAppearance == JxCalendarAppearanceDay) {
+        
+        NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear fromDate:[NSDate new]];
+        components.day = 17;
+        
+        NSDate *date = [[self.dataSource calendar] dateFromComponents:components];
+        
+        DLog(@"date %@", date);
+
+        NSArray *events = [self.dataSource eventsAt:date];
+        
+        DLog(@"events %@", events);
+        if (events.count > 0) {
+            [_overview scrollToEvent:events[9]];
+        }
+        
+    }
 }
 
 #pragma mark Range

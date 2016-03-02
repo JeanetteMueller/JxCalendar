@@ -10,7 +10,6 @@
 
 @interface JxCalendarEventDuration : JxCalendarEvent
 
-@property (strong, nonatomic, readonly) NSDate *start;
 @property (strong, nonatomic, readonly) NSDate *end;
 @property (nonatomic, readonly) NSTimeInterval duration;
 

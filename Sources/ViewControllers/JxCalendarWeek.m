@@ -244,10 +244,36 @@
     
     NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:[self startComponents].month inCalendar:[self calendar] andYear:[self startComponents].year];
     
-    NSDateComponents *firstComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday   )
+    NSDateComponents *firstComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday)
                                                            fromDate:firstDay];
     
     return [JxCalendarBasics normalizedWeekDay:firstComponents.weekday]-1 + day - 1;
+}
+#pragma mark <JxCalendarScrollTo>
+- (void)scrollToEvent:(JxCalendarEvent *)event{
+    [self scrollToDate:event.start];
+}
+- (void)scrollToDate:(NSDate *)date{
+    NSLog(@"week scroll to date");
+    NSDateComponents *dateComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday) fromDate:date];
+    
+    if (dateComponents) {
+    
+        NSIndexPath *path = [NSIndexPath indexPathForItem:0 inSection:[self getSectionForDate:date]];
+        
+        if ([self.collectionView numberOfSections] > path.section && [self.collectionView numberOfItemsInSection:path.section] > 0) {
+            
+            NSIndexPath *headPath = [NSIndexPath indexPathForItem:0 inSection:path.section+7-[JxCalendarBasics normalizedWeekDay:dateComponents.weekday]];
+            
+            UICollectionViewLayoutAttributes *headAttr = [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:headPath];
+            
+            UICollectionViewLayoutAttributes *attr = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:path];
+            
+            [self.collectionView scrollRectToVisible:CGRectMake(headAttr.frame.origin.x, attr.frame.origin.y, attr.frame.size.width, 50) animated:YES];
+            
+        }
+    }
+    
 }
 #pragma mark <UICollectionViewDataSource>
 
@@ -257,10 +283,10 @@
     NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:[self startComponents].month inCalendar:[self calendar] andYear:[self startComponents].year];
     
     
-    NSDateComponents *firstComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday   )
+    NSDateComponents *firstComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday)
                                                            fromDate:firstDay];
     
-    NSDateComponents *lastComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday   )
+    NSDateComponents *lastComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday)
                                                           fromDate:lastDay];
     
     
@@ -428,6 +454,34 @@
         return header;
     }
     return nil;
+}
+- (NSInteger)getSectionForDate:(NSDate *)date{
+    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:[self startComponents].month inCalendar:[self calendar] andYear:[self startComponents].year];
+    NSDateComponents *firstComponents = [[self calendar] components:(
+                                                                     NSCalendarUnitHour |
+                                                                     NSCalendarUnitMinute |
+                                                                     NSCalendarUnitSecond |
+                                                                     NSCalendarUnitDay |
+                                                                     NSCalendarUnitMonth |
+                                                                     NSCalendarUnitYear |
+                                                                     NSCalendarUnitWeekday
+                                                                     )
+                                                           fromDate:firstDay];
+    NSInteger weekDay = [JxCalendarBasics normalizedWeekDay:firstComponents.weekday];
+    
+    NSDateComponents *dateComponents = [[self calendar] components:(
+                                                                    NSCalendarUnitHour |
+                                                                    NSCalendarUnitMinute |
+                                                                    NSCalendarUnitSecond |
+                                                                    NSCalendarUnitDay |
+                                                                    NSCalendarUnitMonth |
+                                                                    NSCalendarUnitYear |
+                                                                    NSCalendarUnitWeekday
+                                                                    )
+                                                          fromDate:date];
+    
+    return dateComponents.day + weekDay-1-1;
+    
 }
 - (NSDate *)getDateForSection:(NSInteger)section{
     

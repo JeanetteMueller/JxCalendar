@@ -378,13 +378,34 @@
     }
     
 }
+
+- (void)scrollToEvent:(JxCalendarEvent *)event{
+    NSLog(@"overview scroll to event");
+    if ([self.navigationController.viewControllers.lastObject isEqual:self]) {
+        [self scrollToDate:event.start];
+    }else{
+        
+        id<JxCalendarScrollTo> vc = self.navigationController.viewControllers.lastObject;
+        
+        [vc scrollToEvent:event];
+    }
+}
 - (void)scrollToDate:(NSDate *)date{
+    NSLog(@"overview scroll to date");
+    if ([self.navigationController.viewControllers.lastObject isEqual:self]) {
+        NSIndexPath *path = [self getIndexPathForDate:date];
+        
+        NSLog(@"path %ld section %ld", (long)path.item, (long)path.section);
+        
+        [self.collectionView scrollToItemAtIndexPath:path atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
+    }else{
+        
+        id<JxCalendarScrollTo> vc = self.navigationController.viewControllers.lastObject;
+        
+        [vc scrollToDate:date];
+    }
     
-    NSIndexPath *path = [self getIndexPathForDate:date];
     
-    NSLog(@"path %ld section %ld", (long)path.item, (long)path.section);
-    
-    [self.collectionView scrollToItemAtIndexPath:path atScrollPosition:UICollectionViewScrollPositionTop animated:YES];
 }
 
 
@@ -395,9 +416,7 @@
     
 //    NSDate *oldDate = self.startDate;
     
-    if (!newDate) {
-        newDate = self.startDate;
-    }else{
+    if (newDate) {
         self.startDate = newDate;
     }
     
@@ -641,7 +660,8 @@
 }
 - (void)updateLongHoldSelectedCells{
     
-    NSMutableArray *updatePathes = [NSMutableArray array];
+    NSMutableArray *oldPathes = [NSMutableArray array];
+    NSMutableArray *newPathes = [NSMutableArray array];
     
     if ([self.delegate respondsToSelector:@selector(calendarShouldClearRange)]) {
         
@@ -652,7 +672,7 @@
             NSDate *thisDate = [self getDateForIndexPath:thisPath];
             
             if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:thisDate]) {
-                [updatePathes addObject:thisPath];
+                [oldPathes addObject:thisPath];
             }
         }
         
@@ -696,8 +716,8 @@
                     if (date && [self.dataSource isDayRangeable:date]) {
                         [self.delegate calendarDidRangeDate:date whileOnAppearance:[self getAppearance]];
                         
-                        if (![updatePathes containsObject:path]) {
-                            [updatePathes addObject:path];
+                        if (![newPathes containsObject:path]) {
+                            [newPathes addObject:path];
                         }
                     }
                     
@@ -708,19 +728,46 @@
             
             NSDate *date = [self getDateForIndexPath:_longHoldStartIndexPath];
             
-            [self.delegate calendarDidRangeDate:date whileOnAppearance:[self getAppearance]];
+            if (date && [self.dataSource isDayRangeable:date]) {
+                [self.delegate calendarDidRangeDate:date whileOnAppearance:[self getAppearance]];
+                
+                if (![newPathes containsObject:_longHoldStartIndexPath]) {
+                    [newPathes addObject:_longHoldStartIndexPath];
+                }
+            }
         }
     }
-
+    
+    NSMutableArray *updatePathes = [NSMutableArray array];
+    
+    for (NSIndexPath *path in oldPathes) {
+        if (![newPathes containsObject:path]) {
+            [updatePathes addObject:path];
+        }
+    }
+    for (NSIndexPath *path in newPathes) {
+        if (![updatePathes containsObject:path]) {
+            [updatePathes addObject:path];
+        }
+    }
     
     if (updatePathes.count > 0) {
-        [self.collectionView reloadItemsAtIndexPaths:updatePathes];
+        [self updateRangedCellsWithIndexPaths:updatePathes];
     }
 }
-
+- (void)updateRangedCellsWithIndexPaths:(NSArray *)pathes{
+    
+    for (JxCalendarCell *cell in self.collectionView.visibleCells) {
+        
+        NSIndexPath *thisPath = [self.collectionView indexPathForCell:cell];
+        
+        if ([pathes containsObject:thisPath]) {
+            [self updateRangeForCell:cell atIndexPath:thisPath];
+        }
+    }
+}
 #pragma mark Layout
 - (void)switchToYearGridView{
-    
 
     JxCalendarOverviewStyle oldStyle = self.style;
     
@@ -998,7 +1045,7 @@
     
     CGSize cellSize = cell.frame.size;
     
-    CGFloat borderHeightPercent = 60.0f;
+    CGFloat borderHeightPercent = 50.0f;
     CGFloat dotHeightPercent = 90.0f;
     
     cell.rangeFrom.frame = CGRectMake((cellSize.width/2), (cellSize.height-(cellSize.height/100*borderHeightPercent))/2 , cellSize.width/2 + 5, cellSize.height/100*borderHeightPercent);

@@ -10,7 +10,6 @@
 
 @interface JxCalendarEventDuration ()
 
-@property (strong, nonatomic) NSDate *start;
 @property (strong, nonatomic) NSDate *end;
 @property (nonatomic) NSTimeInterval duration;
 @end
@@ -48,14 +47,14 @@
     return self;
 }
 - (void)setDuration:(NSTimeInterval)duration{
-    _end = [NSDate dateWithTimeInterval:duration sinceDate:_start];
+    _end = [NSDate dateWithTimeInterval:duration sinceDate:self.start];
     _duration = duration;
 }
 - (void)setEnd:(NSDate *)end{
     _end = end;
-    _duration = [end timeIntervalSinceDate:_start];
+    _duration = [end timeIntervalSinceDate:self.start];
 }
 - (NSString *)description{
-    return [NSString stringWithFormat:@"%@|von %@ bis %@", [super description], _start, _end];
+    return [NSString stringWithFormat:@"%@|von %@ bis %@", [super description], self.start, _end];
 }
 @end

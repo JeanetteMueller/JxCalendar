@@ -9,12 +9,15 @@
 #import <UIKit/UIKit.h>
 #import "JxCalendarDefinitions.h"
 #import "JxCalendarViewController.h"
+#import "JxCalendarEvent.h"
 
 @protocol JxCalendarDataSource, JxCalendarDelegate;
 
-@interface JxCalendarWeek : JxCalendarViewController
+@interface JxCalendarWeek : JxCalendarViewController <JxCalendarScrollTo>
 
 - (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andSize:(CGSize)size andStartDate:(NSDate *)start;
 
 - (NSDate *)getDateForSection:(NSInteger)section;
+
+
 @end

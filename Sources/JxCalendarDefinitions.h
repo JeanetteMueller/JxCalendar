@@ -62,6 +62,12 @@ typedef enum {
 
 @class JxCalendarOverview, JxCalendarEvent;
 
+@protocol JxCalendarScrollTo <NSObject>
+
+- (void)scrollToEvent:(JxCalendarEvent *)event;
+- (void)scrollToDate:(NSDate *)date;
+
+@end
 
 @protocol JxCalendarDataSource <NSObject>
 
@@ -89,18 +95,21 @@ typedef enum {
 @protocol JxCalendarDelegate <NSObject>
 
 @optional
+#pragma mark Appearance
+- (NSString *)calendarTitleOnDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendarWillTransitionFrom:(JxCalendarAppearance)fromAppearance to:(JxCalendarAppearance)toAppearance;
+- (void)calendarDidTransitionTo:(JxCalendarAppearance)toAppearance;
+
+#pragma mark Selections
 - (BOOL)calendarSelectionStyleSwitchable;
 
+#pragma mark Select
 - (void)calendarShouldClearSelections;
 - (void)calendarDidSelectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
 - (void)calendarDidDeselectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
 - (void)calendarDidSelectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance;
 - (void)calendarDidDeselectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance;
 
-- (void)calendarWillTransitionFrom:(JxCalendarAppearance)fromAppearance to:(JxCalendarAppearance)toAppearance;
-- (void)calendarDidTransitionTo:(JxCalendarAppearance)toAppearance;
-
-- (NSString *)calendarTitleOnDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
 
 #pragma mark Range
 - (void)calendarShouldClearRange;

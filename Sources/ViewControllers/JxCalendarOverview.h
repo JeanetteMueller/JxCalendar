@@ -13,7 +13,7 @@
 
 @protocol JxCalendarDataSource, JxCalendarDelegate;
 
-@interface JxCalendarOverview : JxCalendarViewController
+@interface JxCalendarOverview : JxCalendarViewController <JxCalendarScrollTo>
 
 
 - (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource
@@ -24,13 +24,15 @@
 
 
 - (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year animated:(BOOL)animated;
-- (void)scrollToDate:(NSDate *)date;
 
 - (void)switchToAppearance:(JxCalendarAppearance)newAppearance;
 - (void)switchToAppearance:(JxCalendarAppearance)newAppearance withDate:(NSDate *)newDate;
 
 
 - (JxCalendarAppearance)getAppearance;
+
+
+
 
 //For internal use only;
 - (JxCalendarAppearance)getOverviewAppearance;

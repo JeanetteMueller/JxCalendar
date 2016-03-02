@@ -16,4 +16,5 @@
 
 - (id)initWithSize:(CGSize)size andDay:(NSDate *)day;
 
+- (CGFloat)wholeDayAreaHeight;
 @end

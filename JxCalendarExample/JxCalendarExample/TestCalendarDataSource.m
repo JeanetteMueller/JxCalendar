@@ -11,7 +11,7 @@
 
 @interface TestCalendarDataSource ()
 
-
+@property (strong, nonatomic) NSArray <JxCalendarEvent *> *events;
 
 @end
 
@@ -49,6 +49,10 @@
     if (components.year == nowComponents.year && components.month == nowComponents.month && components.day == 17) {
 //    if (components.year == nowComponents.year && components.month == nowComponents.month && components.day == nowComponents.day) {
         
+        if (_events) {
+            return _events;
+        }
+        
         [components setHour:0];
         [components setMinute:0];
         [components setSecond:0];
@@ -58,7 +62,7 @@
         JxCalendarEventDay *wholeDay3 = [[JxCalendarEventDay alloc] initWithIdentifier:@"day 3" calendar:[self calendar] andTitle:@"Geburtstag 3" andDay:[[self calendar] dateFromComponents:components]];
         JxCalendarEventDay *wholeDay4 = [[JxCalendarEventDay alloc] initWithIdentifier:@"day 4" calendar:[self calendar] andTitle:@"Geburtstag 4" andDay:[[self calendar] dateFromComponents:components]];
         
-        NSInteger startTime = 15;
+        NSInteger startTime = 8;
         
         [components setHour:startTime];
         
@@ -68,6 +72,8 @@
         JxCalendarEventDuration *event1_4 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla4" calendar:[self calendar] andTitle:@"40 min" andStart:[[self calendar] dateFromComponents:components] andDuration:40];
         JxCalendarEventDuration *event1_5 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla5" calendar:[self calendar] andTitle:@"50 min" andStart:[[self calendar] dateFromComponents:components] andDuration:50];
         JxCalendarEventDuration *event1_6 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla6" calendar:[self calendar] andTitle:@"60 min" andStart:[[self calendar] dateFromComponents:components] andDuration:60];
+        
+        startTime = startTime+7;
         
         [components setHour:startTime+1];
         
@@ -98,12 +104,14 @@
         JxCalendarEventDuration *event7 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla14" calendar:[self calendar] andTitle:@"1h" andStart:[[self calendar] dateFromComponents:components] andDuration:60];
         
         
-        return @[wholeDay1, wholeDay2, wholeDay3, wholeDay4,
+        self.events = @[wholeDay1, wholeDay2, wholeDay3, wholeDay4,
                  event1_1, event1_2, event1_3, event1_4, event1_5, event1_6,
                  event1, event2, event3, event4, event42,
                  event41,
                  event5, event6,
                  event7];
+        
+        return _events;
     }
     
     return @[];

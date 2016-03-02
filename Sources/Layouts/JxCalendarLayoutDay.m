@@ -240,10 +240,10 @@
 //        itemHeight = (60*kCalendarLayoutDaySectionHeightMultiplier)/3;
 //    }
     CGRect rect = CGRectMake(kCalendarLayoutDayHeaderTextWidth,
-                             indexPath.section * (60*kCalendarLayoutDaySectionHeightMultiplier) + (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing)) + self.minimumLineSpacing + 1 + startComponents.minute*kCalendarLayoutDaySectionHeightMultiplier
+                             indexPath.section * (60*kCalendarLayoutDaySectionHeightMultiplier) + [self wholeDayAreaHeight] + self.minimumLineSpacing + 1 + startComponents.minute*kCalendarLayoutDaySectionHeightMultiplier
                              /*
                              self.headerReferenceSize.height - kCalendarLayoutDayHeaderHalfHeight +
-                             (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing)) +
+                             [self wholeDayAreaHeight] +
                              (indexPath.section * (60*kCalendarLayoutDaySectionHeightMultiplier)) +
                              self.minimumLineSpacing +
                              (startComponents.minute * kCalendarLayoutDaySectionHeightMultiplier) */,
@@ -289,14 +289,16 @@
     return CGRectZero;
 }
 #pragma mark - Headers Layout
-
+- (CGFloat)wholeDayAreaHeight{
+    return (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing));
+}
 - (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     return self.layoutInfo[kJxCalendarDayLayoutHeader][indexPath];
 }
 
 - (CGRect)frameForHeaderAtSection:(NSInteger)section{
     return CGRectMake(self.collectionView.contentOffset.x,
-                      section * (60*kCalendarLayoutDaySectionHeightMultiplier) + (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing))- kCalendarLayoutDayHeaderHalfHeight,
+                      section * (60*kCalendarLayoutDaySectionHeightMultiplier) + [self wholeDayAreaHeight]- kCalendarLayoutDayHeaderHalfHeight,
                       MAX(self.collectionView.frame.size.width, self.collectionView.frame.size.height),
                       self.headerReferenceSize.height);
 }

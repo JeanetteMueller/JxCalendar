@@ -261,7 +261,34 @@
 }
 */
 
+
+- (NSIndexPath *)indexPathForEvent:(JxCalendarEvent *)searchedEvent{
+    NSArray *events = [_dataSource eventsAt:self.startDate];
+    
+    NSDateComponents *searchedComponents = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:searchedEvent.start];
+    
+    NSMutableArray *items = [NSMutableArray array];
+    
+    for (JxCalendarEvent *e in events) {
+        
+        
+        NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:e.start];
+        
+        if (components.hour == searchedComponents.hour) {
+            [items addObject:e];
+        }
+
+    }
+    NSLog(@"items %@", items);
+    NSLog(@"search %@", searchedEvent);
+    
+    if ([items containsObject:searchedEvent]) {
+        return [NSIndexPath indexPathForItem:[items indexOfObject:searchedEvent] inSection:searchedComponents.hour];
+    }
+    return nil;
+}
 - (JxCalendarEvent *)eventForIndexPath:(NSIndexPath *)indexPath{
+    
     NSArray *events = [_dataSource eventsAt:self.startDate];
     
     NSMutableArray *items = [NSMutableArray array];
@@ -282,13 +309,56 @@
             }
         }
     }
-    
     if (items.count > indexPath.item) {
         return [items objectAtIndex:indexPath.item];
         
         
     }
     return nil;
+}
+#pragma mark <JxCalendarScrollTo>
+
+- (void)scrollToEvent:(JxCalendarEvent *)event{
+    
+    NSIndexPath *path = [self indexPathForEvent:event];
+    
+    
+    NSLog(@"path %@", path);
+    if (path) {
+        //scroll to path
+        
+        
+        UICollectionViewLayoutAttributes *attr = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:path];
+        
+        JxCalendarLayoutDay *layout = (JxCalendarLayoutDay *)self.collectionView.collectionViewLayout;
+        
+        [self.collectionView scrollRectToVisible:CGRectMake(attr.frame.origin.x, attr.frame.origin.y - [layout wholeDayAreaHeight]-kCalendarLayoutDayHeaderHalfHeight, attr.frame.size.width, attr.frame.size.height) animated:YES];
+    }
+    
+    
+}
+- (void)scrollToDate:(NSDate *)date{
+    NSLog(@"day scroll to date");
+    
+    NSDateComponents *dateComponents = [[self.dataSource calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday) fromDate:date];
+    
+    if (dateComponents) {
+        
+        NSIndexPath *path = [NSIndexPath indexPathForItem:0 inSection:dateComponents.hour];
+        
+        if ([self.collectionView numberOfSections] > path.section && [self.collectionView numberOfItemsInSection:path.section] > 0) {
+            
+            NSIndexPath *headPath = [NSIndexPath indexPathForItem:0 inSection:path.section+7-[JxCalendarBasics normalizedWeekDay:dateComponents.weekday]];
+            
+            UICollectionViewLayoutAttributes *headAttr = [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:headPath];
+            
+            UICollectionViewLayoutAttributes *attr = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:path];
+            
+            [self.collectionView scrollRectToVisible:CGRectMake(headAttr.frame.origin.x, attr.frame.origin.y, attr.frame.size.width, 50) animated:YES];
+            
+        }
+    }
+    
 }
 #pragma mark <UICollectionViewDataSource>
 
