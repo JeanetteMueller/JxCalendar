@@ -12,3 +12,5 @@ Umfangreiches Kalenderelement als Datepicker oder Eventanzeige
 <img src="https://github.com/JeanetteMueller/JxCalendar/blob/master/Screenshots/ipad_month_range.png" height="320" width="500" >
 ## iPad Year
 <img src="https://github.com/JeanetteMueller/JxCalendar/blob/master/Screenshots/ipad_year.png" height="320" width="500" >
+## iPad Year with a selected range
+<img src="https://github.com/JeanetteMueller/JxCalendar/blob/master/Screenshots/ipad_year_range.png" height="320" width="500" >
