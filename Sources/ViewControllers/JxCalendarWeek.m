@@ -251,15 +251,11 @@
 }
 #pragma mark <JxCalendarScrollTo>
 - (void)scrollToEvent:(JxCalendarEvent *)event{
-    [self scrollToDate:event.start];
-}
-- (void)scrollToDate:(NSDate *)date{
-    NSLog(@"week scroll to date");
-    NSDateComponents *dateComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday) fromDate:date];
+    NSDateComponents *dateComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday) fromDate:event.start];
     
     if (dateComponents) {
-    
-        NSIndexPath *path = [NSIndexPath indexPathForItem:0 inSection:[self getSectionForDate:date]];
+        
+        NSIndexPath *path = [NSIndexPath indexPathForItem:0 inSection:[self getSectionForDate:event.start]];
         
         if ([self.collectionView numberOfSections] > path.section && [self.collectionView numberOfItemsInSection:path.section] > 0) {
             
@@ -273,7 +269,35 @@
             
         }
     }
+}
+- (void)scrollToDate:(NSDate *)date{
+    NSLog(@"week scroll to date");
     
+    JxCalendarLayoutWeek *layout = (JxCalendarLayoutWeek *)self.collectionView.collectionViewLayout;
+    
+    
+    
+    NSDateComponents *dateComponents = [[self calendar] components:( NSCalendarUnitHour|NSCalendarUnitWeekday) fromDate:date];
+    
+    if (dateComponents) {
+        
+        NSIndexPath *path = [NSIndexPath indexPathForItem:0 inSection:[self getSectionForDate:date]];
+        
+        if ([self.collectionView numberOfSections] > path.section) {
+            
+            NSIndexPath *headPath = [NSIndexPath indexPathForItem:0 inSection:path.section+7-[JxCalendarBasics normalizedWeekDay:dateComponents.weekday]];
+            
+            UICollectionViewLayoutAttributes *headAttr = [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:headPath];
+            
+            
+            [self.collectionView scrollRectToVisible:CGRectMake(headAttr.frame.origin.x,
+                                                                layout.headerReferenceSize.height + (3*(kCalendarLayoutWholeDayHeight+layout.minimumLineSpacing)) + dateComponents.hour * (60*kCalendarLayoutDaySectionHeightMultiplier),
+                                                                headAttr.frame.size.width,
+                                                                50)
+                                            animated:YES];
+            
+        }
+    }
 }
 #pragma mark <UICollectionViewDataSource>
 

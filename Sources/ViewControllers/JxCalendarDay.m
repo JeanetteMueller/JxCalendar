@@ -322,11 +322,7 @@
     
     NSIndexPath *path = [self indexPathForEvent:event];
     
-    
-    NSLog(@"path %@", path);
     if (path) {
-        //scroll to path
-        
         
         UICollectionViewLayoutAttributes *attr = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:path];
         
@@ -338,9 +334,7 @@
     
 }
 - (void)scrollToDate:(NSDate *)date{
-    NSLog(@"day scroll to date");
-    
-    NSDateComponents *dateComponents = [[self.dataSource calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday) fromDate:date];
+    NSDateComponents *dateComponents = [[self.dataSource calendar] components:( NSCalendarUnitHour | NSCalendarUnitDay |NSCalendarUnitWeekday) fromDate:date];
     
     if (dateComponents) {
         
