@@ -162,7 +162,7 @@
             [self.collectionView removeGestureRecognizer:self.collectionView.gestureRecognizers[i]];
         }
     }
-    if (self.style == JxCalendarOverviewStyleMonthGrid) {
+    if (self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
         switch (self.selectionStyle) {
             case JxCalendarSelectionStyleDefault:
             case JxCalendarSelectionStyleRangeOnly:{
@@ -1048,8 +1048,10 @@
     CGFloat borderHeightPercent = 50.0f;
     CGFloat dotHeightPercent = 90.0f;
     
-    cell.rangeFrom.frame = CGRectMake((cellSize.width/2), (cellSize.height-(cellSize.height/100*borderHeightPercent))/2 , cellSize.width/2 + 5, cellSize.height/100*borderHeightPercent);
-    cell.rangeTo.frame = CGRectMake(-5, (cellSize.height-(cellSize.height/100*borderHeightPercent))/2 , cellSize.width/2+5, cellSize.height/100*borderHeightPercent);
+    CGFloat spacing = [(UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout minimumInteritemSpacing] / 2;
+    
+    cell.rangeFrom.frame = CGRectMake((cellSize.width/2), (cellSize.height-(cellSize.height/100*borderHeightPercent))/2 , cellSize.width/2 + spacing, cellSize.height/100*borderHeightPercent);
+    cell.rangeTo.frame = CGRectMake(-spacing, (cellSize.height-(cellSize.height/100*borderHeightPercent))/2 , cellSize.width/2+spacing, cellSize.height/100*borderHeightPercent);
     
     cell.rangeDot.frame = CGRectMake((cellSize.width - (cellSize.height/100*dotHeightPercent))/2, (cellSize.height/100*((100-dotHeightPercent)/2)), (cellSize.height/100*dotHeightPercent), (cellSize.height/100*dotHeightPercent));
     
@@ -1162,7 +1164,7 @@
 #pragma mark <UICollectionViewDelegate>
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
-    if (self.style == JxCalendarOverviewStyleMonthGrid && self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
+    if ((self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ) && self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
         return;
     }
     
