@@ -15,13 +15,18 @@
 
 @interface JxCalendarOverview : JxCalendarViewController <JxCalendarScrollTo>
 
+/* pull down to go one year back in time, bull up on the lower part to go one year forward */
+/* default = YES */
+
+@property (nonatomic, readwrite) BOOL pullToSwitchYears;
+
 
 - (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource
                 andStyle:(JxCalendarOverviewStyle)style
                  andSize:(CGSize)size
             andStartDate:(NSDate *)date
-      andStartAppearance:(JxCalendarAppearance)appearance andSelectionStyle:(JxCalendarSelectionStyle)selectionStyle;
-
+      andStartAppearance:(JxCalendarAppearance)appearance
+       andSelectionStyle:(JxCalendarSelectionStyle)selectionStyle;
 
 - (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year animated:(BOOL)animated;
 

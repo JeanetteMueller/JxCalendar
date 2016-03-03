@@ -9,7 +9,6 @@
 #import "JxCalendarViewController.h"
 #import "JxCalendarLayoutYearGrid.h"
 #import "JxCalendarLayoutMonthGrid.h"
-#import "JxCalendarLayoutWeekGrid.h"
 #import "JxCalendarWeek.h"
 #import "JxCalendarLayoutWeek.h"
 

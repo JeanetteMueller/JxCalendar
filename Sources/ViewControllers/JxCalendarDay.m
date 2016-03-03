@@ -99,72 +99,30 @@
     
     [self.collectionView setScrollIndicatorInsets:UIEdgeInsetsMake(3*(kCalendarLayoutWholeDayHeight+[(JxCalendarLayoutDay *)self.collectionView.collectionViewLayout minimumLineSpacing]), 0, 0, 0)];
     
-    if (_nowComponents.year == _currentComponents.year && _nowComponents.month == _currentComponents.month && _nowComponents.day == _currentComponents.day) {
-        //aktueller tag ist heute
-        
-        //plaziere zeitzeiger
-        
-        if (!_zeiger) {
-            self.zeiger = [[UIView alloc] init];
-            _zeiger.backgroundColor = [UIColor redColor];
-        }
-        
-        
-        
-        
-        [self updateZeigerPosition];
-        
-        [self.collectionView addSubview:_zeiger];
-        
-    }else{
-        _zeiger.hidden = YES;
-    }
+    [self updateZeigerPosition];
+
     
 }
 - (void)viewDidLayoutSubviews {
-    
     // If we haven't done the initial scroll, do it once.
     if (!self.initialScrollDone) {
         self.initialScrollDone = YES;
         
         NSDate *now = [NSDate date];
         NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:now];
-        
         CGFloat offset = [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                                   atIndexPath:[NSIndexPath indexPathForItem:0 inSection:components.hour]].frame.origin.y;
         
         [self.collectionView setContentOffset:CGPointMake(0, offset) animated:NO];
     
-    
-        if (_nowComponents.year == _currentComponents.year && _nowComponents.month == _currentComponents.month && _nowComponents.day == _currentComponents.day) {
-            //aktueller tag ist heute
-            
-            //plaziere zeitzeiger
-            
-            if (!_zeiger) {
-                self.zeiger = [[UIView alloc] init];
-                _zeiger.backgroundColor = [UIColor redColor];
-            }
-            
-            
-            
-            
-            [self updateZeigerPosition];
-            
-            [self.collectionView addSubview:_zeiger];
-            
-        }else{
-            _zeiger.hidden = YES;
-        }
+        [self updateZeigerPosition];
+
     }
-    
     
     if (_zeiger && !_zeiger.hidden) {
         
         CGRect zeigerFrame = _zeiger.frame;
-        
         zeigerFrame.origin.x = self.collectionView.contentOffset.x+kCalendarLayoutDayHeaderTextWidth;
-        
         _zeiger.frame = zeigerFrame;
         
     }
@@ -196,10 +154,6 @@
 }
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     
-    NSLog(@"viewWillTransitionToSize %f x %f", size.width, size.height);
-    
-    
-    
     self.collectionView.pagingEnabled = NO;
     
     [self.collectionView.collectionViewLayout invalidateLayout];
@@ -209,7 +163,6 @@
     
     [self.collectionView setCollectionViewLayout:layout animated:NO];
 
-    
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 - (void)setCurrentDate:(NSDate *)currentDate{
@@ -241,27 +194,29 @@
     
     [self loadNow];
     
-    CGFloat distanceFromTopBecauseOfWholeDayEvents = 3*(kCalendarLayoutWholeDayHeight+[(JxCalendarLayoutDay *)self.collectionView.collectionViewLayout minimumLineSpacing]);
-    
-    _zeiger.hidden = NO;
-    _zeiger.frame = CGRectMake(self.collectionView.contentOffset.x+kCalendarLayoutDayHeaderTextWidth,
-                               _nowComponents.hour*(60*kCalendarLayoutDaySectionHeightMultiplier) + (_nowComponents.minute*kCalendarLayoutDaySectionHeightMultiplier) + distanceFromTopBecauseOfWholeDayEvents,
-                               MAX(self.collectionView.frame.size.width, self.collectionView.frame.size.height),
-                               1);
-    
+    if (_nowComponents.year == _currentComponents.year && _nowComponents.month == _currentComponents.month && _nowComponents.day == _currentComponents.day) {
+        //aktueller tag ist heute
+        
+        //plaziere zeitzeiger
+        if (!_zeiger) {
+            self.zeiger = [[UIView alloc] init];
+            _zeiger.backgroundColor = [UIColor redColor];
+            [self.collectionView addSubview:_zeiger];
+        }
+        
+        CGFloat distanceFromTopBecauseOfWholeDayEvents = 3*(kCalendarLayoutWholeDayHeight+[(JxCalendarLayoutDay *)self.collectionView.collectionViewLayout minimumLineSpacing]);
+        
+        _zeiger.hidden = NO;
+        _zeiger.frame = CGRectMake(self.collectionView.contentOffset.x+kCalendarLayoutDayHeaderTextWidth,
+                                   _nowComponents.hour*(60*kCalendarLayoutDaySectionHeightMultiplier) + (_nowComponents.minute*kCalendarLayoutDaySectionHeightMultiplier) + distanceFromTopBecauseOfWholeDayEvents,
+                                   MAX(self.collectionView.frame.size.width, self.collectionView.frame.size.height),
+                                   1);
+        
+    }else{
+        _zeiger.hidden = YES;
+    }
     
 }
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
-
 - (NSIndexPath *)indexPathForEvent:(JxCalendarEvent *)searchedEvent{
     NSArray *events = [_dataSource eventsAt:self.startDate];
     
@@ -279,9 +234,6 @@
         }
 
     }
-    NSLog(@"items %@", items);
-    NSLog(@"search %@", searchedEvent);
-    
     if ([items containsObject:searchedEvent]) {
         return [NSIndexPath indexPathForItem:[items indexOfObject:searchedEvent] inSection:searchedComponents.hour];
     }
@@ -446,34 +398,6 @@
         
     }
 }
-/*
-// Uncomment this method to specify if the specified item should be highlighted during tracking
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
-	return YES;
-}
-*/
-
-/*
-// Uncomment this method to specify if the specified item should be selected
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
-}
-*/
-
-/*
-// Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
-	return NO;
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	return NO;
-}
-
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	
-}
-*/
 
 
 @end

@@ -9,7 +9,6 @@
 #import "JxCalendarOverview.h"
 #import "JxCalendarLayoutYearGrid.h"
 #import "JxCalendarLayoutMonthGrid.h"
-#import "JxCalendarLayoutWeekGrid.h"
 #import "JxCalendarLayoutWeek.h"
 
 #import "JxCalendarHeader.h"
@@ -34,7 +33,12 @@
 
 @implementation JxCalendarOverview
 
-- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andStyle:(JxCalendarOverviewStyle)style andSize:(CGSize)size andStartDate:(NSDate *)date andStartAppearance:(JxCalendarAppearance)appearance andSelectionStyle:(JxCalendarSelectionStyle)selectionStyle{
+- (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource
+                andStyle:(JxCalendarOverviewStyle)style
+                 andSize:(CGSize)size
+            andStartDate:(NSDate *)date
+      andStartAppearance:(JxCalendarAppearance)appearance
+       andSelectionStyle:(JxCalendarSelectionStyle)selectionStyle{
     
     if (CGSizeEqualToSize(size, CGSizeZero)) {
         size = [UIScreen mainScreen].bounds.size;
@@ -62,6 +66,9 @@
     self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     
     if (self) {
+        
+        self.pullToSwitchYears = YES;
+        
         self.startSize = size;
         self.style = style;
         self.startDate = date;
@@ -188,41 +195,49 @@
 }
 - (void)updateNavigationButtons{
     
+    NSMutableArray *buttons = [NSMutableArray array];
+    
     if (![self.dataSource respondsToSelector:@selector(shouldDisplayNavbarButtonsWhileOnAppearance:)] ||
         [self.dataSource shouldDisplayNavbarButtonsWhileOnAppearance:[self getOverviewAppearance]]) {
         
         switch (self.style) {
             case JxCalendarOverviewStyleMonthGrid:{
                 
-                if ([self.delegate respondsToSelector:@selector(calendarSelectionStyleSwitchable)] && [self.delegate calendarSelectionStyleSwitchable]) {
-                    UIBarButtonItem *extraButton;
-                    
-                    switch (self.selectionStyle) {
-                        case JxCalendarSelectionStyleDefault:
-                            extraButton = [[UIBarButtonItem alloc] initWithTitle:@"Default" style:UIBarButtonItemStylePlain target:self action:@selector(switchToSelectOnly:)];
-                            break;
-                        case JxCalendarSelectionStyleSelectOnly:
-                            extraButton = [[UIBarButtonItem alloc] initWithTitle:@"Select" style:UIBarButtonItemStylePlain target:self action:@selector(switchToRangeOnly:)];
-                            break;
-                        case JxCalendarSelectionStyleRangeOnly:
-                            extraButton = [[UIBarButtonItem alloc] initWithTitle:@"Range" style:UIBarButtonItemStylePlain target:self action:@selector(switchToDefault:)];
-                            break;
-                    }
-                    
-                    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYear:)],
-                                                                extraButton];
-                }else{
-                    self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYear:)]];
-                }
+                [buttons addObject:[[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYear:)]];
+                
                 
             }break;
             case JxCalendarOverviewStyleYearGrid:
-                self.navigationItem.rightBarButtonItems = @[[[UIBarButtonItem alloc] initWithTitle:@"Month" style:UIBarButtonItemStylePlain target:self action:@selector(switchToMonth:)]];
+                [buttons addObject:[[UIBarButtonItem alloc] initWithTitle:@"Month" style:UIBarButtonItemStylePlain target:self action:@selector(switchToMonth:)]];
                 break;
             default:
                 break;
         }
+        
+        if (self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
+            if ([self.delegate respondsToSelector:@selector(calendarSelectionStyleSwitchable)] && [self.delegate calendarSelectionStyleSwitchable]) {
+                
+                UIBarButtonItem *extraButton;
+                
+                switch (self.selectionStyle) {
+                    case JxCalendarSelectionStyleDefault:
+                        extraButton = [[UIBarButtonItem alloc] initWithTitle:@"Default" style:UIBarButtonItemStylePlain target:self action:@selector(switchToSelectOnly:)];
+                        break;
+                    case JxCalendarSelectionStyleSelectOnly:
+                        extraButton = [[UIBarButtonItem alloc] initWithTitle:@"Select" style:UIBarButtonItemStylePlain target:self action:@selector(switchToRangeOnly:)];
+                        break;
+                    case JxCalendarSelectionStyleRangeOnly:
+                        extraButton = [[UIBarButtonItem alloc] initWithTitle:@"Range" style:UIBarButtonItemStylePlain target:self action:@selector(switchToDefault:)];
+                        break;
+                }
+                if (extraButton) {
+                    [buttons addObject:extraButton];
+                }
+            }
+        }
     }
+    
+    self.navigationItem.rightBarButtonItems = buttons;
 }
 - (IBAction)switchToSelectOnly:(id)sender{
     NSLog(@"switchToSelectOnly");
@@ -481,9 +496,15 @@
                         [self.collectionView.collectionViewLayout invalidateLayout];
                         [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutYearGrid alloc] initWithViewController:self andSize:self.view.frame.size] animated:NO];
                         
+                        for (JxCalendarCell *cell in self.collectionView.visibleCells) {
+                            [self updateRangeForCell:cell atIndexPath:[self.collectionView indexPathForCell:cell]];
+                        }
+                        
                         [self updateNavigationButtons];
                         
                     } completion:^(BOOL finished) {
+                        
+                        
                         
                         [self updateSelectionStyle];
                         if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
@@ -767,38 +788,6 @@
     }
 }
 #pragma mark Layout
-- (void)switchToYearGridView{
-
-    JxCalendarOverviewStyle oldStyle = self.style;
-    
-    self.style = JxCalendarOverviewStyleYearGrid;
-    
-    [self.collectionView reloadData];
-    
-    if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
-        [self.delegate calendarWillTransitionFrom:[self getOverviewAppearanceFromStyle:oldStyle] to:JxCalendarAppearanceYear];
-    }
-    
-    [self.collectionView performBatchUpdates:^{
-        
-        self.collectionView.pagingEnabled = NO;
-        [self.collectionView.collectionViewLayout invalidateLayout];
-        [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutYearGrid alloc] initWithViewController:self andSize:self.view.frame.size] animated:YES];
-        
-        [self updateNavigationButtons];
-        
-    } completion:^(BOOL finished) {
-        [self updateSelectionStyle];
-        if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
-            [self.delegate calendarDidTransitionTo:JxCalendarAppearanceYear];
-        }
-    }];
-
-}
-
-- (void)switchToMonthGridView{
-    [self switchToMonthGridViewWithCallback:nil animated:YES];
-}
 - (void)switchToMonthGridViewWithCallback:(void (^)(BOOL finished))callback animated:(BOOL)animated{
     
     self.style = JxCalendarOverviewStyleMonthGrid;
@@ -814,13 +803,21 @@
         [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutMonthGrid alloc] initWithViewController:self andSize:self.view.frame.size]
                                             animated:animated];
         
+        for (JxCalendarCell *cell in self.collectionView.visibleCells) {
+            [self updateRangeForCell:cell atIndexPath:[self.collectionView indexPathForCell:cell]];
+        }
+        
         [self updateNavigationButtons];
         
     } completion:^(BOOL finished) {
         
-        [self updateSelectionStyle];
-        if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
-            [self.delegate calendarDidTransitionTo:JxCalendarAppearanceMonth];
+        if (finished) {
+            [self updateSelectionStyle];
+            
+            
+            if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
+                [self.delegate calendarDidTransitionTo:JxCalendarAppearanceMonth];
+            }
         }
         
         if (blockCallback) {
@@ -1043,7 +1040,14 @@
         }
     }
     
-    CGSize cellSize = cell.frame.size;
+    UICollectionViewFlowLayout *layout = self.collectionView.collectionViewLayout;
+    
+    UICollectionViewLayoutAttributes *attr = [layout layoutAttributesForItemAtIndexPath:indexPath];
+    
+    
+    CGSize cellSize = attr.frame.size;// cell.frame.size;
+    
+    NSLog(@"cell size %f x %f", cellSize.width, cellSize.height);
     
     CGFloat borderHeightPercent = 50.0f;
     CGFloat dotHeightPercent = 90.0f;
@@ -1270,53 +1274,56 @@
 */
 
 #pragma mark <UIScrollViewDelegate>
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    
-    if (![scrollView isEqual:self.collectionView]) {
-        
-        for (JxCalendarCell *cell in self.collectionView.visibleCells) {
-            if (cell.vc) {
-                cell.vc.collectionView.contentOffset = CGPointMake(0, scrollView.contentOffset.y);
-            }
-        }
-    }
-}
+//- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+//    
+//    if (![scrollView isEqual:self.collectionView]) {
+//        
+//        for (JxCalendarCell *cell in self.collectionView.visibleCells) {
+//            if (cell.vc) {
+//                cell.vc.collectionView.contentOffset = CGPointMake(0, scrollView.contentOffset.y);
+//            }
+//        }
+//    }
+//}
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     if (decelerate) {
         
-        BOOL switchToDifferentYear = NO;
-        
-        BOOL startFromTop = YES;
-        
-        if (scrollView.contentOffset.y + scrollView.contentInset.top < -kPullToSwitchContextOffset) {
-            NSLog(@"gehe ein jahr zurück");
+        if (self.pullToSwitchYears) {
+            BOOL switchToDifferentYear = NO;
             
-            [self switchToNewYear:[self startComponents].year-1];
-            switchToDifferentYear = YES;
-            startFromTop = NO;
-        }else if (scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentInset.bottom > scrollView.contentSize.height+kPullToSwitchContextOffset){
-            NSLog(@"gehe ein jahr vor ");
+            BOOL startFromTop = YES;
             
-            [self switchToNewYear:[self startComponents].year+1];
-            switchToDifferentYear = YES;
+            if (scrollView.contentOffset.y + scrollView.contentInset.top < -kPullToSwitchContextOffset) {
+                NSLog(@"gehe ein jahr zurück");
+                
+                [self switchToNewYear:[self startComponents].year-1];
+                switchToDifferentYear = YES;
+                startFromTop = NO;
+            }else if (scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentInset.bottom > scrollView.contentSize.height+kPullToSwitchContextOffset){
+                NSLog(@"gehe ein jahr vor ");
+                
+                [self switchToNewYear:[self startComponents].year+1];
+                switchToDifferentYear = YES;
+            }
+            
+            if (switchToDifferentYear) {
+                [self.collectionView reloadData];
+                
+                [self.collectionView performBatchUpdates:^{
+                    
+                    [self.collectionView.collectionViewLayout invalidateLayout];
+                    
+                } completion:^(BOOL finished) {
+                    if (startFromTop) {
+                        [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 10, 10) animated:NO];
+                    }else{
+                        [self.collectionView scrollRectToVisible:CGRectMake(0, self.collectionView.contentSize.height-10, 10, 10) animated:NO];
+                    }
+                    
+                }];
+            }
         }
         
-        if (switchToDifferentYear) {
-            [self.collectionView reloadData];
-            
-            [self.collectionView performBatchUpdates:^{
-                
-                [self.collectionView.collectionViewLayout invalidateLayout];
-                
-            } completion:^(BOOL finished) {
-                if (startFromTop) {
-                    [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 10, 10) animated:NO];
-                }else{
-                    [self.collectionView scrollRectToVisible:CGRectMake(0, self.collectionView.contentSize.height-10, 10, 10) animated:NO];
-                }
-                
-            }];
-        }
         
     }
 }

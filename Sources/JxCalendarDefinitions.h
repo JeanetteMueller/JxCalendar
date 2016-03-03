@@ -11,28 +11,28 @@
 #ifndef JxCalendarDefinitions_h
 #define JxCalendarDefinitions_h
 
-#define kPullToSwitchContextOffset 80
+#define kPullToSwitchContextOffset                  80
 
-#define kJxCalendarYearLayoutCells @"JxCalendarYearLayoutCells"
-#define kJxCalendarYearLayoutHeader @"JxCalendarYearLayoutHeader"
+#define kJxCalendarYearLayoutCells      @"JxCalendarYearLayoutCells"
+#define kJxCalendarYearLayoutHeader     @"JxCalendarYearLayoutHeader"
 
-#define kJxCalendarWeekLayoutCells @"JxCalendarWeekLayoutCells"
-#define kJxCalendarWeekLayoutWholeDay @"JxCalendarWeekLayoutWholeDay"
-#define kJxCalendarWeekLayoutHeader @"JxCalendarWeekLayoutHeader"
+#define kJxCalendarWeekLayoutCells      @"JxCalendarWeekLayoutCells"
+#define kJxCalendarWeekLayoutWholeDay   @"JxCalendarWeekLayoutWholeDay"
+#define kJxCalendarWeekLayoutHeader     @"JxCalendarWeekLayoutHeader"
 
-#define kJxCalendarMonthLayoutCells @"JxCalendarMonthLayoutCells"
-#define kJxCalendarMonthLayoutHeader @"JxCalendarMonthLayoutHeader"
+#define kJxCalendarMonthLayoutCells     @"JxCalendarMonthLayoutCells"
+#define kJxCalendarMonthLayoutHeader    @"JxCalendarMonthLayoutHeader"
 
 #define kJxCalendarDayLayoutCells       @"JxCalendarDayLayoutCells"
-#define kJxCalendarDayLayoutWholeDay @"JxCalendarDayLayoutWholeDay"
+#define kJxCalendarDayLayoutWholeDay    @"JxCalendarDayLayoutWholeDay"
 #define kJxCalendarDayLayoutHeader      @"JxCalendarDayLayoutHeader"
 
-#define kCalendarLayoutDaySectionHeightMultiplier 2
-#define kCalendarLayoutDayHeaderHeight 49
-#define kCalendarLayoutDayHeaderHalfHeight 24
-#define kCalendarLayoutDayHeaderTextWidth 65
+#define kCalendarLayoutDaySectionHeightMultiplier    2
+#define kCalendarLayoutDayHeaderHeight              49
+#define kCalendarLayoutDayHeaderHalfHeight          24
+#define kCalendarLayoutDayHeaderTextWidth           65
 
-#define kCalendarLayoutWholeDayHeight 20
+#define kCalendarLayoutWholeDayHeight               20
 
 
 typedef enum {
