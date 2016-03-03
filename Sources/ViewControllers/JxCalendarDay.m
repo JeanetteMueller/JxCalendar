@@ -28,7 +28,6 @@
 @property (strong, nonatomic) NSDate *now;
 @property (strong, nonatomic) NSDateComponents *nowComponents;
 
-
 @end
 
 @implementation JxCalendarDay
@@ -47,7 +46,6 @@
     if (self) {
         self.startDate = start;
         self.dataSource = dataSource;
-        
     }
     return self;
 }
@@ -56,7 +54,7 @@
     [super viewDidLoad];
     
     // Uncomment the following line to preserve selection between presentations
-    // self.clearsSelectionOnViewWillAppear = NO;
+    self.clearsSelectionOnViewWillAppear = NO;
     
     // Register cell classes
     [self.collectionView setDirectionalLockEnabled:YES];
@@ -70,23 +68,21 @@
     [self.collectionView registerClass:[JxCalendarDayHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarDayHeader"];
     [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarDayHeader" bundle:bundle] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarDayHeader"];
     
-    
     self.view.backgroundColor = [UIColor whiteColor];
     self.collectionView.backgroundColor = self.view.backgroundColor;
     
-    
-    self.currentComponents = [[self.dataSource calendar] components:( NSCalendarUnitHour |
-                                                                                  NSCalendarUnitMinute |
-                                                                                  NSCalendarUnitSecond |
-                                                                                  NSCalendarUnitDay |
-                                                                                  NSCalendarUnitMonth |
-                                                                                  NSCalendarUnitYear |
-                                                                                  NSCalendarUnitWeekday   )
-                                                                        fromDate:_startDate];
+    self.currentComponents = [[self.dataSource calendar] components:(NSCalendarUnitHour |
+                                                                     NSCalendarUnitMinute |
+                                                                     NSCalendarUnitSecond |
+                                                                     NSCalendarUnitDay |
+                                                                     NSCalendarUnitMonth |
+                                                                     NSCalendarUnitYear |
+                                                                     NSCalendarUnitWeekday)
+                                                           fromDate:_startDate];
     
     [self loadNow];
-    
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -103,6 +99,7 @@
 
     
 }
+
 - (void)viewDidLayoutSubviews {
     // If we haven't done the initial scroll, do it once.
     if (!self.initialScrollDone) {
@@ -127,6 +124,7 @@
         
     }
 }
+
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
@@ -138,6 +136,7 @@
         [self.delegate calendarDidTransitionTo:JxCalendarAppearanceDay];
     }
 }
+
 - (void)viewWillDisappear:(BOOL)animated{
     
     [self.zeigerPositionTimer invalidate];
@@ -145,6 +144,7 @@
     
     [super viewWillDisappear:animated];
 }
+
 - (BOOL)navigationShouldPopOnBackButton{
     
     if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
@@ -152,6 +152,7 @@
     }
     return YES;
 }
+
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     
     self.collectionView.pagingEnabled = NO;
@@ -165,6 +166,7 @@
 
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
+
 - (void)setCurrentDate:(NSDate *)currentDate{
     _startDate = currentDate;
     
@@ -178,6 +180,7 @@
         self.navigationItem.title = [[JxCalendarBasics defaultFormatter] stringFromDate:self.startDate];
     }
 }
+
 - (void)loadNow{
     self.now = [NSDate date];
     
@@ -190,6 +193,7 @@
                                                                  NSCalendarUnitWeekday)
                                                        fromDate:_now];
 }
+
 - (void)updateZeigerPosition{
     
     [self loadNow];
@@ -217,6 +221,7 @@
     }
     
 }
+
 - (NSIndexPath *)indexPathForEvent:(JxCalendarEvent *)searchedEvent{
     NSArray *events = [_dataSource eventsAt:self.startDate];
     
@@ -239,6 +244,7 @@
     }
     return nil;
 }
+
 - (JxCalendarEvent *)eventForIndexPath:(NSIndexPath *)indexPath{
     
     NSArray *events = [_dataSource eventsAt:self.startDate];
@@ -268,6 +274,7 @@
     }
     return nil;
 }
+
 #pragma mark <JxCalendarScrollTo>
 
 - (void)scrollToEvent:(JxCalendarEvent *)event{
@@ -285,6 +292,7 @@
     
     
 }
+
 - (void)scrollToDate:(NSDate *)date{
     NSDateComponents *dateComponents = [[self.dataSource calendar] components:( NSCalendarUnitHour | NSCalendarUnitDay |NSCalendarUnitWeekday) fromDate:date];
     
@@ -306,13 +314,13 @@
     }
     
 }
+
 #pragma mark <UICollectionViewDataSource>
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
 
     return 25;
 }
-
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
@@ -340,14 +348,13 @@
 
     return count;
 }
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"JxCalendarEventCell" forIndexPath:indexPath];
-    
 
     JxCalendarEvent *event = [self eventForIndexPath:indexPath];
     
     UILabel *textLabel = (UILabel *)[cell viewWithTag:333];
-
     textLabel.text = event.title;
     
     if ([self.dataSource respondsToSelector:@selector(isEventSelected:)] && [self.dataSource isEventSelected:event]) {
@@ -361,19 +368,18 @@
     }
     
     [cell.layer setBorderWidth:1.5f];
-    
-    
     [cell.layer setCornerRadius:5];
     
     return cell;
 }
+
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         JxCalendarDayHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarDayHeader" forIndexPath:indexPath];
         
-        UILabel *textLabel = [header viewWithTag:333];
-
+        UILabel *textLabel;
+        textLabel = [header viewWithTag:333];
         textLabel.text = [NSString stringWithFormat:@"%ld Uhr", (long)indexPath.section % 24];
         header.backgroundColor = [UIColor clearColor];
         return header;
@@ -385,19 +391,14 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
-    //NSLog(@"indexpath %ld section %ld", (long)indexPath.item, (long)indexPath.section);
-    
     if (self.delegate) {
-        
         JxCalendarEvent *event = [self eventForIndexPath:indexPath];
         if (event) {
             [self.delegate calendarDidSelectEvent:event whileOnAppearance:JxCalendarAppearanceDay];
             
             [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
         }
-        
     }
 }
-
 
 @end

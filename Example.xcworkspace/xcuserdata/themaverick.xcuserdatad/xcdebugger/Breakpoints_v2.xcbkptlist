@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Sources/ViewControllers/JxCalendarOverview.m"
-            timestampString = "478694102.235432"
+            timestampString = "478712554.87149"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1027"
-            endingLineNumber = "1027"
+            startingLineNumber = "970"
+            endingLineNumber = "970"
             landmarkName = "-updateRangeForCell:atIndexPath:"
             landmarkType = "5">
          </BreakpointContent>

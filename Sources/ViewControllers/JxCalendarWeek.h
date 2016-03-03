@@ -19,5 +19,4 @@
 
 - (NSDate *)getDateForSection:(NSInteger)section;
 
-
 @end

@@ -17,5 +17,4 @@
 
 - (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andSize:(CGSize)size andStartDate:(NSDate *)start;
 
-
 @end
