@@ -19,6 +19,8 @@
 @property (strong, nonatomic) NSDate *startDate;
 @property (nonatomic, readwrite) JxCalendarAppearance startAppearance;
 
+@property (nonatomic, readwrite) BOOL renderWeekDayLabels; /* default YES */
+
 - (NSDateComponents *)startComponents;
 - (NSDateComponents *)componentsFromDate:(NSDate *)date;
 

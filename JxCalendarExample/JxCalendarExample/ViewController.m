@@ -60,13 +60,14 @@
     
     
     _overview = [[JxCalendarOverview alloc] initWithDataSource:_dataSource
-                                                                         andStyle:JxCalendarOverviewStyleMonthGrid
-                                                                          andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)
-                                                                     andStartDate:[NSDate date]
-                                                               andStartAppearance:JxCalendarAppearanceMonth
-                                                                andSelectionStyle:JxCalendarSelectionStyleDefault];
+                                                      andStyle:JxCalendarOverviewStyleMonthGrid
+                                                       andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)
+                                                  andStartDate:[NSDate date]
+                                            andStartAppearance:JxCalendarAppearanceMonth
+                                             andSelectionStyle:JxCalendarSelectionStyleDefault];
     
     _overview.delegate = self;
+    _overview.renderWeekDayLabels = YES;
     
     
     self.navRoot = [[UINavigationController alloc] initWithRootViewController:_overview];

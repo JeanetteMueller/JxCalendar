@@ -20,6 +20,20 @@
 
 static NSString * const reuseIdentifier = @"Cell";
 
+- (id)initWithCoder:(NSCoder *)aDecoder{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        self.renderWeekDayLabels = YES;
+    }
+    return self;
+}
+- (id)initWithCollectionViewLayout:(UICollectionViewLayout *)layout{
+    self = [super initWithCollectionViewLayout:layout];
+    if (self) {
+        self.renderWeekDayLabels = YES;
+    }
+    return self;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     

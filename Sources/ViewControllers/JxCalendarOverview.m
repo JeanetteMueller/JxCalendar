@@ -27,6 +27,11 @@
 @property (strong, nonatomic, readwrite) NSIndexPath *longHoldStartIndexPath;
 @property (strong, nonatomic, readwrite) NSIndexPath *longHoldEndIndexPath;
 
+@property (strong, nonatomic) NSTimer *moveTimer;
+@property (nonatomic, readwrite) CGFloat direction;
+
+@property (strong, nonatomic) NSDate *toolTipDate;
+
 @end
 
 @implementation JxCalendarOverview
@@ -48,7 +53,7 @@
         style = JxCalendarOverviewStyleMonthGrid;
     }
     
-    UICollectionViewLayout *layout;
+    JxCalendarLayoutOverview *layout;
     switch (style) {
         case JxCalendarOverviewStyleYearGrid:
             layout = [[JxCalendarLayoutYearGrid alloc] initWithViewController:self andSize:size];
@@ -60,11 +65,12 @@
     
     self = [super initWithCollectionViewLayout:layout];
     
-    self.automaticallyAdjustsScrollViewInsets = NO;
-    self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    
     if (self) {
+        layout.renderWeekDayLabels = self.renderWeekDayLabels;
         
+        self.automaticallyAdjustsScrollViewInsets = NO;
+        self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    
         self.pullToSwitchYears = YES;
         
         self.startSize = size;
@@ -78,6 +84,8 @@
             
             self.startDate = [NSDate date];
         }
+        
+        NSLog(@"renderWeekDayLabels %d", self.renderWeekDayLabels);
     }
     return self;
 }
@@ -94,7 +102,7 @@
         abort();
     }
     
-    self.collectionView.backgroundColor = [UIColor whiteColor];
+    self.collectionView.backgroundColor = kJxCalendarBackgroundColor;
     
     NSString* const frameworkBundleID = @"de.themaverick.JxCalendar";
     NSBundle* bundle = [NSBundle bundleWithIdentifier:frameworkBundleID];
@@ -102,11 +110,12 @@
     // Register cell classes
     [self.collectionView registerClass:[JxCalendarCell class] forCellWithReuseIdentifier:@"JxCalendarCell"];
     [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarCell" bundle:bundle] forCellWithReuseIdentifier:@"JxCalendarCell"];
-
+    
     [self.collectionView registerClass:[JxCalendarHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarHeader"];
     [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarHeader" bundle:bundle] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarHeader"];
     
-
+    JxCalendarOverview *layout = (JxCalendarOverview *)self.collectionViewLayout;
+    layout.renderWeekDayLabels = self.renderWeekDayLabels;
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -485,47 +494,48 @@
 - (void)longPressAction:(UILongPressGestureRecognizer *)sender{
     
     CGPoint point = [sender locationInView:self.collectionView];
-
+    
+    self.direction = point.y;
+    
     switch (sender.state) {
         case UIGestureRecognizerStateBegan:{
             NSIndexPath *path = [self.collectionView indexPathForItemAtPoint:point];
             
             if (path) {
-                
-                
-                if ([path isEqual:_longHoldStartIndexPath]) {
-                    _longHoldStartIndexPath = _longHoldEndIndexPath;
-                    _longHoldEndIndexPath = path;
+                NSDate *date = [self getDateForIndexPath:path];
+                if (date) {
                     
-                }else if ([path isEqual:_longHoldEndIndexPath]){
                     
-                }else{
-                    _longHoldStartIndexPath = nil;
-                    _longHoldEndIndexPath = nil;
-                    
-                    if ([self.dataSource respondsToSelector:@selector(isDayRangeable:)]) {
-                        NSDate *date = [self getDateForIndexPath:path];
-                        if (date) {
+                    if ([path isEqual:_longHoldStartIndexPath]) {
+                        _longHoldStartIndexPath = _longHoldEndIndexPath;
+                        _longHoldEndIndexPath = path;
+                    }else if ([self.dataSource isPartOfRange:date]) {
+                        _longHoldEndIndexPath = path;
+                    }else if ([path isEqual:_longHoldEndIndexPath]){
+                        
+                    }else{
+                        _longHoldStartIndexPath = nil;
+                        _longHoldEndIndexPath = nil;
+                        
+                        if ([self.dataSource respondsToSelector:@selector(isDayRangeable:)]) {
                             
                             if ([self.dataSource isDayRangeable:date]) {
                                 
-                                
                                 _longHoldStartIndexPath = path;
-                                
-                                
                             }
                         }
                     }
+                    
                 }
-                
                 
                 [self updateLongHoldSelectedCells];
             }
             
+            self.moveTimer = [NSTimer scheduledTimerWithTimeInterval:.2 target:self selector:@selector(moveContent) userInfo:nil repeats:YES];
+            
         }break;
         case UIGestureRecognizerStateChanged:{
             if (_longHoldStartIndexPath) {
-                
                 
                 NSIndexPath *path = [self.collectionView indexPathForItemAtPoint:point];
                 
@@ -535,8 +545,8 @@
                         NSDate *date = [self getDateForIndexPath:path];
                         if (date) {
                             if ([self.dataSource isDayRangeable:date]) {
-                            
-                            
+                                
+                                
                                 _longHoldEndIndexPath = path;
                                 
                                 [self updateLongHoldSelectedCells];
@@ -544,32 +554,50 @@
                         }
                     }
                 }
-                
-                CGFloat triggerOffset = 50;
-                
-                if (point.y - self.collectionView.contentOffset.y < triggerOffset) {
-                    CGFloat move = triggerOffset - (point.y - self.collectionView.contentOffset.y);
-                    self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y - move);
-                }
-                
-                if (point.y - self.collectionView.contentOffset.y > self.collectionView.frame.size.height-triggerOffset) {
-                    CGFloat move = (point.y - self.collectionView.contentOffset.y)- (self.collectionView.frame.size.height-triggerOffset);
-                    self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y + move);
-                }
             }
             
-            }break;
+        }break;
         case UIGestureRecognizerStatePossible:
         case UIGestureRecognizerStateEnded:
         case UIGestureRecognizerStateFailed:
         case UIGestureRecognizerStateCancelled:{
             [self updateLongHoldSelectedCells];
-
+            
+            self.direction = .0f;
+            [self.moveTimer invalidate];
+            self.moveTimer = nil;
+            
         }break;
     }
 
 }
-
+- (void)moveContent{
+    CGFloat triggerOffset = 100;
+    
+    CGFloat move = 0;
+    CGPoint point;
+    
+    if (self.direction - self.collectionView.contentOffset.y < triggerOffset) {
+        move = (self.direction - self.collectionView.contentOffset.y) - triggerOffset;
+        point = CGPointMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y + move);
+    }
+    
+    if (self.direction - self.collectionView.contentOffset.y > self.collectionView.frame.size.height-triggerOffset) {
+        move = (self.direction - self.collectionView.contentOffset.y)- (self.collectionView.frame.size.height-triggerOffset);
+        point = CGPointMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y + move);
+    }
+    
+    if (move != 0.0f) {
+        [UIView animateWithDuration:self.moveTimer.timeInterval
+                              delay:0
+                            options:UIViewAnimationOptionCurveLinear
+                         animations:^{
+                             self.collectionView.contentOffset = point;
+                         } completion:^(BOOL finished) {
+                             self.direction = self.direction + move;
+                         }];
+    }
+}
 - (void)updateLongHoldSelectedCells{
     
     NSMutableArray *oldPathes = [NSMutableArray array];
@@ -601,9 +629,7 @@
                 (_longHoldStartIndexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < _longHoldStartIndexPath.row)) {
                 
                 start = _longHoldEndIndexPath;
-                
                 end = _longHoldStartIndexPath;
-                
             }
             
             for (NSInteger section = start.section; section <= end.section; section++) {
@@ -629,7 +655,6 @@
                             [newPathes addObject:path];
                         }
                     }
-                    
                 }
             }
             
@@ -695,8 +720,7 @@
         
         self.collectionView.pagingEnabled = NO;
         [self.collectionView.collectionViewLayout invalidateLayout];
-        [self.collectionView setCollectionViewLayout:layout
-                                            animated:animated];
+        [self.collectionView setCollectionViewLayout:layout animated:animated];
         
         for (JxCalendarCell *cell in self.collectionView.visibleCells) {
             [self updateRangeForCell:cell atIndexPath:[self.collectionView indexPathForCell:cell]];
@@ -726,7 +750,9 @@
         //ist schon in der wochenansicht
         
     }else{
-        JxCalendarWeek *week = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.view.frame.size andStartDate:self.startDate];
+        JxCalendarWeek *week = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource
+                                                                  andSize:self.view.frame.size
+                                                             andStartDate:self.startDate];
 
         NSMutableArray *viewControllers = [self.navigationController.viewControllers mutableCopy];
         
@@ -739,9 +765,7 @@
         [viewControllers addObject:week];
         
         [self.navigationController setViewControllers:viewControllers animated:YES];
-        
     }
-    
 }
 
 #pragma mark <UICollectionViewDataSource>
@@ -765,7 +789,6 @@
             
             return [layout sizeForItemAtIndexPath:indexPath];
         }break;
-
     }
 
     return CGSizeMake(0,1);
@@ -798,11 +821,8 @@
         NSInteger month = indexPath.section+1;
         
         if (month > 12) {
-            
             NSInteger moreYears = ceil(month/12);
-            
             month = month % 12;
-            
             [comp setYear:comp.year + moreYears ];
         }
         
@@ -855,8 +875,6 @@
                 }else{
                     titleLabel.font = [titleLabel.font fontWithSize:14];
                 }
-                
-                
                 break;
             case JxCalendarOverviewStyleMonthGrid:
                 titleLabel.font = [titleLabel.font fontWithSize:16];
@@ -875,9 +893,7 @@
     JxCalendarCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     
     [self updateCell:cell atIndexPath:indexPath];
-    
     [self updateRangeForCell:cell atIndexPath:indexPath];
-    
 
     return cell;
 }
@@ -912,29 +928,43 @@
                     cell.rangeDot.hidden = YES;
                 }else{
                     cell.rangeDot.hidden = NO;
+                    
+                    if ([self.dataSource isStartOfRange:thisDate] || [self.dataSource isEndOfRange:thisDate]) {
+                        cell.rangeDot.layer.borderColor = kJxCalendarRangeDotBorderColor.CGColor;
+                        [cell.rangeDot.layer setBorderWidth:kJxCalendarRangeDotBorderWidth];
+                    }else{
+                        [cell.rangeDot.layer setBorderWidth:.0];
+                    }
                 }
                 
-                
                 UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
-                
                 UICollectionViewLayoutAttributes *attr = [layout layoutAttributesForItemAtIndexPath:indexPath];
                 
-                
-                CGSize cellSize = attr.frame.size;// cell.frame.size;
-                
-                NSLog(@"cell size %f x %f", cellSize.width, cellSize.height);
-                
-                CGFloat borderHeightPercent = 50.0f;
-                CGFloat dotHeightPercent = 90.0f;
-                
+                CGSize cellSize = attr.frame.size;
+                CGFloat borderHeightPercent = 80.0f;
+                CGFloat dotHeightPercent = 80.0f;
                 CGFloat spacing = [(UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout minimumInteritemSpacing] / 2;
                 
-                cell.rangeFrom.frame = CGRectMake((cellSize.width/2), (cellSize.height-(cellSize.height/100*borderHeightPercent))/2 , cellSize.width/2 + spacing, cellSize.height/100*borderHeightPercent);
-                cell.rangeTo.frame = CGRectMake(-spacing, (cellSize.height-(cellSize.height/100*borderHeightPercent))/2 , cellSize.width/2+spacing, cellSize.height/100*borderHeightPercent);
+                cell.rangeDot.backgroundColor = kJxCalendarRangeDotBackgroundColor;
+                cell.rangeFrom.backgroundColor = kJxCalendarRangeBackgroundColor;
+                cell.rangeTo.backgroundColor = kJxCalendarRangeBackgroundColor;
                 
-                cell.rangeDot.frame = CGRectMake((cellSize.width - (cellSize.height/100*dotHeightPercent))/2, (cellSize.height/100*((100-dotHeightPercent)/2)), (cellSize.height/100*dotHeightPercent), (cellSize.height/100*dotHeightPercent));
+                cell.rangeFrom.frame = CGRectMake((cellSize.width/2),
+                                                  (cellSize.height-(cellSize.height/100*borderHeightPercent))/2,
+                                                  cellSize.width/2 + spacing,
+                                                  cellSize.height/100*borderHeightPercent);
+                cell.rangeTo.frame = CGRectMake(-spacing,
+                                                (cellSize.height-(cellSize.height/100*borderHeightPercent))/2,
+                                                cellSize.width/2+spacing,
+                                                cellSize.height/100*borderHeightPercent);
+                
+                cell.rangeDot.frame = CGRectMake((cellSize.width - (cellSize.height/100*dotHeightPercent))/2,
+                                                 (cellSize.height/100*((100-dotHeightPercent)/2)),
+                                                 (cellSize.height/100*dotHeightPercent),
+                                                 (cellSize.height/100*dotHeightPercent));
                 
                 [cell.rangeDot.layer setCornerRadius:cell.rangeDot.frame.size.height/2];
+                
             }
         }
     }
@@ -957,7 +987,6 @@
             }
         }
     }
-    
     return NO;
 }
 
@@ -979,7 +1008,6 @@
             }
         }
     }
-    
     return NO;
 }
 
@@ -1013,20 +1041,28 @@
         }
         
         if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
-            cell.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
+            cell.backgroundColor = kJxCalendarWeekendBackgroundColor;
+            cell.layer.borderColor = kJxCalendarWeekendBorderColor.CGColor;
+            cell.label.textColor = kJxCalendarWeekendTextColor;
         }else{
-            cell.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.9 alpha:1];
+            cell.backgroundColor = kJxCalendarDayBackgroundColor;
+            cell.layer.borderColor = kJxCalendarDayBorderColor.CGColor;
+            cell.label.textColor = kJxCalendarDayTextColor;
         }
         
         if ([self.dataSource respondsToSelector:@selector(isDaySelected:)] && [self.dataSource isDaySelected:thisDate]) {
-            cell.layer.borderColor = [UIColor redColor].CGColor;
-            //cell.backgroundColor = [UIColor redColor];
-            cell.layer.borderWidth = 1.0f;
-            cell.label.textColor = [UIColor redColor];
-        }else{
-            cell.layer.borderColor = self.collectionView.backgroundColor.CGColor;
+            cell.layer.borderColor = kJxCalendarSelectedDayBorderColor.CGColor;
+            if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
+                cell.backgroundColor = kJxCalendarSelectedWeekendBackgroundColor;
+            }else{
+                cell.backgroundColor = kJxCalendarSelectedDayBackgroundColor;
+            }
+            cell.label.textColor = kJxCalendarSelectedDayTextColor;
+        }
+        if ([[UIColor colorWithCGColor:cell.layer.borderColor] isEqual:cell.backgroundColor]) {
             cell.layer.borderWidth = .0f;
-            cell.label.textColor = [UIColor blackColor];
+        }else{
+            cell.layer.borderWidth = 1.0f;
         }
         
         
@@ -1038,7 +1074,7 @@
         
     }else{
         cell.label.text = @" ";
-        cell.backgroundColor = [UIColor colorWithRed:.95 green:.95 blue:.95 alpha:1];
+        cell.backgroundColor = kJxCalendarBackgroundColor;
         cell.eventMarker.hidden = YES;
         cell.layer.borderColor = self.collectionView.backgroundColor.CGColor;
         cell.layer.borderWidth = .0f;
@@ -1077,20 +1113,22 @@
                      animated:YES];
             
         }else{
-    
-        //tagesansicht öffnen
-//        [self.delegate calendarDidSelectDate:date whileOnAppearance:[self getAppearance]];
-//        
-//        JxCalendarLayoutDay *layout = [[JxCalendarLayoutDay alloc] initWithSize:self.collectionView.bounds.size
-//                                                                         andDay:date];
-//        
-//        JxCalendarDay *vc = [[JxCalendarDay alloc] initWithCollectionViewLayout:layout];
-//        layout.source = vc;
-//        
-//        vc.dataSource = self.dataSource;
-//        nv.delegate = self.delegate;
-//        
-//        [nv setCurrentDate:date];
+            if ([self.dataSource isPartOfRange:date]) {
+                
+                NSLog(@"open range tooltip");
+                
+                UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+                
+                
+                [self openToolTipAtRect:CGRectMake(cell.frame.origin.x-collectionView.contentOffset.x,
+                                                   cell.frame.origin.y-collectionView.contentOffset.y,
+                                                   cell.frame.size.width,
+                                                   cell.frame.size.height)
+                               withDate:date];
+                
+                return;
+            }
+            
             
             if ([self.dataSource isDaySelected:date]) {
                 if ([self.delegate respondsToSelector:@selector(calendarDidDeselectDate:whileOnAppearance:)]) {
@@ -1122,7 +1160,11 @@
 }
 
 #pragma mark <UIScrollViewDelegate>
-
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    [self hideToolTip];
+    
+    NSLog(@"offset Y: %f", scrollView.contentOffset.y);
+}
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     if (decelerate) {
         
@@ -1161,4 +1203,109 @@
     }
 }
 
+#pragma mark tooltip
+- (void)openToolTipAtRect:(CGRect)rect withDate:(NSDate *)date{
+    
+    [self hideToolTip];
+    
+    self.toolTipDate = date;
+    
+    CGSize toolTipSize = CGSizeMake(130, 80);
+    
+    CGRect toolTipRect = CGRectMake(rect.origin.x + (rect.size.width/2) - (toolTipSize.width/2), rect.origin.y-toolTipSize.height, toolTipSize.width, toolTipSize.height);
+    
+    if (toolTipRect.origin.x < 5) {
+        toolTipRect.origin.x = 5;
+    }
+    if (toolTipRect.origin.x + toolTipRect.size.width > self.collectionView.frame.size.width) {
+        toolTipRect.origin.x = self.collectionView.frame.size.width - toolTipRect.size.width - 5;
+    }
+    NSLog(@"abstand von oben %f", self.collectionView.contentOffset.y - toolTipRect.origin.y);
+    
+    if (toolTipRect.origin.y  < 5) {
+        toolTipRect.origin.y = rect.origin.y+rect.size.height;
+    }
+    
+    UIView *toolTipView = [[UIView alloc] initWithFrame:toolTipRect];
+    
+
+    toolTipView.tag = 8890;
+    toolTipView.backgroundColor = [UIColor whiteColor];
+    toolTipView.layer.shadowOffset = CGSizeMake(0, 0);
+    toolTipView.layer.shadowOpacity = 0.75;
+    toolTipView.layer.shadowRadius = 8;
+    toolTipView.layer.cornerRadius = 8.f;
+    
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, toolTipSize.width, 40)];
+    label.tag = 8891;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.textColor = [UIColor darkGrayColor];
+    label.font = [UIFont fontWithName:@"Helvetica-Neue" size:18];
+    NSDateFormatter *formatter = [JxCalendarBasics defaultFormatter];
+    formatter.dateFormat = @"dd.MM.YYYY";
+    label.text = [formatter stringFromDate:date];
+    [toolTipView addSubview:label];
+    
+    UIButton *dayTypeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 40, toolTipSize.width, 40)];
+    dayTypeButton.tag = 8892;
+    [dayTypeButton setTitle:@"Ganzer Tag >" forState:UIControlStateNormal];
+    [dayTypeButton addTarget:self action:@selector(dayTypeChange:) forControlEvents:UIControlEventTouchUpInside];
+    [dayTypeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+    dayTypeButton.titleLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:12];
+    [toolTipView addSubview:dayTypeButton];
+    
+    
+//    toolTipView.backgroundColor = [[UIColor orangeColor] colorWithAlphaComponent:0.5];
+//    label.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.5];
+//    dayTypeButton.backgroundColor = [[UIColor cyanColor] colorWithAlphaComponent:0.5];
+    
+    [self.view addSubview:toolTipView];
+    
+}
+- (void)hideToolTip{
+    self.toolTipDate = nil;
+    [[self.view viewWithTag:8890] removeFromSuperview];
+}
+- (void)updateToolTip{
+    UIView *toolTipView = [self.view viewWithTag:8890];
+    
+    toolTipView.backgroundColor = [UIColor yellowColor];
+}
+- (IBAction)dayTypeChange:(id)sender{
+    
+    UIButton *dayTypeButton = sender;
+    
+    if ([dayTypeButton.titleLabel.text isEqualToString:@"Halber Tag >"]) {
+        [dayTypeButton setTitle:@"Ganzer Tag >" forState:UIControlStateNormal];
+    }else{
+        [dayTypeButton setTitle:@"Halber Tag >" forState:UIControlStateNormal];
+    }
+    
+    
+//    UIViewController *vc = [[UIViewController alloc] init];
+//    
+//    vc.view.backgroundColor = [UIColor yellowColor];
+//    
+//    NSDateFormatter *formatter = [JxCalendarBasics defaultFormatter];
+//    formatter.dateFormat = @"dd.MM.YYYY";
+//    
+//    vc.navigationItem.title = [formatter stringFromDate:_toolTipDate];
+//    
+////    [self.navigationController pushViewController:vc animated:YES];
+//    
+//    
+//    
+//    vc.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(closeToolTipVC:)];
+//    
+//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+//    
+//    [self presentViewController:nav animated:YES completion:nil];
+}
+- (IBAction)closeToolTipVC:(id)sender{
+    if (self.presentedViewController) {
+        [self.presentedViewController dismissViewControllerAnimated:YES completion:^{
+            [self updateToolTip];
+        }];
+    }
+}
 @end

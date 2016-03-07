@@ -13,19 +13,20 @@
 
 #define kPullToSwitchContextOffset                  80
 
-#define kJxCalendarYearLayoutCells      @"JxCalendarYearLayoutCells"
-#define kJxCalendarYearLayoutHeader     @"JxCalendarYearLayoutHeader"
+#define kJxCalendarYearLayoutCells                  @"JxCalendarYearLayoutCells"
+#define kJxCalendarYearLayoutHeader                 @"JxCalendarYearLayoutHeader"
 
-#define kJxCalendarWeekLayoutCells      @"JxCalendarWeekLayoutCells"
-#define kJxCalendarWeekLayoutWholeDay   @"JxCalendarWeekLayoutWholeDay"
-#define kJxCalendarWeekLayoutHeader     @"JxCalendarWeekLayoutHeader"
+#define kJxCalendarWeekLayoutCells                  @"JxCalendarWeekLayoutCells"
+#define kJxCalendarWeekLayoutWholeDay               @"JxCalendarWeekLayoutWholeDay"
+#define kJxCalendarWeekLayoutHeader                 @"JxCalendarWeekLayoutHeader"
 
-#define kJxCalendarMonthLayoutCells     @"JxCalendarMonthLayoutCells"
-#define kJxCalendarMonthLayoutHeader    @"JxCalendarMonthLayoutHeader"
+#define kJxCalendarMonthLayoutCells                 @"JxCalendarMonthLayoutCells"
+#define kJxCalendarMonthLayoutHeader                @"JxCalendarMonthLayoutHeader"
+#define kJxCalendarMonthLayoutDecoration            @"JxCalendarMonthLayoutDecoration"
 
-#define kJxCalendarDayLayoutCells       @"JxCalendarDayLayoutCells"
-#define kJxCalendarDayLayoutWholeDay    @"JxCalendarDayLayoutWholeDay"
-#define kJxCalendarDayLayoutHeader      @"JxCalendarDayLayoutHeader"
+#define kJxCalendarDayLayoutCells                   @"JxCalendarDayLayoutCells"
+#define kJxCalendarDayLayoutWholeDay                @"JxCalendarDayLayoutWholeDay"
+#define kJxCalendarDayLayoutHeader                  @"JxCalendarDayLayoutHeader"
 
 #define kCalendarLayoutDaySectionHeightMultiplier    2
 #define kCalendarLayoutDayHeaderHeight              49
@@ -34,6 +35,24 @@
 
 #define kCalendarLayoutWholeDayHeight               20
 
+#define kJxCalendarBackgroundColor                  [UIColor colorWithRed:0.93 green:0.93 blue:0.93 alpha:1.0]
+
+#define kJxCalendarDayBackgroundColor               [UIColor whiteColor]
+#define kJxCalendarDayBorderColor                   kJxCalendarDayBackgroundColor
+#define kJxCalendarDayTextColor                     [UIColor blackColor]
+#define kJxCalendarWeekendBackgroundColor           [UIColor colorWithRed:0.965 green:0.965 blue:0.965 alpha:1.0]
+#define kJxCalendarWeekendBorderColor               kJxCalendarWeekendBackgroundColor
+#define kJxCalendarWeekendTextColor                 [UIColor blackColor]
+
+#define kJxCalendarSelectedDayBackgroundColor       kJxCalendarDayBackgroundColor
+#define kJxCalendarSelectedWeekendBackgroundColor   kJxCalendarWeekendBackgroundColor
+#define kJxCalendarSelectedDayBorderColor           [UIColor redColor]
+#define kJxCalendarSelectedDayTextColor             [UIColor redColor]
+
+#define kJxCalendarRangeDotBackgroundColor          [UIColor colorWithRed:1.0 green:0.9321 blue:0.7866 alpha:1.0]
+#define kJxCalendarRangeDotBorderColor              [UIColor colorWithRed:0.9818 green:0.7086 blue:0.3623 alpha:1.0]
+#define kJxCalendarRangeDotBorderWidth              1.5f
+#define kJxCalendarRangeBackgroundColor             kJxCalendarRangeDotBackgroundColor
 
 typedef enum {
     JxCalendarAppearanceNone,

@@ -139,11 +139,11 @@
 #pragma mark Range Selection
 - (BOOL)isDayRangeable:(NSDate *)date{
     
-    NSDateComponents *components = [[self calendar] components:NSCalendarUnitWeekday fromDate:date];
-    
-    if ([JxCalendarBasics normalizedWeekDay:components.weekday] > 5) {
-        return NO;
-    }
+//    NSDateComponents *components = [[self calendar] components:NSCalendarUnitWeekday fromDate:date];
+//    
+//    if ([JxCalendarBasics normalizedWeekDay:components.weekday] > 5) {
+//        return NO;
+//    }
     if ([self eventsAt:date].count > 0) {
         return NO;
     }

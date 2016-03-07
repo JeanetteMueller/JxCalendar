@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2614D0951C8DB71B002EC145 /* JxCalendarWeekDayDecoration.h in Headers */ = {isa = PBXBuildFile; fileRef = 2614D0921C8DB71B002EC145 /* JxCalendarWeekDayDecoration.h */; };
+		2614D0961C8DB71B002EC145 /* JxCalendarWeekDayDecoration.m in Sources */ = {isa = PBXBuildFile; fileRef = 2614D0931C8DB71B002EC145 /* JxCalendarWeekDayDecoration.m */; };
+		2614D0971C8DB71B002EC145 /* JxCalendarWeekDayDecoration.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2614D0941C8DB71B002EC145 /* JxCalendarWeekDayDecoration.xib */; };
 		265FD5F11C2170E000FCC8AE /* JxCalendarEventDay.h in Headers */ = {isa = PBXBuildFile; fileRef = 265FD5EF1C2170E000FCC8AE /* JxCalendarEventDay.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		265FD5F21C2170E000FCC8AE /* JxCalendarEventDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 265FD5F01C2170E000FCC8AE /* JxCalendarEventDay.m */; };
 		265FD5F51C2170F100FCC8AE /* JxCalendarEventDuration.h in Headers */ = {isa = PBXBuildFile; fileRef = 265FD5F31C2170F100FCC8AE /* JxCalendarEventDuration.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -62,6 +65,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2614D0921C8DB71B002EC145 /* JxCalendarWeekDayDecoration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarWeekDayDecoration.h; sourceTree = "<group>"; };
+		2614D0931C8DB71B002EC145 /* JxCalendarWeekDayDecoration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarWeekDayDecoration.m; sourceTree = "<group>"; };
+		2614D0941C8DB71B002EC145 /* JxCalendarWeekDayDecoration.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarWeekDayDecoration.xib; sourceTree = "<group>"; };
 		265FD5EF1C2170E000FCC8AE /* JxCalendarEventDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarEventDay.h; sourceTree = "<group>"; };
 		265FD5F01C2170E000FCC8AE /* JxCalendarEventDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarEventDay.m; sourceTree = "<group>"; };
 		265FD5F31C2170F100FCC8AE /* JxCalendarEventDuration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarEventDuration.h; sourceTree = "<group>"; };
@@ -186,6 +192,9 @@
 				266D38101C2AAE64004FEBF1 /* JxCalendarWeekHeader.h */,
 				266D38111C2AAE64004FEBF1 /* JxCalendarWeekHeader.m */,
 				266D38121C2AAE64004FEBF1 /* JxCalendarWeekHeader.xib */,
+				2614D0921C8DB71B002EC145 /* JxCalendarWeekDayDecoration.h */,
+				2614D0931C8DB71B002EC145 /* JxCalendarWeekDayDecoration.m */,
+				2614D0941C8DB71B002EC145 /* JxCalendarWeekDayDecoration.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -253,6 +262,7 @@
 				26FAA3F91C1F13DB001C4DA6 /* JxCalendarBasics.h in Headers */,
 				26EBE2191C18446700A0DB2E /* JxCalendarDay.h in Headers */,
 				26FAA3F51C1F135D001C4DA6 /* JxCalendarWeek.h in Headers */,
+				2614D0951C8DB71B002EC145 /* JxCalendarWeekDayDecoration.h in Headers */,
 				26FAA3F11C1F0F0F001C4DA6 /* JxCalendarLayoutWeek.h in Headers */,
 				265FD5F11C2170E000FCC8AE /* JxCalendarEventDay.h in Headers */,
 				265FD5FA1C217BA400FCC8AE /* JxCalendarWeekEventCell.h in Headers */,
@@ -331,6 +341,7 @@
 				26EBE1FE1C18446700A0DB2E /* JxCalendarEventCell.xib in Resources */,
 				266D38151C2AAE64004FEBF1 /* JxCalendarWeekHeader.xib in Resources */,
 				26EBE1F81C18446700A0DB2E /* JxCalendarCell.xib in Resources */,
+				2614D0971C8DB71B002EC145 /* JxCalendarWeekDayDecoration.xib in Resources */,
 				26EBE2031C18446700A0DB2E /* JxCalendarHeader.xib in Resources */,
 				26EBE1FB1C18446700A0DB2E /* JxCalendarDayHeader.xib in Resources */,
 				265FD5FC1C217BA400FCC8AE /* JxCalendarWeekEventCell.xib in Resources */,
@@ -344,6 +355,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2614D0961C8DB71B002EC145 /* JxCalendarWeekDayDecoration.m in Sources */,
 				266D38141C2AAE64004FEBF1 /* JxCalendarWeekHeader.m in Sources */,
 				265FD5F61C2170F100FCC8AE /* JxCalendarEventDuration.m in Sources */,
 				26EBE2121C18446700A0DB2E /* JxCalendarLayoutDay.m in Sources */,

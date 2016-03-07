@@ -12,7 +12,7 @@
 @interface JxCalendarLayoutOverview : JxCalendarLayout
 
 @property (strong, nonatomic) JxCalendarViewController *overview;
-
+@property (nonatomic, readwrite) BOOL renderWeekDayLabels;
 
 - (id)initWithViewController:(JxCalendarViewController *)vc andSize:(CGSize)size;
 
