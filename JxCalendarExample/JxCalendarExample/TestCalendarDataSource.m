@@ -187,6 +187,14 @@
     }
     return JxCalendarDayTypeUnknown;
 }
+//- (JxCalendarDayTypeMask)availableDayTypesForDate:(NSDate *)date{
+//    
+//    return JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskHalfDay;
+//}
+- (JxCalendarDayType)availableDayTypesForDate:(NSDate *)date{
+    
+    return JxCalendarDayTypeWholeDay|JxCalendarDayTypeHalfDay| JxCalendarDayTypeFreeChoice;
+}
 - (void)sortRangedObjects{
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey: kJxCalendarRangeDictionaryKeyDate ascending: YES];
     self.rangedDates = [[self.rangedDates sortedArrayUsingDescriptors:@[sortDescriptor]] mutableCopy];

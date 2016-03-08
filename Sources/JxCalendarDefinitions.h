@@ -59,24 +59,25 @@
 #define kJxCalendarDayTypeOptionWholeDay            @"Ganzer Tag >"
 #define kJxCalendarDayTypeOptionHalfDay             @"Halber Tag >"
 #define kJxCalendarDayTypeOptionWorkDay             @"Arbeitstag >"
+#define kJxCalendarDayTypeOptionFreeChoice          @"Freie Wahl >"
 
 #define kJxCalendarRangeDictionaryKeyDate           @"date"
 #define kJxCalendarRangeDictionaryKeyDaytype        @"daytype"
 
-typedef enum {
+typedef NS_ENUM(NSInteger, JxCalendarAppearance) {
     JxCalendarAppearanceNone,
     JxCalendarAppearanceYear,
     JxCalendarAppearanceMonth,
     JxCalendarAppearanceWeek,
     JxCalendarAppearanceDay
-} JxCalendarAppearance;
+};
 
-typedef enum {
+typedef NS_ENUM(NSInteger, JxCalendarOverviewStyle) {
     JxCalendarOverviewStyleYearGrid,
     JxCalendarOverviewStyleMonthGrid
-} JxCalendarOverviewStyle;
+};
 
-typedef enum {
+typedef NS_ENUM(NSInteger, JxCalendarSelectionStyle) {
     /* touch on an item opens the detailview, long holf start range-selection */
     JxCalendarSelectionStyleDefault,
     
@@ -86,10 +87,10 @@ typedef enum {
     /* touch on an item start a range-selection. another touch ends range-selection. touch and hold start and change range */
     JxCalendarSelectionStyleRangeOnly
     
-} JxCalendarSelectionStyle;
+};
 
-typedef enum {
-    JxCalendarDayTypeUnknown,
+typedef NS_ENUM(NSUInteger, JxCalendarDayType) {
+    JxCalendarDayTypeUnknown = 0,
     
     /* complete day, 24 hours */
     JxCalendarDayTypeWholeDay,
@@ -98,9 +99,11 @@ typedef enum {
     JxCalendarDayTypeWorkDay,
     
     /* half day, typicaly 4 hours */
-    JxCalendarDayTypeHalfDay
+    JxCalendarDayTypeHalfDay,
     
-} JxCalendarDayType;
+    /* free choice */
+    JxCalendarDayTypeFreeChoice,
+};
 
 @class JxCalendarOverview, JxCalendarEvent;
 
@@ -133,6 +136,7 @@ typedef enum {
 - (BOOL)isEndOfRange:(NSDate *)date;
 - (BOOL)isPartOfRange:(NSDate *)date;
 - (JxCalendarDayType)dayTypeOfDateInRange:(NSDate *)date;
+- (JxCalendarDayType)availableDayTypesForDate:(NSDate *)date;
 @end
 
 

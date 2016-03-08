@@ -284,7 +284,7 @@
         }
         
         for (JxCalendarCell *cell in self.collectionView.visibleCells) {
-            [self updateRangeForCell:cell atIndexPath:[self.collectionView indexPathForCell:cell]];
+            [self updateRangeForCell:cell atIndexPath:[self.collectionView indexPathForCell:cell] animated:NO];
         }
     } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
         
@@ -717,7 +717,7 @@
         NSIndexPath *thisPath = [self.collectionView indexPathForCell:cell];
         
         if ([pathes containsObject:thisPath]) {
-            [self updateRangeForCell:cell atIndexPath:thisPath];
+            [self updateRangeForCell:cell atIndexPath:thisPath animated:YES];
         }
     }
 }
@@ -743,7 +743,7 @@
         [self.collectionView setCollectionViewLayout:layout animated:animated];
         
         for (JxCalendarCell *cell in self.collectionView.visibleCells) {
-            [self updateRangeForCell:cell atIndexPath:[self.collectionView indexPathForCell:cell]];
+            [self updateRangeForCell:cell atIndexPath:[self.collectionView indexPathForCell:cell] animated:NO];
         }
         
     } completion:^(BOOL finished) {
@@ -913,61 +913,78 @@
     JxCalendarCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     
     [self updateCell:cell atIndexPath:indexPath];
-    [self updateRangeForCell:cell atIndexPath:indexPath];
+    [self updateRangeForCell:cell atIndexPath:indexPath animated:NO];
 
     return cell;
 }
 
-- (void)updateRangeForCell:(JxCalendarCell *)cell atIndexPath:(NSIndexPath *)indexPath{
+- (void)updateRangeForCell:(JxCalendarCell *)cell atIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated{
     
     NSDate *thisDate = [self getDateForIndexPath:indexPath];
     
-    cell.rangeDot.hidden = YES;
-    cell.rangeFrom.hidden = YES;
-    cell.rangeTo.hidden = YES;
-    
     if (thisDate) {
+        
         
         if ([self.dataSource respondsToSelector:@selector(isDayRangeable:)] &&
             [self.dataSource respondsToSelector:@selector(isPartOfRange:)] &&
             [self.dataSource respondsToSelector:@selector(isStartOfRange:)] &&
             [self.dataSource respondsToSelector:@selector(isEndOfRange:)]
             ) {
-        
-            if([self.dataSource isPartOfRange:thisDate]) {
+            
+            
+            
+            cell.rangeDotBackground.backgroundColor = kJxCalendarRangeDotBackgroundColor;
+            cell.rangeDot.backgroundColor           = cell.backgroundColor;
+            cell.rangeFrom.backgroundColor          = kJxCalendarRangeBackgroundColor;
+            cell.rangeTo.backgroundColor            = kJxCalendarRangeBackgroundColor;
+            
                 
-                if ([self nextCellIsInRangeWithIndexPath:indexPath]) {
-                    cell.rangeFrom.hidden = NO;
-                }
+            void (^animation)(void) = ^{
                 
-                if ([self lastCellIsInRangeWithIndexPath:indexPath]) {
-                    cell.rangeTo.hidden = NO;
-                }
+                CGFloat partOfDay = 1.0;
                 
-                if ([self lastCellIsInRangeWithIndexPath:indexPath] && [self nextCellIsInRangeWithIndexPath:indexPath]) {
-                    cell.rangeDot.hidden = YES;
-                }else{
-                    cell.rangeDot.hidden = NO;
-                    
-                    if ([self.dataSource isStartOfRange:thisDate] || [self.dataSource isEndOfRange:thisDate]) {
-                        cell.rangeDot.layer.borderColor = kJxCalendarRangeDotBorderColor.CGColor;
-                        [cell.rangeDot.layer setBorderWidth:kJxCalendarRangeDotBorderWidth];
+                
+                
+                if([self.dataSource isPartOfRange:thisDate]) {
+                    if ([self nextCellIsInRangeWithIndexPath:indexPath]) {
+                        cell.rangeFrom.alpha = 1.f;
                     }else{
-                        [cell.rangeDot.layer setBorderWidth:.0];
+                        cell.rangeFrom.alpha = 0.f;
                     }
+                    
+                    if ([self lastCellIsInRangeWithIndexPath:indexPath]) {
+                        cell.rangeTo.alpha = 1.f;
+                    }else{
+                        cell.rangeTo.alpha = 0.f;
+                    }
+                    
+                    if ([self lastCellIsInRangeWithIndexPath:indexPath] && [self nextCellIsInRangeWithIndexPath:indexPath]) {
+                        cell.rangeDot.alpha = 0.0f;
+                    }else{
+                        cell.rangeDot.alpha = 1.f;
+                        
+                        if ([self.dataSource isStartOfRange:thisDate] || [self.dataSource isEndOfRange:thisDate]) {
+                            cell.rangeDot.layer.borderColor = kJxCalendarRangeDotBorderColor.CGColor;
+                            [cell.rangeDot.layer setBorderWidth:kJxCalendarRangeDotBorderWidth];
+                        }else{
+                            [cell.rangeDot.layer setBorderWidth:.0];
+                        }
+                    }
+                    
+                    switch ([self.dataSource dayTypeOfDateInRange:thisDate]) {
+                        case JxCalendarDayTypeHalfDay:
+                            partOfDay = .5f;
+                            break;
+                        default:
+                            break;
+                    }
+                }else{
+                    cell.rangeDot.alpha = 0.0f;
+                    cell.rangeFrom.alpha = 0.0f;
+                    cell.rangeTo.alpha = 0.0f;
                 }
-                
-                BOOL halfDay = NO;
-                switch ([self.dataSource dayTypeOfDateInRange:thisDate]) {
-                    case JxCalendarDayTypeWorkDay:
-                    case JxCalendarDayTypeHalfDay:
-                        halfDay = YES;
-                        break;
-                    default:
-                        break;
-                }
-                
-                
+                    
+                    
                 UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
                 UICollectionViewLayoutAttributes *attr = [layout layoutAttributesForItemAtIndexPath:indexPath];
                 
@@ -987,11 +1004,12 @@
                 cell.rangeFrom.frame = CGRectMake(cellSizeWidthHalf,
                                                   (cellSize.height-(cellSize.height/100*borderHeightPercent))/2,
                                                   cellSizeWidthHalf + spacing,
-                                                  (cellSize.height/100*borderHeightPercent) / ((halfDay) ? 2 : 1));
+                                                  (cellSize.height/100*borderHeightPercent) * partOfDay);
+                
                 cell.rangeTo.frame = CGRectMake(-spacing,
                                                 (cellSize.height-(cellSize.height/100*borderHeightPercent))/2,
                                                 cellSizeWidthHalf+spacing,
-                                                (cellSize.height/100*borderHeightPercent) / ((halfDay) ? 2 : 1));
+                                                (cellSize.height/100*borderHeightPercent) * partOfDay);
                 
                 cell.rangeDot.frame = CGRectMake((cellSize.width - (cellSize.height/100*dotHeightPercent))/2,
                                                  (cellSize.height/100*((100-dotHeightPercent)/2)),
@@ -1001,13 +1019,16 @@
                 cell.rangeDotBackground.frame = CGRectMake(0,
                                                            0,
                                                            (cellSize.height/100*dotHeightPercent),
-                                                           (cellSize.height/100*dotHeightPercent) / ((halfDay) ? 2 : 1));
+                                                           (cellSize.height/100*dotHeightPercent) *partOfDay);
                 
                 [cell.rangeDot.layer setCornerRadius:cell.rangeDot.frame.size.height/2];
-                
-                
-                
-                
+            
+            };
+            
+            if (animated) {
+                [UIView animateWithDuration:.2 animations:animation];
+            }else{
+                animation();
             }
         }
     }
@@ -1060,7 +1081,6 @@
     
     [[cell viewWithTag:999] removeFromSuperview];
     cell.vc = nil;
-    
     
     if (thisDate) {
         
@@ -1145,14 +1165,7 @@
                     
                     NSLog(@"open range tooltip");
                     
-                    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
-                    
-                    
-                    [self openToolTipAtRect:CGRectMake(cell.frame.origin.x-collectionView.contentOffset.x,
-                                                       cell.frame.origin.y-collectionView.contentOffset.y,
-                                                       cell.frame.size.width,
-                                                       cell.frame.size.height)
-                                   withDate:date];
+                    [self openToolTipWithDate:date];
                     
                     return;
                 }
@@ -1179,14 +1192,9 @@
                 
                 NSLog(@"open range tooltip");
                 
-                UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
                 
                 
-                [self openToolTipAtRect:CGRectMake(cell.frame.origin.x-collectionView.contentOffset.x,
-                                                   cell.frame.origin.y-collectionView.contentOffset.y,
-                                                   cell.frame.size.width,
-                                                   cell.frame.size.height)
-                               withDate:date];
+                [self openToolTipWithDate:date];
                 
                 return;
             }
@@ -1266,13 +1274,91 @@
 }
 
 #pragma mark tooltip
-- (void)openToolTipAtRect:(CGRect)rect withDate:(NSDate *)date{
+- (void)openToolTipWithDate:(NSDate *)date{
     
     [self hideToolTip];
     
     self.toolTipDate = date;
     
-    CGSize toolTipSize = CGSizeMake(130, 80);
+    UIView *toolTipView = [[UIView alloc] init];
+    toolTipView.tag = 8890;
+    //toolTipView.clipsToBounds = NO;
+    toolTipView.backgroundColor = [UIColor whiteColor];
+    toolTipView.layer.shadowOffset = CGSizeMake(0, 0);
+    toolTipView.layer.shadowOpacity = 0.75;
+    toolTipView.layer.shadowRadius = 8;
+    toolTipView.layer.cornerRadius = 8.f;
+    //toolTipView.layer.masksToBounds = NO;
+    
+    UIView *container = [[UIView alloc] init];
+    container.tag = 8891;
+    container.clipsToBounds = YES;
+    container.backgroundColor = [UIColor clearColor];
+    
+    [toolTipView addSubview:container];
+    
+    UILabel *label = [[UILabel alloc] init];
+    label.tag = 8892;
+    label.textAlignment = NSTextAlignmentCenter;
+    label.textColor = [UIColor darkGrayColor];
+    label.font = [UIFont fontWithName:@"Helvetica-Neue" size:18];
+    NSDateFormatter *formatter = [JxCalendarBasics defaultFormatter];
+    formatter.dateFormat = @"dd.MM.YYYY";
+    label.text = [formatter stringFromDate:date];
+    [container addSubview:label];
+    
+    UIButton *dayTypeButton = [[UIButton alloc] init];
+    dayTypeButton.tag = 8893;
+    [dayTypeButton addTarget:self action:@selector(dayTypeChange:) forControlEvents:UIControlEventTouchUpInside];
+    [dayTypeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+    dayTypeButton.titleLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:12];
+    [container addSubview:dayTypeButton];
+    
+        
+    UIButton *freeChoiseButton = [[UIButton alloc] init];
+    freeChoiseButton.tag = 8894;
+    [freeChoiseButton addTarget:self action:@selector(freeChoiceChange:) forControlEvents:UIControlEventTouchUpInside];
+    [freeChoiseButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+    freeChoiseButton.titleLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:12];
+    [container addSubview:freeChoiseButton];
+    
+    
+//    toolTipView.backgroundColor = [[UIColor orangeColor] colorWithAlphaComponent:0.5];
+//    label.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.5];
+//    dayTypeButton.backgroundColor = [[UIColor cyanColor] colorWithAlphaComponent:0.5];
+    
+    [self.view addSubview:toolTipView];
+    [self updateToolTipAnimated:NO];
+}
+- (void)hideToolTip{
+    self.toolTipDate = nil;
+    [[self.view viewWithTag:8890] removeFromSuperview];
+}
+- (void)updateToolTipAnimated:(BOOL)animated{
+    
+    JxCalendarDayType mask = [self.dataSource availableDayTypesForDate:_toolTipDate];
+ 
+    NSIndexPath *indexPath = [self getIndexPathForDate:_toolTipDate];
+    
+    UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
+    
+    CGRect rect = CGRectMake(cell.frame.origin.x-self.collectionView.contentOffset.x,
+                             cell.frame.origin.y-self.collectionView.contentOffset.y,
+                             cell.frame.size.width,
+                             cell.frame.size.height);
+    
+    
+    
+    UIView *toolTipView = [self.view viewWithTag:8890];
+    UIView *container = [self.view viewWithTag:8891];
+    
+    CGFloat freeChoiceExtraHeight = 0;
+    if ((mask & JxCalendarDayTypeFreeChoice) == JxCalendarDayTypeFreeChoice && [self.dataSource dayTypeOfDateInRange:_toolTipDate] == JxCalendarDayTypeFreeChoice) {
+        
+        freeChoiceExtraHeight = 40;
+    }
+    
+    CGSize toolTipSize = CGSizeMake(130, 80 + freeChoiceExtraHeight);
     
     CGRect toolTipRect = CGRectMake(rect.origin.x + (rect.size.width/2) - (toolTipSize.width/2), rect.origin.y-toolTipSize.height, toolTipSize.width, toolTipSize.height);
     
@@ -1288,29 +1374,11 @@
         toolTipRect.origin.y = rect.origin.y+rect.size.height;
     }
     
-    UIView *toolTipView = [[UIView alloc] initWithFrame:toolTipRect];
+    UILabel *label = [toolTipView viewWithTag:8892];
+    label.frame = CGRectMake(0, 0, toolTipSize.width, 40);
     
-
-    toolTipView.tag = 8890;
-    toolTipView.backgroundColor = [UIColor whiteColor];
-    toolTipView.layer.shadowOffset = CGSizeMake(0, 0);
-    toolTipView.layer.shadowOpacity = 0.75;
-    toolTipView.layer.shadowRadius = 8;
-    toolTipView.layer.cornerRadius = 8.f;
-    
-    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, toolTipSize.width, 40)];
-    label.tag = 8891;
-    label.textAlignment = NSTextAlignmentCenter;
-    label.textColor = [UIColor darkGrayColor];
-    label.font = [UIFont fontWithName:@"Helvetica-Neue" size:18];
-    NSDateFormatter *formatter = [JxCalendarBasics defaultFormatter];
-    formatter.dateFormat = @"dd.MM.YYYY";
-    label.text = [formatter stringFromDate:date];
-    [toolTipView addSubview:label];
-    
-    UIButton *dayTypeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 40, toolTipSize.width, 40)];
-    dayTypeButton.tag = 8892;
-    
+    UIButton *dayTypeButton = [toolTipView viewWithTag:8893];
+    dayTypeButton.frame = CGRectMake(0, 40, toolTipSize.width, 40);
     switch ([self.dataSource dayTypeOfDateInRange:_toolTipDate]) {
         case JxCalendarDayTypeUnknown:
             [dayTypeButton setTitle:kJxCalendarDayTypeOptionUnknown forState:UIControlStateNormal];
@@ -1324,74 +1392,91 @@
         case JxCalendarDayTypeHalfDay:
             [dayTypeButton setTitle:kJxCalendarDayTypeOptionHalfDay forState:UIControlStateNormal];
             break;
+        case JxCalendarDayTypeFreeChoice:
+            [dayTypeButton setTitle:kJxCalendarDayTypeOptionFreeChoice forState:UIControlStateNormal];
     }
     
-    [dayTypeButton addTarget:self action:@selector(dayTypeChange:) forControlEvents:UIControlEventTouchUpInside];
-    [dayTypeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-    dayTypeButton.titleLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:12];
-    [toolTipView addSubview:dayTypeButton];
+    
+    UIButton *freeChoiseButton = [toolTipView viewWithTag:8894];
+    freeChoiseButton.frame = CGRectMake(0, 80, toolTipSize.width, 40);
+    
+    if ((mask & JxCalendarDayTypeFreeChoice) == JxCalendarDayTypeFreeChoice && [self.dataSource dayTypeOfDateInRange:_toolTipDate] == JxCalendarDayTypeFreeChoice) {
+        
+        [freeChoiseButton setTitle:@"Von ## bis ##" forState:UIControlStateNormal];
+    }
+    
+    if (animated) {
+        [UIView animateWithDuration:.3 animations:^{
+            
+            toolTipView.frame = toolTipRect;
+            container.frame = CGRectMake(0, 0, toolTipRect.size.width, toolTipRect.size.height);
+        }];
+    }else{
+        toolTipView.frame = toolTipRect;
+        container.frame = CGRectMake(0, 0, toolTipRect.size.width, toolTipRect.size.height);
+    }
     
     
-//    toolTipView.backgroundColor = [[UIColor orangeColor] colorWithAlphaComponent:0.5];
-//    label.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.5];
-//    dayTypeButton.backgroundColor = [[UIColor cyanColor] colorWithAlphaComponent:0.5];
-    
-    [self.view addSubview:toolTipView];
-    
-}
-- (void)hideToolTip{
-    self.toolTipDate = nil;
-    [[self.view viewWithTag:8890] removeFromSuperview];
-}
-- (void)updateToolTip{
-    UIView *toolTipView = [self.view viewWithTag:8890];
-    
-    toolTipView.backgroundColor = [UIColor yellowColor];
 }
 - (IBAction)dayTypeChange:(id)sender{
     
     UIButton *dayTypeButton = sender;
     
-    if ([dayTypeButton.titleLabel.text isEqualToString:kJxCalendarDayTypeOptionHalfDay]) {
-        [dayTypeButton setTitle:kJxCalendarDayTypeOptionWholeDay forState:UIControlStateNormal];
+    JxCalendarDayType mask = [self.dataSource availableDayTypesForDate:_toolTipDate];
+    
+
+    NSMutableArray *availableOptions = [NSMutableArray array];
+    
+    for (NSNumber *type in @[@(JxCalendarDayTypeWholeDay), @(JxCalendarDayTypeHalfDay), @(JxCalendarDayTypeWorkDay), @(JxCalendarDayTypeFreeChoice), @(JxCalendarDayTypeWholeDay)]) {
+        JxCalendarDayType daytype = type.intValue;
         
-        [self.delegate calendarDidRangeDate:_toolTipDate withDayType:JxCalendarDayTypeWholeDay whileOnAppearance:[self getAppearance]];
+        if ((mask & daytype) == daytype) {
+            [availableOptions addObject:@(daytype)];
+        }
         
-    }else{
-        [dayTypeButton setTitle:kJxCalendarDayTypeOptionHalfDay forState:UIControlStateNormal];
-        
-        [self.delegate calendarDidRangeDate:_toolTipDate withDayType:JxCalendarDayTypeHalfDay whileOnAppearance:[self getAppearance]];
+    }
+
+    JxCalendarDayType doType = JxCalendarDayTypeUnknown;
+    
+    for (int i = 0; i < availableOptions.count; i++) {
+        NSNumber *type = availableOptions[i];
+        if ([self.dataSource dayTypeOfDateInRange:_toolTipDate] == type.intValue ) {
+            
+            doType = [availableOptions[i+1] intValue];
+            break;
+        }
     }
     
-    
-//    UIViewController *vc = [[UIViewController alloc] init];
-//    
-//    vc.view.backgroundColor = [UIColor yellowColor];
-//    
-//    NSDateFormatter *formatter = [JxCalendarBasics defaultFormatter];
-//    formatter.dateFormat = @"dd.MM.YYYY";
-//    
-//    vc.navigationItem.title = [formatter stringFromDate:_toolTipDate];
-//    
-////    [self.navigationController pushViewController:vc animated:YES];
-//    
-//    
-//    
-//    vc.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(closeToolTipVC:)];
-//    
-//    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-//    
-//    [self presentViewController:nav animated:YES completion:nil];
-    
+    [dayTypeButton setTitle:[self getTitleForDayType:doType] forState:UIControlStateNormal];
+    [self.delegate calendarDidRangeDate:_toolTipDate withDayType:doType whileOnAppearance:[self getAppearance]];
+
     NSIndexPath *path = [self getIndexPathForDate:_toolTipDate];
     
-    [self.collectionView reloadItemsAtIndexPaths:@[path]];
+    [self updateRangeForCell:(JxCalendarCell *)[self.collectionView cellForItemAtIndexPath:path] atIndexPath:path animated:YES];
     
+    [self updateToolTipAnimated:YES];
+}
+- (NSString *)getTitleForDayType:(JxCalendarDayType)type{
+    switch (type) {
+        case JxCalendarDayTypeWholeDay:
+            return kJxCalendarDayTypeOptionWholeDay;
+        case JxCalendarDayTypeHalfDay:
+            return kJxCalendarDayTypeOptionHalfDay;
+        case JxCalendarDayTypeWorkDay:
+            return kJxCalendarDayTypeOptionWorkDay;
+        case JxCalendarDayTypeFreeChoice:
+            return kJxCalendarDayTypeOptionFreeChoice;
+        case JxCalendarDayTypeUnknown:
+            return kJxCalendarDayTypeOptionUnknown;
+    }
+}
+- (IBAction)freeChoiceChange:(id)sender{
+    NSLog(@"timepicker oder ähnliches öffnen");
 }
 - (IBAction)closeToolTipVC:(id)sender{
     if (self.presentedViewController) {
         [self.presentedViewController dismissViewControllerAnimated:YES completion:^{
-            [self updateToolTip];
+            [self updateToolTipAnimated:NO];
         }];
     }
 }
