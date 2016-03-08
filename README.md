@@ -4,15 +4,15 @@ Umfangreiches Kalenderelement als Datepicker oder Eventanzeige
 # Ansichten
 
 <a href="https://github.com/JeanetteMueller/JxCalendar/blob/master/Screenshots/ipad_day.png" target="_blank">
-<img src="https://github.com/JeanetteMueller/JxCalendar/blob/master/Screenshots/ipad_day.png" height="260" width="333" style="float:left;" /></a><h2>iPad Day</h2>
+<img src="https://github.com/JeanetteMueller/JxCalendar/blob/master/Screenshots/ipad_day.png" height="260" width="333" align="left" style="float:left;" /></a><h2>iPad Day</h2>
 <p style="clear:both;"></p>
 
 <a href="https://github.com/JeanetteMueller/JxCalendar/blob/master/Screenshots/ipad_week.png" target="_blank">
-<img src="https://github.com/JeanetteMueller/JxCalendar/blob/master/Screenshots/ipad_week.png" height="260" width="333" style="float:left;" /></a><h2>iPad Week</h2>
+<img src="https://github.com/JeanetteMueller/JxCalendar/blob/master/Screenshots/ipad_week.png" height="260" width="333" align="left" style="float:left;" /></a><h2>iPad Week</h2>
 <p style="clear:both;"></p>
 
 <a href="https://github.com/JeanetteMueller/JxCalendar/blob/master/Screenshots/ipad_month.png" target="_blank">
-<img src="https://github.com/JeanetteMueller/JxCalendar/blob/master/Screenshots/ipad_month.png" height="260" width="333" style="float:left;"" /></a><h2>iPad Month</h2>
+<img src="https://github.com/JeanetteMueller/JxCalendar/blob/master/Screenshots/ipad_month.png" height="260" width="333" align="left" style="float:left;"" /></a><h2>iPad Month</h2>
 <p style="clear:both;"></p>
 
 <a href="https://github.com/JeanetteMueller/JxCalendar/blob/master/Screenshots/ipad_month_range.png" target="_blank">
