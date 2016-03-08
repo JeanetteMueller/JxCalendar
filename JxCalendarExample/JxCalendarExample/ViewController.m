@@ -137,10 +137,39 @@
 - (void)calendarShouldClearRange{
     [self.dataSource.rangedDates removeAllObjects];
 }
-- (void)calendarDidRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
-    [self.dataSource.rangedDates addObject:date];
+- (void)calendarDidRangeDate:(NSDate *)date withDayType:(JxCalendarDayType)dayType whileOnAppearance:(JxCalendarAppearance)appearance{
+    
+    NSInteger index = [self indexOfDateInRange:date];
+    
+    NSDictionary *dict = @{kJxCalendarRangeDictionaryKeyDate: date, kJxCalendarRangeDictionaryKeyDaytype: @(dayType)};
+    
+    if (index >= 0) {
+        [self.dataSource.rangedDates replaceObjectAtIndex:index withObject:dict];
+        NSLog(@"replace date");
+    }else{
+        [self.dataSource.rangedDates addObject:dict];
+        NSLog(@"add date");
+    }
 }
 - (void)calendarDidDeRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
-    [self.dataSource.rangedDates removeObject:date];
+    
+    for (NSDictionary *dict in self.dataSource.rangedDates) {
+        if ([[dict objectForKey:kJxCalendarRangeDictionaryKeyDate] isEqual:date]) {
+            [self.dataSource.rangedDates removeObject:dict];
+            return;
+        }
+    }
 }
+- (NSInteger)indexOfDateInRange:(NSDate *)date{
+    NSInteger index = 0;
+    for (NSDictionary *dict in self.dataSource.rangedDates) {
+        
+        if ([[dict objectForKey:kJxCalendarRangeDictionaryKeyDate] isEqual:date]) {
+            return index;
+        }
+        index++;
+    }
+    return -1;
+}
+
 @end

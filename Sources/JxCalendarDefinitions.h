@@ -54,6 +54,15 @@
 #define kJxCalendarRangeDotBorderWidth              1.5f
 #define kJxCalendarRangeBackgroundColor             kJxCalendarRangeDotBackgroundColor
 
+
+#define kJxCalendarDayTypeOptionUnknown             @"–"
+#define kJxCalendarDayTypeOptionWholeDay            @"Ganzer Tag >"
+#define kJxCalendarDayTypeOptionHalfDay             @"Halber Tag >"
+#define kJxCalendarDayTypeOptionWorkDay             @"Arbeitstag >"
+
+#define kJxCalendarRangeDictionaryKeyDate           @"date"
+#define kJxCalendarRangeDictionaryKeyDaytype        @"daytype"
+
 typedef enum {
     JxCalendarAppearanceNone,
     JxCalendarAppearanceYear,
@@ -79,6 +88,20 @@ typedef enum {
     
 } JxCalendarSelectionStyle;
 
+typedef enum {
+    JxCalendarDayTypeUnknown,
+    
+    /* complete day, 24 hours */
+    JxCalendarDayTypeWholeDay,
+    
+    /* workday, typicaly 8 hours */
+    JxCalendarDayTypeWorkDay,
+    
+    /* half day, typicaly 4 hours */
+    JxCalendarDayTypeHalfDay
+    
+} JxCalendarDayType;
+
 @class JxCalendarOverview, JxCalendarEvent;
 
 @protocol JxCalendarScrollTo <NSObject>
@@ -89,6 +112,8 @@ typedef enum {
 @end
 
 @protocol JxCalendarDataSource <NSObject>
+
+@property (strong, nonatomic) NSMutableArray <NSDictionary*> *rangedDates;
 
 - (NSCalendar *)calendar;
 
@@ -107,7 +132,7 @@ typedef enum {
 - (BOOL)isStartOfRange:(NSDate *)date;
 - (BOOL)isEndOfRange:(NSDate *)date;
 - (BOOL)isPartOfRange:(NSDate *)date;
-
+- (JxCalendarDayType)dayTypeOfDateInRange:(NSDate *)date;
 @end
 
 
@@ -132,7 +157,7 @@ typedef enum {
 
 #pragma mark Range
 - (void)calendarShouldClearRange;
-- (void)calendarDidRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendarDidRangeDate:(NSDate *)date withDayType:(JxCalendarDayType)dayType whileOnAppearance:(JxCalendarAppearance)appearance;
 - (void)calendarDidDeRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
 
 @end

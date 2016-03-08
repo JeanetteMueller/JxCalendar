@@ -265,22 +265,33 @@
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     
     self.collectionView.pagingEnabled = NO;
     [self.collectionView.collectionViewLayout invalidateLayout];
     
-    switch (self.style) {
-        case JxCalendarOverviewStyleYearGrid:{
-            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutYearGrid alloc] initWithViewController:self andSize:size] animated:YES];
-            
-        }break;
-        case JxCalendarOverviewStyleMonthGrid:{
-            [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutMonthGrid alloc] initWithViewController:self andSize:size] animated:YES];
-            
-        }break;
-            
-    }
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        switch (self.style) {
+            case JxCalendarOverviewStyleYearGrid:{
+                [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutYearGrid alloc] initWithViewController:self andSize:size] animated:NO];
+                
+            }break;
+            case JxCalendarOverviewStyleMonthGrid:{
+                [self.collectionView setCollectionViewLayout:[[JxCalendarLayoutMonthGrid alloc] initWithViewController:self andSize:size] animated:NO];
+                
+            }break;
+                
+        }
+        
+        for (JxCalendarCell *cell in self.collectionView.visibleCells) {
+            [self updateRangeForCell:cell atIndexPath:[self.collectionView indexPathForCell:cell]];
+        }
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        
+        
+    }];
+    
+    
 }
 
 - (JxCalendarAppearance)getAppearance{
@@ -499,6 +510,7 @@
     
     switch (sender.state) {
         case UIGestureRecognizerStateBegan:{
+            [self hideToolTip];
             NSIndexPath *path = [self.collectionView indexPathForItemAtPoint:point];
             
             if (path) {
@@ -603,20 +615,16 @@
     NSMutableArray *oldPathes = [NSMutableArray array];
     NSMutableArray *newPathes = [NSMutableArray array];
     
-    if ([self.delegate respondsToSelector:@selector(calendarShouldClearRange)]) {
+  
+    for (NSDictionary *dict in  self.dataSource.rangedDates) {
         
-        for (JxCalendarCell *cell in self.collectionView.visibleCells) {
+        NSDate *thisDate = [dict objectForKey:kJxCalendarRangeDictionaryKeyDate];
+        
+        if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:thisDate]) {
+            NSIndexPath *thisPath = [self getIndexPathForDate:thisDate];
             
-            NSIndexPath *thisPath = [self.collectionView indexPathForCell:cell];
-            
-            NSDate *thisDate = [self getDateForIndexPath:thisPath];
-            
-            if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:thisDate]) {
-                [oldPathes addObject:thisPath];
-            }
+            [oldPathes addObject:thisPath];
         }
-        
-        [self.delegate calendarShouldClearRange];
     }
     
     if (_longHoldStartIndexPath) {
@@ -649,7 +657,6 @@
                     
                     NSDate *date = [self getDateForIndexPath:path];
                     if (date && [self.dataSource isDayRangeable:date]) {
-                        [self.delegate calendarDidRangeDate:date whileOnAppearance:[self getAppearance]];
                         
                         if (![newPathes containsObject:path]) {
                             [newPathes addObject:path];
@@ -663,7 +670,6 @@
             NSDate *date = [self getDateForIndexPath:_longHoldStartIndexPath];
             
             if (date && [self.dataSource isDayRangeable:date]) {
-                [self.delegate calendarDidRangeDate:date whileOnAppearance:[self getAppearance]];
                 
                 if (![newPathes containsObject:_longHoldStartIndexPath]) {
                     [newPathes addObject:_longHoldStartIndexPath];
@@ -686,6 +692,20 @@
     }
     
     if (updatePathes.count > 0) {
+        
+        for (NSIndexPath *path in updatePathes) {
+            NSDate *date = [self getDateForIndexPath:path];
+            
+            if ([self.dataSource isPartOfRange:date] && ![newPathes containsObject:path]) {
+                [self.delegate calendarDidDeRangeDate:date whileOnAppearance:[self getAppearance]];
+            }else{
+                if (![self.dataSource isPartOfRange:date]){
+                    [self.delegate calendarDidRangeDate:date withDayType:JxCalendarDayTypeWholeDay whileOnAppearance:[self getAppearance]];
+                }
+            }
+            
+        }
+        
         [self updateRangedCellsWithIndexPaths:updatePathes];
     }
 }
@@ -937,33 +957,56 @@
                     }
                 }
                 
+                BOOL halfDay = NO;
+                switch ([self.dataSource dayTypeOfDateInRange:thisDate]) {
+                    case JxCalendarDayTypeWorkDay:
+                    case JxCalendarDayTypeHalfDay:
+                        halfDay = YES;
+                        break;
+                    default:
+                        break;
+                }
+                
+                
                 UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
                 UICollectionViewLayoutAttributes *attr = [layout layoutAttributesForItemAtIndexPath:indexPath];
                 
                 CGSize cellSize = attr.frame.size;
                 CGFloat borderHeightPercent = 80.0f;
                 CGFloat dotHeightPercent = 80.0f;
-                CGFloat spacing = [(UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout minimumInteritemSpacing] / 2;
+                CGFloat spacing = ceil([(UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout minimumInteritemSpacing] / 2);
                 
-                cell.rangeDot.backgroundColor = kJxCalendarRangeDotBackgroundColor;
-                cell.rangeFrom.backgroundColor = kJxCalendarRangeBackgroundColor;
-                cell.rangeTo.backgroundColor = kJxCalendarRangeBackgroundColor;
+                cell.rangeDotBackground.backgroundColor = kJxCalendarRangeDotBackgroundColor;
+                cell.rangeDot.backgroundColor           = cell.backgroundColor;
+                cell.rangeFrom.backgroundColor          = kJxCalendarRangeBackgroundColor;
+                cell.rangeTo.backgroundColor            = kJxCalendarRangeBackgroundColor;
                 
-                cell.rangeFrom.frame = CGRectMake((cellSize.width/2),
+                
+                CGFloat cellSizeWidthHalf = ceil(cellSize.width/2);
+                
+                cell.rangeFrom.frame = CGRectMake(cellSizeWidthHalf,
                                                   (cellSize.height-(cellSize.height/100*borderHeightPercent))/2,
-                                                  cellSize.width/2 + spacing,
-                                                  cellSize.height/100*borderHeightPercent);
+                                                  cellSizeWidthHalf + spacing,
+                                                  (cellSize.height/100*borderHeightPercent) / ((halfDay) ? 2 : 1));
                 cell.rangeTo.frame = CGRectMake(-spacing,
                                                 (cellSize.height-(cellSize.height/100*borderHeightPercent))/2,
-                                                cellSize.width/2+spacing,
-                                                cellSize.height/100*borderHeightPercent);
+                                                cellSizeWidthHalf+spacing,
+                                                (cellSize.height/100*borderHeightPercent) / ((halfDay) ? 2 : 1));
                 
                 cell.rangeDot.frame = CGRectMake((cellSize.width - (cellSize.height/100*dotHeightPercent))/2,
                                                  (cellSize.height/100*((100-dotHeightPercent)/2)),
                                                  (cellSize.height/100*dotHeightPercent),
                                                  (cellSize.height/100*dotHeightPercent));
                 
+                cell.rangeDotBackground.frame = CGRectMake(0,
+                                                           0,
+                                                           (cellSize.height/100*dotHeightPercent),
+                                                           (cellSize.height/100*dotHeightPercent) / ((halfDay) ? 2 : 1));
+                
                 [cell.rangeDot.layer setCornerRadius:cell.rangeDot.frame.size.height/2];
+                
+                
+                
                 
             }
         }
@@ -1096,6 +1139,25 @@
         if (self.style == JxCalendarOverviewStyleYearGrid) {
             
             __weak __typeof(self)weakSelf = self;
+            
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                if ([self.dataSource isPartOfRange:date]) {
+                    
+                    NSLog(@"open range tooltip");
+                    
+                    UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+                    
+                    
+                    [self openToolTipAtRect:CGRectMake(cell.frame.origin.x-collectionView.contentOffset.x,
+                                                       cell.frame.origin.y-collectionView.contentOffset.y,
+                                                       cell.frame.size.width,
+                                                       cell.frame.size.height)
+                                   withDate:date];
+                    
+                    return;
+                }
+            }
+            
             
             [self switchStyle:JxCalendarOverviewStyleMonthGrid
                  toAppearance:JxCalendarAppearanceMonth
@@ -1248,7 +1310,22 @@
     
     UIButton *dayTypeButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 40, toolTipSize.width, 40)];
     dayTypeButton.tag = 8892;
-    [dayTypeButton setTitle:@"Ganzer Tag >" forState:UIControlStateNormal];
+    
+    switch ([self.dataSource dayTypeOfDateInRange:_toolTipDate]) {
+        case JxCalendarDayTypeUnknown:
+            [dayTypeButton setTitle:kJxCalendarDayTypeOptionUnknown forState:UIControlStateNormal];
+            break;
+        case JxCalendarDayTypeWholeDay:
+            [dayTypeButton setTitle:kJxCalendarDayTypeOptionWholeDay forState:UIControlStateNormal];
+            break;
+        case JxCalendarDayTypeWorkDay:
+            [dayTypeButton setTitle:kJxCalendarDayTypeOptionWorkDay forState:UIControlStateNormal];
+            break;
+        case JxCalendarDayTypeHalfDay:
+            [dayTypeButton setTitle:kJxCalendarDayTypeOptionHalfDay forState:UIControlStateNormal];
+            break;
+    }
+    
     [dayTypeButton addTarget:self action:@selector(dayTypeChange:) forControlEvents:UIControlEventTouchUpInside];
     [dayTypeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
     dayTypeButton.titleLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:12];
@@ -1275,10 +1352,15 @@
     
     UIButton *dayTypeButton = sender;
     
-    if ([dayTypeButton.titleLabel.text isEqualToString:@"Halber Tag >"]) {
-        [dayTypeButton setTitle:@"Ganzer Tag >" forState:UIControlStateNormal];
+    if ([dayTypeButton.titleLabel.text isEqualToString:kJxCalendarDayTypeOptionHalfDay]) {
+        [dayTypeButton setTitle:kJxCalendarDayTypeOptionWholeDay forState:UIControlStateNormal];
+        
+        [self.delegate calendarDidRangeDate:_toolTipDate withDayType:JxCalendarDayTypeWholeDay whileOnAppearance:[self getAppearance]];
+        
     }else{
-        [dayTypeButton setTitle:@"Halber Tag >" forState:UIControlStateNormal];
+        [dayTypeButton setTitle:kJxCalendarDayTypeOptionHalfDay forState:UIControlStateNormal];
+        
+        [self.delegate calendarDidRangeDate:_toolTipDate withDayType:JxCalendarDayTypeHalfDay whileOnAppearance:[self getAppearance]];
     }
     
     
@@ -1300,6 +1382,11 @@
 //    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
 //    
 //    [self presentViewController:nav animated:YES completion:nil];
+    
+    NSIndexPath *path = [self getIndexPathForDate:_toolTipDate];
+    
+    [self.collectionView reloadItemsAtIndexPaths:@[path]];
+    
 }
 - (IBAction)closeToolTipVC:(id)sender{
     if (self.presentedViewController) {

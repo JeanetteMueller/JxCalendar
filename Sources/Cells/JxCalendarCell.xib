@@ -13,24 +13,31 @@
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                 <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                 <subviews>
-                    <view contentMode="scaleToFill" id="1Me-O8-rFx">
+                    <view clipsSubviews="YES" contentMode="scaleToFill" id="1Me-O8-rFx">
                         <rect key="frame" x="0.0" y="97" width="100" height="3"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <color key="backgroundColor" red="0.23753643930608595" green="0.87120282504363" blue="0.83637977337954128" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
-                    <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" id="UYD-EF-EsP">
+                    <view hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" id="UYD-EF-EsP">
                         <rect key="frame" x="-5" y="15" width="70" height="70"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" red="1" green="0.83178976062907395" blue="0.55473171951323874" alpha="0.5" colorSpace="calibratedRGB"/>
                     </view>
-                    <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" id="K5i-fN-8NU">
+                    <view hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" id="K5i-fN-8NU">
                         <rect key="frame" x="35" y="15" width="70" height="70"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" red="1" green="0.83178976062907395" blue="0.55473171951323874" alpha="0.5" colorSpace="calibratedRGB"/>
                     </view>
-                    <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" id="miS-0Q-28l">
+                    <view hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" id="miS-0Q-28l">
                         <rect key="frame" x="5" y="5" width="90" height="90"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" id="qBH-AQ-y6D">
+                                <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="0.83178976062907395" blue="0.55473171951323874" alpha="0.5" colorSpace="calibratedRGB"/>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" tag="333" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="#" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="loW-UY-HwG">
@@ -49,6 +56,7 @@
                 <outlet property="eventMarker" destination="1Me-O8-rFx" id="1ns-xj-FND"/>
                 <outlet property="label" destination="loW-UY-HwG" id="2Ba-sb-XPc"/>
                 <outlet property="rangeDot" destination="miS-0Q-28l" id="DLS-Ov-3pO"/>
+                <outlet property="rangeDotBackground" destination="qBH-AQ-y6D" id="qZ3-SX-ca8"/>
                 <outlet property="rangeFrom" destination="K5i-fN-8NU" id="BNo-Lm-hZa"/>
                 <outlet property="rangeTo" destination="UYD-EF-EsP" id="UMO-i1-lZg"/>
             </connections>

@@ -28,7 +28,7 @@
         
         CGFloat itemsPerRow = 7;
         
-        CGFloat borders = 2.0f;
+        CGFloat borders = .0f;
         
         
         self.sectionInset = UIEdgeInsetsMake(3, 3, 0, 3);
@@ -38,7 +38,7 @@
         
         self.minimumInteritemSpacing = borders;
         self.minimumLineSpacing = borders;
-        CGFloat itemwidth = (self.headerReferenceSize.width - (itemsPerRow-1)*self.minimumInteritemSpacing)  / itemsPerRow;
+        CGFloat itemwidth = floor((self.headerReferenceSize.width - (itemsPerRow-1)*self.minimumInteritemSpacing)  / itemsPerRow);
         
         self.itemSize = CGSizeMake(itemwidth,
                                    itemwidth);

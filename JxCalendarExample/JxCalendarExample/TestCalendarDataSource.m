@@ -139,11 +139,11 @@
 #pragma mark Range Selection
 - (BOOL)isDayRangeable:(NSDate *)date{
     
-//    NSDateComponents *components = [[self calendar] components:NSCalendarUnitWeekday fromDate:date];
-//    
-//    if ([JxCalendarBasics normalizedWeekDay:components.weekday] > 5) {
-//        return NO;
-//    }
+    NSDateComponents *components = [[self calendar] components:NSCalendarUnitWeekday fromDate:date];
+    
+    if ([JxCalendarBasics normalizedWeekDay:components.weekday] > 5) {
+        return NO;
+    }
     if ([self eventsAt:date].count > 0) {
         return NO;
     }
@@ -151,16 +151,18 @@
     return YES;
 }
 - (BOOL)isStartOfRange:(NSDate *)date{
-    
-    if ([self.rangedDates.firstObject isEqual:date]) {
+    [self sortRangedObjects];
+    NSDictionary *dict = self.rangedDates.firstObject;
+    if ([[dict objectForKey:kJxCalendarRangeDictionaryKeyDate] isEqual:date]) {
         return YES;
     }
     
     return NO;
 }
 - (BOOL)isEndOfRange:(NSDate *)date{
-    
-    if ([self.rangedDates.lastObject isEqual:date]) {
+    [self sortRangedObjects];
+    NSDictionary *dict = self.rangedDates.lastObject;
+    if ([[dict objectForKey:kJxCalendarRangeDictionaryKeyDate] isEqual:date]) {
         return YES;
     }
     
@@ -168,6 +170,26 @@
 }
 - (BOOL)isPartOfRange:(NSDate *)date{
     
-    return [self.rangedDates containsObject:date];
+    for (NSDictionary *dict in self.rangedDates) {
+        if ([[dict objectForKey:kJxCalendarRangeDictionaryKeyDate] isEqual:date]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+- (JxCalendarDayType)dayTypeOfDateInRange:(NSDate *)date{
+    if ([self isPartOfRange:date]) {
+        for (NSDictionary *dict in self.rangedDates) {
+            if ([[dict objectForKey:kJxCalendarRangeDictionaryKeyDate] isEqual:date]) {
+                return (JxCalendarDayType)[[dict objectForKey:kJxCalendarRangeDictionaryKeyDaytype] intValue];
+            }
+        }
+    }
+    return JxCalendarDayTypeUnknown;
+}
+- (void)sortRangedObjects{
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey: kJxCalendarRangeDictionaryKeyDate ascending: YES];
+    self.rangedDates = [[self.rangedDates sortedArrayUsingDescriptors:@[sortDescriptor]] mutableCopy];
+    
 }
 @end
