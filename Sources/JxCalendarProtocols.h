@@ -7,6 +7,7 @@
 //
 
 #import "JxCalendarDefinitions.h"
+#import "JxCalendarRangeElement.h"
 
 #ifndef JxCalendarProtocols_h
 #define JxCalendarProtocols_h
@@ -22,7 +23,7 @@
 
 @protocol JxCalendarDataSource <NSObject>
 
-@property (strong, nonatomic) NSMutableArray <NSDictionary*> *rangedDates;
+@property (strong, nonatomic) NSMutableArray <JxCalendarRangeElement*> *rangedDates;
 
 - (NSCalendar *)calendar;
 
