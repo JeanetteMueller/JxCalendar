@@ -33,6 +33,8 @@
 
 @property (strong, nonatomic) NSDate *toolTipDate;
 
+@property (nonatomic, readwrite) BOOL initialScrollDone;
+
 @end
 
 @implementation JxCalendarOverview
@@ -118,7 +120,18 @@
     JxCalendarOverview *layout = (JxCalendarOverview *)self.collectionViewLayout;
     layout.renderWeekDayLabels = self.renderWeekDayLabels;
 }
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    
+    if (!self.initialScrollDone) {
+        self.initialScrollDone = YES;
+        
+        NSIndexPath *indexPath = [self getIndexPathForDate:self.startDate];
 
+        [self.collectionView setContentOffset:CGPointMake(0, [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath].frame.origin.y + [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath].frame.size.height/2 - self.collectionView.frame.size.height/2)
+                                     animated:NO];
+    }
+}
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
@@ -171,7 +184,7 @@
                 self.longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
                 self.longPressGesture.numberOfTouchesRequired = 1;
                 if (self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
-                    self.longPressGesture.minimumPressDuration = 0.1f;
+                    self.longPressGesture.minimumPressDuration = 0.15f;
                 }else{
                     self.longPressGesture.minimumPressDuration = 0.5f;
                 }
@@ -1146,14 +1159,17 @@
 #pragma mark <UICollectionViewDelegate>
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    
-    if ((self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ) && self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
-        return;
-    }
-    
     __block NSDate *date = [self getDateForIndexPath:indexPath];
     
     if (date) {
+        
+        if ((self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ) && self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
+            
+            [self openToolTipWithDate:date];
+            return;
+        }
+    
+    
         
         if (self.style == JxCalendarOverviewStyleYearGrid) {
             
