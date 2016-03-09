@@ -1165,12 +1165,12 @@
         
         if ((self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ) && self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
             
-            [self openToolTipWithDate:date];
+            if ([self.dataSource isPartOfRange:date]) {
+                [self openToolTipWithDate:date];
+            }
             return;
         }
     
-    
-        
         if (self.style == JxCalendarOverviewStyleYearGrid) {
             
             __weak __typeof(self)weakSelf = self;
@@ -1178,14 +1178,11 @@
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                 if ([self.dataSource isPartOfRange:date]) {
                     
-                    NSLog(@"open range tooltip");
-                    
                     [self openToolTipWithDate:date];
                     
                     return;
                 }
             }
-            
             
             [self switchStyle:JxCalendarOverviewStyleMonthGrid
                  toAppearance:JxCalendarAppearanceMonth
@@ -1205,15 +1202,10 @@
         }else{
             if ([self.dataSource isPartOfRange:date]) {
                 
-                NSLog(@"open range tooltip");
-                
-                
-                
                 [self openToolTipWithDate:date];
                 
                 return;
             }
-            
             
             if ([self.dataSource isDaySelected:date]) {
                 if ([self.delegate respondsToSelector:@selector(calendarDidDeselectDate:whileOnAppearance:)]) {
@@ -1438,7 +1430,6 @@
     UIButton *dayTypeButton = sender;
     
     JxCalendarDayType mask = [self.dataSource availableDayTypesForDate:_toolTipDate];
-    
 
     NSMutableArray *availableOptions = [NSMutableArray array];
     
