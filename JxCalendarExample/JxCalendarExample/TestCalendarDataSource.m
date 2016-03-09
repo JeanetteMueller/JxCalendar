@@ -152,8 +152,8 @@
 }
 - (BOOL)isStartOfRange:(NSDate *)date{
     [self sortRangedObjects];
-    NSDictionary *dict = self.rangedDates.firstObject;
-    if ([[dict objectForKey:kJxCalendarRangeDictionaryKeyDate] isEqual:date]) {
+    JxCalendarRangeElement *rangeElement = self.rangedDates.firstObject;
+    if ([rangeElement.date isEqual:date]) {
         return YES;
     }
     
@@ -161,8 +161,8 @@
 }
 - (BOOL)isEndOfRange:(NSDate *)date{
     [self sortRangedObjects];
-    NSDictionary *dict = self.rangedDates.lastObject;
-    if ([[dict objectForKey:kJxCalendarRangeDictionaryKeyDate] isEqual:date]) {
+    JxCalendarRangeElement *rangeElement = self.rangedDates.lastObject;
+    if ([rangeElement.date isEqual:date]) {
         return YES;
     }
     
@@ -170,8 +170,8 @@
 }
 - (BOOL)isPartOfRange:(NSDate *)date{
     
-    for (NSDictionary *dict in self.rangedDates) {
-        if ([[dict objectForKey:kJxCalendarRangeDictionaryKeyDate] isEqual:date]) {
+    for (JxCalendarRangeElement *rangeElement in self.rangedDates) {
+        if ([rangeElement.date isEqual:date]) {
             return YES;
         }
     }
@@ -179,9 +179,9 @@
 }
 - (JxCalendarDayType)dayTypeOfDateInRange:(NSDate *)date{
     if ([self isPartOfRange:date]) {
-        for (NSDictionary *dict in self.rangedDates) {
-            if ([[dict objectForKey:kJxCalendarRangeDictionaryKeyDate] isEqual:date]) {
-                return (JxCalendarDayType)[[dict objectForKey:kJxCalendarRangeDictionaryKeyDaytype] intValue];
+        for (JxCalendarRangeElement *rangeElement in self.rangedDates) {
+            if ([rangeElement.date isEqual:date]) {
+                return rangeElement.dayType;
             }
         }
     }
@@ -196,7 +196,7 @@
     return JxCalendarDayTypeWholeDay|JxCalendarDayTypeHalfDay| JxCalendarDayTypeFreeChoice;
 }
 - (void)sortRangedObjects{
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey: kJxCalendarRangeDictionaryKeyDate ascending: YES];
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
     self.rangedDates = [[self.rangedDates sortedArrayUsingDescriptors:@[sortDescriptor]] mutableCopy];
     
 }

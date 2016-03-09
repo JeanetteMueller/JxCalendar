@@ -8,6 +8,7 @@
 
 #import "JxCalendarLayoutDay.h"
 #import "JxCalendarDefinitions.h"
+#import "JxCalendarProtocols.h"
 #import "JxCalendarEvent.h"
 #import "JxCalendarEventDuration.h"
 #import "JxCalendarDay.h"

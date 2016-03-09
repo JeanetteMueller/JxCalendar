@@ -18,6 +18,7 @@
 #import "JxCalendarLayoutDay.h"
 #import "JxCalendarBasics.h"
 #import "JxCalendarWeek.h"
+#import "JxCalendarRangeElement.h"
 
 @interface JxCalendarOverview () <UIGestureRecognizerDelegate>
 
@@ -616,12 +617,10 @@
     NSMutableArray *newPathes = [NSMutableArray array];
     
   
-    for (NSDictionary *dict in  self.dataSource.rangedDates) {
+    for (JxCalendarRangeElement *rangeElement in  self.dataSource.rangedDates) {
         
-        NSDate *thisDate = [dict objectForKey:kJxCalendarRangeDictionaryKeyDate];
-        
-        if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:thisDate]) {
-            NSIndexPath *thisPath = [self getIndexPathForDate:thisDate];
+        if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:rangeElement.date]) {
+            NSIndexPath *thisPath = [self getIndexPathForDate:rangeElement.date];
             
             [oldPathes addObject:thisPath];
         }
@@ -1233,7 +1232,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     [self hideToolTip];
     
-    NSLog(@"offset Y: %f", scrollView.contentOffset.y);
+    //NSLog(@"offset Y: %f", scrollView.contentOffset.y);
 }
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     if (decelerate) {
@@ -1301,7 +1300,7 @@
     label.tag = 8892;
     label.textAlignment = NSTextAlignmentCenter;
     label.textColor = [UIColor darkGrayColor];
-    label.font = [UIFont fontWithName:@"Helvetica-Neue" size:18];
+    label.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
     NSDateFormatter *formatter = [JxCalendarBasics defaultFormatter];
     formatter.dateFormat = @"dd.MM.YYYY";
     label.text = [formatter stringFromDate:date];
@@ -1311,15 +1310,15 @@
     dayTypeButton.tag = 8893;
     [dayTypeButton addTarget:self action:@selector(dayTypeChange:) forControlEvents:UIControlEventTouchUpInside];
     [dayTypeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-    dayTypeButton.titleLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:12];
+    dayTypeButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
     [container addSubview:dayTypeButton];
     
         
-    UIButton *freeChoiseButton = [[UIButton alloc] init];
+    UIButton *freeChoiseButton = [UIButton buttonWithType:UIButtonTypeCustom];
     freeChoiseButton.tag = 8894;
     [freeChoiseButton addTarget:self action:@selector(freeChoiceChange:) forControlEvents:UIControlEventTouchUpInside];
     [freeChoiseButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-    freeChoiseButton.titleLabel.font = [UIFont fontWithName:@"Helvetica-Neue" size:12];
+    freeChoiseButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
     [container addSubview:freeChoiseButton];
     
     

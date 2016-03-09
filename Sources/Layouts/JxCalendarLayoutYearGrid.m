@@ -8,6 +8,7 @@
 
 #import "JxCalendarLayoutYearGrid.h"
 #import "JxCalendarDefinitions.h"
+#import "JxCalendarProtocols.h"
 #import "JxCalendarViewController.h"
 
 

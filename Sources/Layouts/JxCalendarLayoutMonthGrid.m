@@ -8,6 +8,7 @@
 
 #import "JxCalendarLayoutMonthGrid.h"
 #import "JxCalendarDefinitions.h"
+#import "JxCalendarProtocols.h"
 #import "JxCalendarWeekDayDecoration.h"
 
 

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "JxCalendarDefinitions.h"
+#import "JxCalendarProtocols.h"
 #import "JxCalendarViewController.h"
 #import "JxCalendarEvent.h"
 
