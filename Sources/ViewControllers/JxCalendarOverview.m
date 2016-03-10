@@ -20,18 +20,24 @@
 #import "JxCalendarWeek.h"
 #import "JxCalendarRangeElement.h"
 
+#define kJxCalendarToolTipTagView 8890
+#define kJxCalendarToolTipTagContainer 8891
+#define kJxCalendarToolTipTagLabel 8892
+#define kJxCalendarToolTipTagDayTypeButton 8893
+#define kJxCalendarToolTipTagFreeChoiceButton 8894
+
 @interface JxCalendarOverview () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, readwrite) CGSize startSize;
 @property (nonatomic, readwrite) JxCalendarSelectionStyle selectionStyle;
-@property (strong, nonatomic, readwrite) UILongPressGestureRecognizer *longPressGesture;
-@property (strong, nonatomic, readwrite) NSIndexPath *longHoldStartIndexPath;
-@property (strong, nonatomic, readwrite) NSIndexPath *longHoldEndIndexPath;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGesture;
+@property (nonatomic, strong) NSIndexPath *longHoldStartIndexPath;
+@property (nonatomic, strong) NSIndexPath *longHoldEndIndexPath;
 
-@property (strong, nonatomic) NSTimer *moveTimer;
+@property (nonatomic, strong) NSTimer *moveTimer;
 @property (nonatomic, readwrite) CGFloat direction;
 
-@property (strong, nonatomic) NSDate *toolTipDate;
+@property (nonatomic, strong) NSDate *toolTipDate;
 
 @property (nonatomic, readwrite) BOOL initialScrollDone;
 
@@ -518,6 +524,11 @@
 
 - (void)longPressAction:(UILongPressGestureRecognizer *)sender{
     
+    if (![self.delegate respondsToSelector:@selector(calendarShouldStartRanging)] || ![self.delegate calendarShouldStartRanging]) {
+        return;
+    }
+    
+    
     CGPoint point = [sender locationInView:self.collectionView];
     
     self.direction = point.y;
@@ -639,7 +650,7 @@
     NSMutableArray *newPathes = [NSMutableArray array];
     
   
-    for (JxCalendarRangeElement *rangeElement in  self.dataSource.rangedDates) {
+    for (JxCalendarRangeElement *rangeElement in  [self.dataSource rangedDates]) {
         
         if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:rangeElement.date]) {
             NSIndexPath *thisPath = [self getIndexPathForDate:rangeElement.date];
@@ -1311,7 +1322,7 @@
         self.toolTipDate = date;
         
         UIView *toolTipView = [[UIView alloc] init];
-        toolTipView.tag = 8890;
+        toolTipView.tag = kJxCalendarToolTipTagView;
         //toolTipView.clipsToBounds = NO;
         toolTipView.backgroundColor = [UIColor whiteColor];
         toolTipView.layer.shadowOffset = CGSizeMake(0, 0);
@@ -1321,14 +1332,14 @@
         //toolTipView.layer.masksToBounds = NO;
         
         UIView *container = [[UIView alloc] init];
-        container.tag = 8891;
+        container.tag = kJxCalendarToolTipTagContainer;
         container.clipsToBounds = YES;
         container.backgroundColor = [UIColor clearColor];
         
         [toolTipView addSubview:container];
         
         UILabel *label = [[UILabel alloc] init];
-        label.tag = 8892;
+        label.tag = kJxCalendarToolTipTagLabel;
         label.textAlignment = NSTextAlignmentCenter;
         label.textColor = [UIColor darkGrayColor];
         label.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
@@ -1338,19 +1349,19 @@
         [container addSubview:label];
         
         UIButton *dayTypeButton = [[UIButton alloc] init];
-        dayTypeButton.tag = 8893;
+        dayTypeButton.tag = kJxCalendarToolTipTagDayTypeButton;
         [dayTypeButton addTarget:self action:@selector(dayTypeChange:) forControlEvents:UIControlEventTouchUpInside];
         [dayTypeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
         dayTypeButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
         [container addSubview:dayTypeButton];
         
         
-        UIButton *freeChoiseButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        freeChoiseButton.tag = 8894;
-        [freeChoiseButton addTarget:self action:@selector(freeChoiceChange:) forControlEvents:UIControlEventTouchUpInside];
-        [freeChoiseButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-        freeChoiseButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
-        [container addSubview:freeChoiseButton];
+        UIButton *freeChoiceButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        freeChoiceButton.tag = kJxCalendarToolTipTagFreeChoiceButton;
+        [freeChoiceButton addTarget:self action:@selector(freeChoiceChange:) forControlEvents:UIControlEventTouchUpInside];
+        [freeChoiceButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        freeChoiceButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+        [container addSubview:freeChoiceButton];
         
         
         //    toolTipView.backgroundColor = [[UIColor orangeColor] colorWithAlphaComponent:0.5];
@@ -1363,7 +1374,7 @@
 }
 - (void)hideToolTip{
     self.toolTipDate = nil;
-    [[self.view viewWithTag:8890] removeFromSuperview];
+    [[self.view viewWithTag:kJxCalendarToolTipTagView] removeFromSuperview];
 }
 - (void)updateToolTipAnimated:(BOOL)animated{
     
@@ -1380,8 +1391,8 @@
     
     
     
-    UIView *toolTipView = [self.view viewWithTag:8890];
-    UIView *container = [self.view viewWithTag:8891];
+    UIView *toolTipView = [self.view viewWithTag:kJxCalendarToolTipTagView];
+    UIView *container = [self.view viewWithTag:kJxCalendarToolTipTagContainer];
     
     CGFloat freeChoiceExtraHeight = 0;
     if ((mask & JxCalendarDayTypeFreeChoice) == JxCalendarDayTypeFreeChoice && [self.dataSource dayTypeOfDateInRange:_toolTipDate] == JxCalendarDayTypeFreeChoice) {
@@ -1405,10 +1416,10 @@
         toolTipRect.origin.y = rect.origin.y+rect.size.height;
     }
     
-    UILabel *label = [toolTipView viewWithTag:8892];
+    UILabel *label = [toolTipView viewWithTag:kJxCalendarToolTipTagLabel];
     label.frame = CGRectMake(0, 0, toolTipSize.width, 40);
     
-    UIButton *dayTypeButton = [toolTipView viewWithTag:8893];
+    UIButton *dayTypeButton = [toolTipView viewWithTag:kJxCalendarToolTipTagDayTypeButton];
     dayTypeButton.frame = CGRectMake(0, 40, toolTipSize.width, 40);
     switch ([self.dataSource dayTypeOfDateInRange:_toolTipDate]) {
         case JxCalendarDayTypeUnknown:
@@ -1428,12 +1439,20 @@
     }
     
     
-    UIButton *freeChoiseButton = [toolTipView viewWithTag:8894];
-    freeChoiseButton.frame = CGRectMake(0, 80, toolTipSize.width, 40);
+    UIButton *freeChoiceButton = [toolTipView viewWithTag:kJxCalendarToolTipTagFreeChoiceButton];
+    freeChoiceButton.frame = CGRectMake(0, 80, toolTipSize.width, 40);
     
     if ((mask & JxCalendarDayTypeFreeChoice) == JxCalendarDayTypeFreeChoice && [self.dataSource dayTypeOfDateInRange:_toolTipDate] == JxCalendarDayTypeFreeChoice) {
         
-        [freeChoiseButton setTitle:@"Von ## bis ##" forState:UIControlStateNormal];
+        [freeChoiceButton setTitle:@"Von ## bis ##" forState:UIControlStateNormal];
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(calendarShouldStartRanging)] && [self.delegate calendarShouldStartRanging]) {
+        dayTypeButton.enabled = YES;
+        freeChoiceButton.enabled = YES;
+    }else{
+        dayTypeButton.enabled = NO;
+        freeChoiceButton.enabled = NO;
     }
     
     if (animated) {

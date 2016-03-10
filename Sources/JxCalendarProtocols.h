@@ -23,13 +23,13 @@
 
 @protocol JxCalendarDataSource <NSObject>
 
-@property (strong, nonatomic) NSMutableArray <JxCalendarRangeElement*> *rangedDates;
-
 - (NSCalendar *)calendar;
 
 - (NSUInteger)numberOfEventsAt:(NSDate *)date;
 
 - (NSArray <JxCalendarEvent*> *)eventsAt:(NSDate *)date;
+
+- (NSArray <JxCalendarRangeElement *> *)rangedDates;
 
 @optional
 - (BOOL)isDaySelectable:(NSDate *)date;
@@ -37,6 +37,7 @@
 - (BOOL)isEventSelected:(JxCalendarEvent *)event;
 
 - (BOOL)shouldDisplayNavbarButtonsWhileOnAppearance:(JxCalendarAppearance)appearance;
+
 
 - (BOOL)isDayRangeable:(NSDate *)date;
 - (BOOL)isStartOfRange:(NSDate *)date;
@@ -66,14 +67,13 @@
 - (void)calendarDidSelectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance;
 - (void)calendarDidDeselectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance;
 
-
 #pragma mark Range
-- (void)calendarShouldClearRange;
+- (BOOL)calendarShouldStartRanging;
 - (void)calendarDidStartRanging;
-- (void)calendarDidEndRanging;
 - (void)calendarDidRange:(JxCalendarRangeElement *)rangeElement whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendarDidEndRanging;
 - (void)calendarDidDeRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
-
+- (void)calendarShouldClearRange;
 @end
 
 #endif /* JxCalendarProtocols_h */
