@@ -193,8 +193,19 @@
 //}
 - (JxCalendarDayType)availableDayTypesForDate:(NSDate *)date{
     
+    
+    
     return JxCalendarDayTypeWholeDay|JxCalendarDayTypeHalfDay| JxCalendarDayTypeFreeChoice;
 }
+- (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date{
+    NSDateComponents *components = [[self calendar] components:NSCalendarUnitWeekday fromDate:date];
+    
+    if ([JxCalendarBasics normalizedWeekDay:components.weekday] == 1) {
+        return NO;
+    }
+    return YES;
+}
+#pragma mark Helper
 - (void)sortRangedObjects{
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
     self.rangedDates = [[self.rangedDates sortedArrayUsingDescriptors:@[sortDescriptor]] mutableCopy];

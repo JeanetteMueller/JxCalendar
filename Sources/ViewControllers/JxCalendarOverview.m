@@ -525,6 +525,11 @@
     switch (sender.state) {
         case UIGestureRecognizerStateBegan:{
             [self hideToolTip];
+            
+            if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging)]) {
+                [self.delegate calendarDidStartRanging];
+            }
+            
             NSIndexPath *path = [self.collectionView indexPathForItemAtPoint:point];
             
             if (path) {
@@ -592,6 +597,10 @@
             self.direction = .0f;
             [self.moveTimer invalidate];
             self.moveTimer = nil;
+            
+            if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging)]) {
+                [self.delegate calendarDidEndRanging];
+            }
             
         }break;
     }
@@ -712,7 +721,10 @@
                 [self.delegate calendarDidDeRangeDate:date whileOnAppearance:[self getAppearance]];
             }else{
                 if (![self.dataSource isPartOfRange:date]){
-                    [self.delegate calendarDidRangeDate:date withDayType:JxCalendarDayTypeWholeDay whileOnAppearance:[self getAppearance]];
+                    
+                    JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:date andDayType:JxCalendarDayTypeWholeDay];
+                    
+                    [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
                 }
             }
             
@@ -991,9 +1003,7 @@
                             break;
                     }
                 }else{
-                    cell.rangeDot.alpha = 0.0f;
-                    cell.rangeFrom.alpha = 0.0f;
-                    cell.rangeTo.alpha = 0.0f;
+                    [self resetRangeForCell:cell];
                 }
                     
                     
@@ -1042,8 +1052,18 @@
             }else{
                 animation();
             }
+        }else{
+            [self resetRangeForCell:cell];
         }
+    }else{
+        [self resetRangeForCell:cell];
     }
+}
+- (void)resetRangeForCell:(JxCalendarCell *)cell{
+
+    cell.rangeDot.alpha = 0.0f;
+    cell.rangeFrom.alpha = 0.0f;
+    cell.rangeTo.alpha = 0.0f;
 }
 
 - (BOOL)nextCellIsInRangeWithIndexPath:(NSIndexPath *)indexPath{
@@ -1283,59 +1303,63 @@
 #pragma mark tooltip
 - (void)openToolTipWithDate:(NSDate *)date{
     
+    BOOL openNewTooltip = ![date isEqualToDate:_toolTipDate];
+    
     [self hideToolTip];
     
-    self.toolTipDate = date;
-    
-    UIView *toolTipView = [[UIView alloc] init];
-    toolTipView.tag = 8890;
-    //toolTipView.clipsToBounds = NO;
-    toolTipView.backgroundColor = [UIColor whiteColor];
-    toolTipView.layer.shadowOffset = CGSizeMake(0, 0);
-    toolTipView.layer.shadowOpacity = 0.75;
-    toolTipView.layer.shadowRadius = 8;
-    toolTipView.layer.cornerRadius = 8.f;
-    //toolTipView.layer.masksToBounds = NO;
-    
-    UIView *container = [[UIView alloc] init];
-    container.tag = 8891;
-    container.clipsToBounds = YES;
-    container.backgroundColor = [UIColor clearColor];
-    
-    [toolTipView addSubview:container];
-    
-    UILabel *label = [[UILabel alloc] init];
-    label.tag = 8892;
-    label.textAlignment = NSTextAlignmentCenter;
-    label.textColor = [UIColor darkGrayColor];
-    label.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
-    NSDateFormatter *formatter = [JxCalendarBasics defaultFormatter];
-    formatter.dateFormat = @"dd.MM.YYYY";
-    label.text = [formatter stringFromDate:date];
-    [container addSubview:label];
-    
-    UIButton *dayTypeButton = [[UIButton alloc] init];
-    dayTypeButton.tag = 8893;
-    [dayTypeButton addTarget:self action:@selector(dayTypeChange:) forControlEvents:UIControlEventTouchUpInside];
-    [dayTypeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-    dayTypeButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
-    [container addSubview:dayTypeButton];
-    
+    if (openNewTooltip && [self.dataSource respondsToSelector:@selector(isRangeToolTipAvailableForDate:)] && [self.dataSource isRangeToolTipAvailableForDate:date]) {
+        self.toolTipDate = date;
         
-    UIButton *freeChoiseButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    freeChoiseButton.tag = 8894;
-    [freeChoiseButton addTarget:self action:@selector(freeChoiceChange:) forControlEvents:UIControlEventTouchUpInside];
-    [freeChoiseButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-    freeChoiseButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
-    [container addSubview:freeChoiseButton];
-    
-    
-//    toolTipView.backgroundColor = [[UIColor orangeColor] colorWithAlphaComponent:0.5];
-//    label.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.5];
-//    dayTypeButton.backgroundColor = [[UIColor cyanColor] colorWithAlphaComponent:0.5];
-    
-    [self.view addSubview:toolTipView];
-    [self updateToolTipAnimated:NO];
+        UIView *toolTipView = [[UIView alloc] init];
+        toolTipView.tag = 8890;
+        //toolTipView.clipsToBounds = NO;
+        toolTipView.backgroundColor = [UIColor whiteColor];
+        toolTipView.layer.shadowOffset = CGSizeMake(0, 0);
+        toolTipView.layer.shadowOpacity = 0.75;
+        toolTipView.layer.shadowRadius = 8;
+        toolTipView.layer.cornerRadius = 8.f;
+        //toolTipView.layer.masksToBounds = NO;
+        
+        UIView *container = [[UIView alloc] init];
+        container.tag = 8891;
+        container.clipsToBounds = YES;
+        container.backgroundColor = [UIColor clearColor];
+        
+        [toolTipView addSubview:container];
+        
+        UILabel *label = [[UILabel alloc] init];
+        label.tag = 8892;
+        label.textAlignment = NSTextAlignmentCenter;
+        label.textColor = [UIColor darkGrayColor];
+        label.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
+        NSDateFormatter *formatter = [JxCalendarBasics defaultFormatter];
+        formatter.dateFormat = @"dd.MM.YYYY";
+        label.text = [formatter stringFromDate:date];
+        [container addSubview:label];
+        
+        UIButton *dayTypeButton = [[UIButton alloc] init];
+        dayTypeButton.tag = 8893;
+        [dayTypeButton addTarget:self action:@selector(dayTypeChange:) forControlEvents:UIControlEventTouchUpInside];
+        [dayTypeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        dayTypeButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+        [container addSubview:dayTypeButton];
+        
+        
+        UIButton *freeChoiseButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        freeChoiseButton.tag = 8894;
+        [freeChoiseButton addTarget:self action:@selector(freeChoiceChange:) forControlEvents:UIControlEventTouchUpInside];
+        [freeChoiseButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        freeChoiseButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+        [container addSubview:freeChoiseButton];
+        
+        
+        //    toolTipView.backgroundColor = [[UIColor orangeColor] colorWithAlphaComponent:0.5];
+        //    label.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.5];
+        //    dayTypeButton.backgroundColor = [[UIColor cyanColor] colorWithAlphaComponent:0.5];
+        
+        [self.view addSubview:toolTipView];
+        [self updateToolTipAnimated:NO];
+    }
 }
 - (void)hideToolTip{
     self.toolTipDate = nil;
@@ -1454,7 +1478,9 @@
     }
     
     [dayTypeButton setTitle:[self getTitleForDayType:doType] forState:UIControlStateNormal];
-    [self.delegate calendarDidRangeDate:_toolTipDate withDayType:doType whileOnAppearance:[self getAppearance]];
+    
+    JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:_toolTipDate andDayType:doType];
+    [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
 
     NSIndexPath *path = [self getIndexPathForDate:_toolTipDate];
     

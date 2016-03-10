@@ -44,6 +44,7 @@
 - (BOOL)isPartOfRange:(NSDate *)date;
 - (JxCalendarDayType)dayTypeOfDateInRange:(NSDate *)date;
 - (JxCalendarDayType)availableDayTypesForDate:(NSDate *)date;
+- (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date;
 @end
 
 
@@ -68,8 +69,9 @@
 
 #pragma mark Range
 - (void)calendarShouldClearRange;
-- (void)calendarDidRangeDate:(NSDate *)date withDayType:(JxCalendarDayType)dayType whileOnAppearance:(JxCalendarAppearance)appearance;
-- (void)calendarDidRangeDate:(NSDate *)date withStartDate:(NSDate *)start andEndDate:(NSDate *)end whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendarDidStartRanging;
+- (void)calendarDidEndRanging;
+- (void)calendarDidRange:(JxCalendarRangeElement *)rangeElement whileOnAppearance:(JxCalendarAppearance)appearance;
 - (void)calendarDidDeRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
 
 @end

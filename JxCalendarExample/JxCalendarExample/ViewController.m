@@ -137,11 +137,9 @@
 - (void)calendarShouldClearRange{
     [self.dataSource.rangedDates removeAllObjects];
 }
-- (void)calendarDidRangeDate:(NSDate *)date withDayType:(JxCalendarDayType)dayType whileOnAppearance:(JxCalendarAppearance)appearance{
+- (void)calendarDidRange:(JxCalendarRangeElement *)rangeElement whileOnAppearance:(JxCalendarAppearance)appearance{
     
-    NSInteger index = [self indexOfDateInRange:date];
-    
-    JxCalendarRangeElement *rangeElement = [[JxCalendarRangeElement alloc] initWithDate:date andDayType:dayType];
+    NSInteger index = [self indexOfDateInRange:rangeElement.date];
     
     if (index >= 0) {
         [self.dataSource.rangedDates replaceObjectAtIndex:index withObject:rangeElement];
@@ -150,20 +148,7 @@
         [self.dataSource.rangedDates addObject:rangeElement];
         NSLog(@"add date");
     }
-}
-- (void)calendarDidRangeDate:(NSDate *)date withStartDate:(NSDate *)start andEndDate:(NSDate *)end whileOnAppearance:(JxCalendarAppearance)appearance{
     
-    NSInteger index = [self indexOfDateInRange:date];
-    
-    JxCalendarRangeElement *rangeElement = [[JxCalendarRangeElement alloc] initWithDate:date withStartDate:start andEndDate:end];
-    
-    if (index >= 0) {
-        [self.dataSource.rangedDates replaceObjectAtIndex:index withObject:rangeElement];
-        NSLog(@"replace date");
-    }else{
-        [self.dataSource.rangedDates addObject:rangeElement];
-        NSLog(@"add date");
-    }
 }
 - (void)calendarDidDeRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
     
