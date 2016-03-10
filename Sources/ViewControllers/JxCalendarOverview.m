@@ -138,26 +138,18 @@
         UICollectionViewLayoutAttributes *headerAttr = [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                                                                 atIndexPath:[NSIndexPath indexPathForItem:0 inSection:indexPath.section]];
         
-        
-        
         NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:indexPath.section+1 inCalendar:[self calendar] andYear:[self startComponents].year];
         NSIndexPath *lastIndexPath = [self getIndexPathForDate:lastDay];
         UICollectionViewLayoutAttributes *lastItemAttr = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:lastIndexPath];
         
-        NSLog(@" (%f + %f) - %f > %f ", lastItemAttr.frame.origin.y, lastItemAttr.frame.size.height, headerAttr.frame.origin.y,  self.collectionView.frame.size.height);
-        
-        NSLog(@" %f - %f > %f ", lastItemAttr.frame.origin.y + lastItemAttr.frame.size.height, headerAttr.frame.origin.y,  self.collectionView.frame.size.height);
-        
-        NSLog(@" %f  > %f ", lastItemAttr.frame.origin.y + lastItemAttr.frame.size.height- headerAttr.frame.origin.y,  self.collectionView.frame.size.height);
-        
-        if ((lastItemAttr.frame.origin.y + lastItemAttr.frame.size.height) - headerAttr.frame.origin.y > self.collectionView.frame.size.height) {
+        if (lastItemAttr.frame.origin.y + lastItemAttr.frame.size.height - headerAttr.frame.origin.y > self.collectionView.frame.size.height) {
             
-            NSLog(@"monat ist größer als der sichbare bereich");
+            /* current month height is larger then the visible container height */
             
             [self.collectionView setContentOffset:CGPointMake(0, [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath].frame.origin.y + [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath].frame.size.height/2 - self.collectionView.frame.size.height/2)
                                          animated:NO];
         }else{
-            NSLog(@"sichbarer bereich ist größer als monat");
+            /* visible container height is larger then the month height */
             
             [self.collectionView setContentOffset:CGPointMake(0, headerAttr.frame.origin.y)
                                          animated:NO];
