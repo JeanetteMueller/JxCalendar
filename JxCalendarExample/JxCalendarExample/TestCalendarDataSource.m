@@ -178,14 +178,21 @@
     return NO;
 }
 - (JxCalendarDayType)dayTypeOfDateInRange:(NSDate *)date{
+    JxCalendarRangeElement *rangeElement = [self rangeElementForDate:date];
+    if (rangeElement) {
+        return rangeElement.dayType;
+    }
+    return JxCalendarDayTypeUnknown;
+}
+- (JxCalendarRangeElement *)rangeElementForDate:(NSDate *)date{
     if ([self isPartOfRange:date]) {
         for (JxCalendarRangeElement *rangeElement in self.rangedDates) {
             if ([rangeElement.date isEqual:date]) {
-                return rangeElement.dayType;
+                return rangeElement;
             }
         }
     }
-    return JxCalendarDayTypeUnknown;
+    return nil;
 }
 //- (JxCalendarDayTypeMask)availableDayTypesForDate:(NSDate *)date{
 //    

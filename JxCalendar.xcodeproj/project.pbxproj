@@ -10,6 +10,8 @@
 		260734321C9029D9007F314E /* JxCalendarProtocols.h in Headers */ = {isa = PBXBuildFile; fileRef = 260734311C902956007F314E /* JxCalendarProtocols.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		260734381C902CC8007F314E /* JxCalendarRangeElement.h in Headers */ = {isa = PBXBuildFile; fileRef = 260734361C902CC8007F314E /* JxCalendarRangeElement.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		260734391C902CC8007F314E /* JxCalendarRangeElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 260734371C902CC8007F314E /* JxCalendarRangeElement.m */; };
+		260EBC561C96F10700677876 /* JxCalendarOverview+ToolTip.h in Headers */ = {isa = PBXBuildFile; fileRef = 260EBC541C96F10700677876 /* JxCalendarOverview+ToolTip.h */; };
+		260EBC571C96F10700677876 /* JxCalendarOverview+ToolTip.m in Sources */ = {isa = PBXBuildFile; fileRef = 260EBC551C96F10700677876 /* JxCalendarOverview+ToolTip.m */; };
 		2614D0951C8DB71B002EC145 /* JxCalendarWeekDayDecoration.h in Headers */ = {isa = PBXBuildFile; fileRef = 2614D0921C8DB71B002EC145 /* JxCalendarWeekDayDecoration.h */; };
 		2614D0961C8DB71B002EC145 /* JxCalendarWeekDayDecoration.m in Sources */ = {isa = PBXBuildFile; fileRef = 2614D0931C8DB71B002EC145 /* JxCalendarWeekDayDecoration.m */; };
 		2614D0971C8DB71B002EC145 /* JxCalendarWeekDayDecoration.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2614D0941C8DB71B002EC145 /* JxCalendarWeekDayDecoration.xib */; };
@@ -71,6 +73,8 @@
 		260734311C902956007F314E /* JxCalendarProtocols.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JxCalendarProtocols.h; sourceTree = "<group>"; };
 		260734361C902CC8007F314E /* JxCalendarRangeElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarRangeElement.h; sourceTree = "<group>"; };
 		260734371C902CC8007F314E /* JxCalendarRangeElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarRangeElement.m; sourceTree = "<group>"; };
+		260EBC541C96F10700677876 /* JxCalendarOverview+ToolTip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JxCalendarOverview+ToolTip.h"; sourceTree = "<group>"; };
+		260EBC551C96F10700677876 /* JxCalendarOverview+ToolTip.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "JxCalendarOverview+ToolTip.m"; sourceTree = "<group>"; };
 		2614D0921C8DB71B002EC145 /* JxCalendarWeekDayDecoration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarWeekDayDecoration.h; sourceTree = "<group>"; };
 		2614D0931C8DB71B002EC145 /* JxCalendarWeekDayDecoration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarWeekDayDecoration.m; sourceTree = "<group>"; };
 		2614D0941C8DB71B002EC145 /* JxCalendarWeekDayDecoration.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarWeekDayDecoration.xib; sourceTree = "<group>"; };
@@ -251,6 +255,8 @@
 				26EBE1F51C18446700A0DB2E /* JxCalendarOverview.m */,
 				26FAA3FB1C1F1AE0001C4DA6 /* JxCalendarViewController.h */,
 				26FAA3FC1C1F1AE0001C4DA6 /* JxCalendarViewController.m */,
+				260EBC541C96F10700677876 /* JxCalendarOverview+ToolTip.h */,
+				260EBC551C96F10700677876 /* JxCalendarOverview+ToolTip.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -265,6 +271,7 @@
 				26EBE20D1C18446700A0DB2E /* JxCalendar.h in Headers */,
 				26EBE20A1C18446700A0DB2E /* JxCalendarEvent.h in Headers */,
 				26EBE2171C18446700A0DB2E /* JxCalendarLayoutYearGrid.h in Headers */,
+				260EBC561C96F10700677876 /* JxCalendarOverview+ToolTip.h in Headers */,
 				26FAA3EA1C1EC04F001C4DA6 /* JxCalendarLayoutOverview.h in Headers */,
 				26EBE2151C18446700A0DB2E /* JxCalendarLayoutMonthGrid.h in Headers */,
 				26FAA3FD1C1F1AE0001C4DA6 /* JxCalendarViewController.h in Headers */,
@@ -380,6 +387,7 @@
 				26EBE1F71C18446700A0DB2E /* JxCalendarCell.m in Sources */,
 				26FAA3FE1C1F1AE0001C4DA6 /* JxCalendarViewController.m in Sources */,
 				265FD5FB1C217BA400FCC8AE /* JxCalendarWeekEventCell.m in Sources */,
+				260EBC571C96F10700677876 /* JxCalendarOverview+ToolTip.m in Sources */,
 				26FAA3EB1C1EC04F001C4DA6 /* JxCalendarLayoutOverview.m in Sources */,
 				26EBE2161C18446700A0DB2E /* JxCalendarLayoutMonthGrid.m in Sources */,
 				26EBE2001C18446700A0DB2E /* JxCalendarGridCell.m in Sources */,

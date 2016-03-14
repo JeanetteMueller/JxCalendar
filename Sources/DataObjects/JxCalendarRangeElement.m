@@ -15,6 +15,26 @@
     if (self) {
         self.date = date;
         self.dayType = dayType;
+        
+        if (dayType == JxCalendarDayTypeFreeChoice) {
+            
+            NSCalendar *calendar = [NSCalendar currentCalendar];
+            
+            NSDateComponents *components = [calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond
+                                                       fromDate:self.date];
+            
+            components.hour = 0;
+            components.minute = 0;
+            components.second = 0;
+            
+            self.start = [calendar dateFromComponents:components];
+            
+            components.hour = 24;
+            components.minute = 0;
+            components.second = 0;
+            
+            self.end = [calendar dateFromComponents:components];
+        }
     }
     return self;
 }

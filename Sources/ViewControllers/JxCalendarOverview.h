@@ -11,6 +11,8 @@
 #import "JxCalendarProtocols.h"
 #import "JxCalendarViewController.h"
 
+@class JxCalendarCell;
+
 @protocol JxCalendarDataSource, JxCalendarDelegate;
 
 @interface JxCalendarOverview : JxCalendarViewController <JxCalendarScrollTo>
@@ -33,6 +35,8 @@
 
 - (JxCalendarAppearance)getAppearance;
 
+- (NSIndexPath *)getIndexPathForDate:(NSDate *)date;
+- (void)updateRangeForCell:(JxCalendarCell *)cell atIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated;
 
 //For internal use only;
 - (JxCalendarAppearance)getOverviewAppearance;

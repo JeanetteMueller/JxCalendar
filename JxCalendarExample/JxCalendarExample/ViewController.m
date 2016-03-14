@@ -80,6 +80,9 @@
 }
 
 #pragma mark <JxCalendarDelegate>
+- (BOOL)calendarShouldStartRanging{
+    return YES;
+}
 - (BOOL)calendarSelectionStyleSwitchable{
     return YES;
 }

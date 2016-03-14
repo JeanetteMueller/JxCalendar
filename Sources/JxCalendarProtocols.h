@@ -12,7 +12,7 @@
 #ifndef JxCalendarProtocols_h
 #define JxCalendarProtocols_h
 
-@class JxCalendarOverview, JxCalendarEvent;
+@class JxCalendarOverview, JxCalendarEvent, JxCalendarRangeElement;
 
 @protocol JxCalendarScrollTo <NSObject>
 
@@ -44,6 +44,7 @@
 - (BOOL)isEndOfRange:(NSDate *)date;
 - (BOOL)isPartOfRange:(NSDate *)date;
 - (JxCalendarDayType)dayTypeOfDateInRange:(NSDate *)date;
+- (JxCalendarRangeElement *)rangeElementForDate:(NSDate *)date;
 - (JxCalendarDayType)availableDayTypesForDate:(NSDate *)date;
 - (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date;
 @end
