@@ -10,31 +10,64 @@
 
 @implementation JxCalendarRangeElement
 
-- (id)initWithDate:(NSDate *)date andDayType:(JxCalendarDayType)dayType{
+- (id)initWithDate:(NSDate *)date andDayType:(JxCalendarDayType)dayType inCalendar:(NSCalendar *)calendar andMaximumDayLength:(NSInteger)maxDayHours{
     self = [super init];
     if (self) {
         self.date = date;
         self.dayType = dayType;
         
-        if (dayType == JxCalendarDayTypeFreeChoice) {
-            
-            NSCalendar *calendar = [NSCalendar currentCalendar];
-            
-            NSDateComponents *components = [calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond
-                                                       fromDate:self.date];
-            
-            components.hour = 0;
-            components.minute = 0;
-            components.second = 0;
-            
-            self.start = [calendar dateFromComponents:components];
-            
-            components.hour = 24;
-            components.minute = 0;
-            components.second = 0;
-            
-            self.end = [calendar dateFromComponents:components];
+        NSDateComponents *components = [calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond
+                                                   fromDate:self.date];
+        
+        switch (dayType) {
+            case JxCalendarDayTypeUnknown:
+            case JxCalendarDayTypeWholeDay:
+            case JxCalendarDayTypeWorkDay:
+            case JxCalendarDayTypeFreeChoice:{
+                
+                components.hour = 0;
+                components.minute = 0;
+                components.second = 0;
+                
+                self.start = [calendar dateFromComponents:components];
+                
+                components.hour = maxDayHours;
+                components.minute = 0;
+                components.second = 0;
+                
+                self.end = [calendar dateFromComponents:components];
+            }break;
+            case JxCalendarDayTypeHalfDay:
+            case JxCalendarDayTypeHalfDayMorning:{
+                
+                components.hour = 0;
+                components.minute = 0;
+                components.second = 0;
+                
+                self.start = [calendar dateFromComponents:components];
+                
+                components.hour = maxDayHours/2;
+                components.minute = 0;
+                components.second = 0;
+                
+                self.end = [calendar dateFromComponents:components];
+            }break;
+            case JxCalendarDayTypeHalfDayAfternoon:{
+                
+                components.hour = maxDayHours/2;
+                components.minute = 0;
+                components.second = 0;
+                
+                self.start = [calendar dateFromComponents:components];
+                
+                components.hour = maxDayHours;
+                components.minute = 0;
+                components.second = 0;
+                
+                self.end = [calendar dateFromComponents:components];
+            }break;
         }
+        
     }
     return self;
 }
@@ -47,5 +80,8 @@
         self.end = end;
     }
     return self;
+}
+- (NSTimeInterval)duration{
+    return [self.end timeIntervalSinceDate:self.start];
 }
 @end

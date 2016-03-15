@@ -75,8 +75,9 @@
         
         self.automaticallyAdjustsScrollViewInsets = NO;
         self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    
+        
         self.pullToSwitchYears = YES;
+        self.lengthOfDayInHours = 24;
         
         self.startSize = size;
         self.style = style;
@@ -749,7 +750,10 @@
             }else{
                 if (![self.dataSource isPartOfRange:date]){
                     
-                    JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:date andDayType:JxCalendarDayTypeWholeDay];
+                    JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:date
+                                                                                        andDayType:JxCalendarDayTypeWholeDay
+                                                                                        inCalendar:self.dataSource.calendar
+                                                                               andMaximumDayLength:self.lengthOfDayInHours];
                     
                     [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
                 }
@@ -994,6 +998,8 @@
                 
                 CGFloat partOfDay = 1.0;
                 
+                CGFloat startPosition = 0.0f;
+                
                 
                 
                 if([self.dataSource isPartOfRange:thisDate]) {
@@ -1022,20 +1028,20 @@
                         }
                     }
                     
-                    switch ([self.dataSource dayTypeOfDateInRange:thisDate]) {
-                        case JxCalendarDayTypeHalfDay:
-                            partOfDay = .5f;
-                            break;
-                        case JxCalendarDayTypeFreeChoice:{
-                            JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:self.toolTipDate];
-                            
-                            NSTimeInterval duration = [rangeElement.end timeIntervalSinceDate:rangeElement.start];
-                            
-                            partOfDay = duration / 86400;
-                        }break;
-                        default:
-                            break;
+                    JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:thisDate];
+                    
+                    partOfDay = rangeElement.duration / (float)(self.lengthOfDayInHours*60*60);
+                    
+                    NSLog(@"partofday %f = %f / %f", partOfDay , rangeElement.duration , (float)(self.lengthOfDayInHours*60*60));
+                    
+                    if (rangeElement.dayType == JxCalendarDayTypeHalfDayMorning) {
+                        startPosition = 0.f;
+                    }else if (rangeElement.dayType == JxCalendarDayTypeHalfDayAfternoon) {
+                        startPosition = 0.5f;
+                    }else if(partOfDay < 1.0f){
+                        startPosition = ((1-partOfDay)/2);
                     }
+
                 }else{
                     [self resetRangeForCell:cell];
                 }
@@ -1057,19 +1063,21 @@
                 
                 CGFloat cellSizeWidthHalf = ceil(cellSize.width/2);
                 
+                CGFloat height = (cellSize.height/100*borderHeightPercent);
+                
                 cell.rangeFrom.frame = CGRectMake(cellSizeWidthHalf,
-                                                  ((cellSize.height-(cellSize.height/100*borderHeightPercent))/2) + (cellSize.height/100*borderHeightPercent) * ((1-partOfDay)/2),
+                                                  ((cellSize.height-height)/2) + (height * startPosition),
                                                   cellSizeWidthHalf + spacing,
-                                                  (cellSize.height/100*borderHeightPercent) * partOfDay);
+                                                  height * partOfDay);
                 
                 cell.rangeTo.frame = CGRectMake(-spacing,
-                                                ((cellSize.height-(cellSize.height/100*borderHeightPercent))/2) + (cellSize.height/100*borderHeightPercent) * ((1-partOfDay)/2),
+                                                ((cellSize.height-height)/2) + height * startPosition,
                                                 cellSizeWidthHalf+spacing,
-                                                (cellSize.height/100*borderHeightPercent) * partOfDay);
+                                                height * partOfDay);
                 
                 
                 cell.rangeDotBackground.frame = CGRectMake(0,
-                                                           0 + (cellSize.height/100*borderHeightPercent) * ((1-partOfDay)/2),
+                                                           0 + (cellSize.height/100*borderHeightPercent) * startPosition,
                                                            (cellSize.height/100*dotHeightPercent),
                                                            (cellSize.height/100*dotHeightPercent) *partOfDay);
                 cell.rangeDot.frame = CGRectMake((cellSize.width - (cellSize.height/100*dotHeightPercent))/2,

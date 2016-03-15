@@ -45,7 +45,7 @@
 - (BOOL)isPartOfRange:(NSDate *)date;
 - (JxCalendarDayType)dayTypeOfDateInRange:(NSDate *)date;
 - (JxCalendarRangeElement *)rangeElementForDate:(NSDate *)date;
-- (JxCalendarDayType)availableDayTypesForDate:(NSDate *)date;
+- (JxCalendarDayTypeMask)availableDayTypesForDate:(NSDate *)date;
 - (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date;
 @end
 

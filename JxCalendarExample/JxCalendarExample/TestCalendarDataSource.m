@@ -194,15 +194,10 @@
     }
     return nil;
 }
-//- (JxCalendarDayTypeMask)availableDayTypesForDate:(NSDate *)date{
-//    
-//    return JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskHalfDay;
-//}
-- (JxCalendarDayType)availableDayTypesForDate:(NSDate *)date{
+
+- (JxCalendarDayTypeMask)availableDayTypesForDate:(NSDate *)date{
     
-    
-    
-    return JxCalendarDayTypeWholeDay|JxCalendarDayTypeHalfDay| JxCalendarDayTypeFreeChoice;
+    return JxCalendarDayTypeMaskAll;// (JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon|JxCalendarDayTypeMaskFreeChoice);
 }
 - (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date{
     NSDateComponents *components = [[self calendar] components:NSCalendarUnitWeekday fromDate:date];

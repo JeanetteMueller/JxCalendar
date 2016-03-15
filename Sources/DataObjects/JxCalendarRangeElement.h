@@ -17,6 +17,8 @@
 @property (strong, nonatomic) NSDate *start;
 @property (strong, nonatomic) NSDate *end;
 
-- (id)initWithDate:(NSDate *)date andDayType:(JxCalendarDayType)dayType;
+@property (nonatomic, readonly) NSTimeInterval duration;
+
+- (id)initWithDate:(NSDate *)date andDayType:(JxCalendarDayType)dayType inCalendar:(NSCalendar *)calendar andMaximumDayLength:(NSInteger)maxDayHours;
 - (id)initWithDate:(NSDate *)date withStartDate:(NSDate *)start andEndDate:(NSDate *)end;
 @end

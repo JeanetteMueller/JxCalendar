@@ -106,7 +106,7 @@ typedef enum {
         UISlider *freeChoiceHourSlider = [[UISlider alloc] init];
         freeChoiceHourSlider.tag = kJxCalendarToolTipTagFreeChoiceHourSlider;
         [freeChoiceHourSlider addTarget:self action:@selector(freeChoiceValueChanged:) forControlEvents:UIControlEventValueChanged];
-        freeChoiceHourSlider.maximumValue = 23;
+        freeChoiceHourSlider.maximumValue = self.lengthOfDayInHours-1;
         freeChoiceHourSlider.minimumValue = 0;
         [freeContainer addSubview:freeChoiceHourSlider];
         
@@ -118,7 +118,7 @@ typedef enum {
         [freeContainer addSubview:freeChoiceMinuteSlider];
         
         UIColor *markerColor = [UIColor lightGrayColor];
-        for (int i = 0; i < 24/kJxCalendarToolTipTagEveryNstepHourLabel; i++) {
+        for (int i = 0; i < self.lengthOfDayInHours/kJxCalendarToolTipTagEveryNstepHourLabel; i++) {
             UILabel *lab = [[UILabel alloc] init];
             lab.text = [NSString stringWithFormat:@"%d", i*kJxCalendarToolTipTagEveryNstepHourLabel];
             lab.textAlignment = NSTextAlignmentCenter;
@@ -127,7 +127,7 @@ typedef enum {
             lab.tag = kJxCalendarToolTipTagFreeChoiceHourLabel+i;
             [freeContainer addSubview:lab];
         }
-        for (int i = 0; i < 24; i++) {
+        for (int i = 0; i < self.lengthOfDayInHours; i++) {
             UIView *marker = [[UIView alloc] init];
             marker.tag = kJxCalendarToolTipTagFreeChoiceHourMarker + i;
             marker.backgroundColor = markerColor;
@@ -212,7 +212,7 @@ typedef enum {
 - (void)updateToolTipAnimated:(BOOL)animated{
     
     JxCalendarToolTipArea area = JxCalendarToolTipAreaDetail;
-    JxCalendarDayType mask = [self.dataSource availableDayTypesForDate:self.toolTipDate];
+    JxCalendarDayTypeMask mask = [self.dataSource availableDayTypesForDate:self.toolTipDate];
     
     JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:self.toolTipDate];
     
@@ -233,7 +233,7 @@ typedef enum {
     UIView *freeContainer = [toolTipView viewWithTag:kJxCalendarToolTipTagFreeChoiceContainer];
     
     CGFloat freeChoiceExtraHeight = 0;
-    if ((mask & JxCalendarDayTypeFreeChoice) == JxCalendarDayTypeFreeChoice && rangeElement.dayType == JxCalendarDayTypeFreeChoice) {
+    if (rangeElement.dayType == JxCalendarDayTypeFreeChoice) {
         
         freeChoiceExtraHeight = 40;
         
@@ -272,6 +272,12 @@ typedef enum {
         case JxCalendarDayTypeHalfDay:
             [dayTypeButton setTitle:kJxCalendarDayTypeOptionHalfDay forState:UIControlStateNormal];
             break;
+        case JxCalendarDayTypeHalfDayMorning:
+            [dayTypeButton setTitle:kJxCalendarDayTypeOptionHalfDayMorning forState:UIControlStateNormal];
+            break;
+        case JxCalendarDayTypeHalfDayAfternoon:
+            [dayTypeButton setTitle:kJxCalendarDayTypeOptionHalfDayAfternoon forState:UIControlStateNormal];
+            break;
         case JxCalendarDayTypeFreeChoice:
             [dayTypeButton setTitle:kJxCalendarDayTypeOptionFreeChoice forState:UIControlStateNormal];
     }
@@ -280,7 +286,7 @@ typedef enum {
     UIButton *freeChoiceButton = [container viewWithTag:kJxCalendarToolTipTagFreeChoiceButton];
     
     
-    if ((mask & JxCalendarDayTypeFreeChoice) == JxCalendarDayTypeFreeChoice && [self.dataSource dayTypeOfDateInRange:self.toolTipDate] == JxCalendarDayTypeFreeChoice) {
+    if ([self.dataSource dayTypeOfDateInRange:self.toolTipDate] == JxCalendarDayTypeFreeChoice) {
         
         NSTimeInterval duration = [rangeElement.end timeIntervalSinceDate:rangeElement.start];
         
@@ -322,8 +328,8 @@ typedef enum {
     
     minutes = minutes%60;
     
-    if (hours == 24 && minutes == 0) {
-        hours = 23;
+    if (hours == self.lengthOfDayInHours && minutes == 0) {
+        hours = self.lengthOfDayInHours-1;
         minutes = 60;
     }
     
@@ -394,13 +400,13 @@ typedef enum {
     
     
     
-    for (int i = 0; i < 24/kJxCalendarToolTipTagEveryNstepHourLabel; i++) {
+    for (int i = 0; i < self.lengthOfDayInHours/kJxCalendarToolTipTagEveryNstepHourLabel; i++) {
         UILabel *label = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceHourLabel+i];
-        label.frame = CGRectMake(((freeContainer.frame.size.width-buttonWidth) / (24-1) * (i*kJxCalendarToolTipTagEveryNstepHourLabel))+(buttonWidth/2) -(labelWidth/2), 10, labelWidth, 10);
+        label.frame = CGRectMake(((freeContainer.frame.size.width-buttonWidth) / (self.lengthOfDayInHours-1) * (i*kJxCalendarToolTipTagEveryNstepHourLabel))+(buttonWidth/2) -(labelWidth/2), 10, labelWidth, 10);
     }
-    for (int i = 0; i < 24; i++) {
+    for (int i = 0; i < self.lengthOfDayInHours; i++) {
         UIView *marker = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceHourMarker+i];
-        marker.frame = CGRectMake(((freeContainer.frame.size.width-buttonWidth) / (24-1) * i)+(buttonWidth/2) - 0.5f, 23, 1, 7);
+        marker.frame = CGRectMake(((freeContainer.frame.size.width-buttonWidth) / (self.lengthOfDayInHours-1) * i)+(buttonWidth/2) - 0.5f, 23, 1, 7);
     }
     
     for (int i = 0; i < 5; i++) {
@@ -422,18 +428,31 @@ typedef enum {
     
     UIButton *dayTypeButton = sender;
     
-    JxCalendarDayType mask = [self.dataSource availableDayTypesForDate:self.toolTipDate];
+    JxCalendarDayTypeMask mask = [self.dataSource availableDayTypesForDate:self.toolTipDate];
     
     NSMutableArray *availableOptions = [NSMutableArray array];
     
-    for (NSNumber *type in @[@(JxCalendarDayTypeWholeDay), @(JxCalendarDayTypeHalfDay), @(JxCalendarDayTypeWorkDay), @(JxCalendarDayTypeFreeChoice), @(JxCalendarDayTypeWholeDay)]) {
-        JxCalendarDayType daytype = type.intValue;
-        
-        if ((mask & daytype) == daytype) {
-            [availableOptions addObject:@(daytype)];
-        }
-        
+    
+    if ((mask & JxCalendarDayTypeMaskWholeDay) == JxCalendarDayTypeMaskWholeDay) {
+        [availableOptions addObject:@(JxCalendarDayTypeWholeDay)];
     }
+    if ((mask & JxCalendarDayTypeMaskWorkDay) == JxCalendarDayTypeMaskWorkDay) {
+        [availableOptions addObject:@(JxCalendarDayTypeWorkDay)];
+    }
+    if ((mask & JxCalendarDayTypeMaskHalfDay) == JxCalendarDayTypeMaskHalfDay) {
+        [availableOptions addObject:@(JxCalendarDayTypeHalfDay)];
+    }
+    if ((mask & JxCalendarDayTypeMaskHalfDayMorning) == JxCalendarDayTypeMaskHalfDayMorning) {
+        [availableOptions addObject:@(JxCalendarDayTypeHalfDayMorning)];
+    }
+    if ((mask & JxCalendarDayTypeMaskHalfDayAfternoon) == JxCalendarDayTypeMaskHalfDayAfternoon) {
+        [availableOptions addObject:@(JxCalendarDayTypeHalfDayAfternoon)];
+    }
+    if ((mask & JxCalendarDayTypeMaskFreeChoice) == JxCalendarDayTypeMaskFreeChoice) {
+        [availableOptions addObject:@(JxCalendarDayTypeFreeChoice)];
+    }
+    
+    [availableOptions addObject:availableOptions[0]];
     
     JxCalendarDayType doType = JxCalendarDayTypeUnknown;
     
@@ -448,7 +467,7 @@ typedef enum {
     
     [dayTypeButton setTitle:[self getTitleForDayType:doType] forState:UIControlStateNormal];
     
-    JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate andDayType:doType];
+    JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate andDayType:doType inCalendar:self.dataSource.calendar andMaximumDayLength:self.lengthOfDayInHours];
     [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
     
     NSIndexPath *path = [self getIndexPathForDate:self.toolTipDate];
@@ -463,6 +482,10 @@ typedef enum {
             return kJxCalendarDayTypeOptionWholeDay;
         case JxCalendarDayTypeHalfDay:
             return kJxCalendarDayTypeOptionHalfDay;
+        case JxCalendarDayTypeHalfDayMorning:
+            return kJxCalendarDayTypeOptionHalfDayMorning;
+        case JxCalendarDayTypeHalfDayAfternoon:
+            return kJxCalendarDayTypeOptionHalfDayAfternoon;
         case JxCalendarDayTypeWorkDay:
             return kJxCalendarDayTypeOptionWorkDay;
         case JxCalendarDayTypeFreeChoice:

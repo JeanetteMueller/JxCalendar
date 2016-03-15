@@ -6,7 +6,7 @@
 //  Copyright © 2015 Jeanette Müller. All rights reserved.
 //
 
-
+#include <CoreFoundation/CFBase.h>
 
 #ifndef JxCalendarDefinitions_h
 #define JxCalendarDefinitions_h
@@ -58,6 +58,10 @@
 #define kJxCalendarDayTypeOptionUnknown             @"–"
 #define kJxCalendarDayTypeOptionWholeDay            @"Ganzer Tag >"
 #define kJxCalendarDayTypeOptionHalfDay             @"Halber Tag >"
+
+#define kJxCalendarDayTypeOptionHalfDayMorning      @"Vormittag >"
+#define kJxCalendarDayTypeOptionHalfDayAfternoon    @"Nachmittag >"
+
 #define kJxCalendarDayTypeOptionWorkDay             @"Arbeitstag >"
 #define kJxCalendarDayTypeOptionFreeChoice          @"Freie Wahl >"
 
@@ -87,8 +91,8 @@ typedef NS_ENUM(NSInteger, JxCalendarSelectionStyle) {
     
 };
 
-typedef NS_ENUM(NSUInteger, JxCalendarDayType) {
-    JxCalendarDayTypeUnknown = 0,
+typedef NS_ENUM(NSInteger, JxCalendarDayType) {
+    JxCalendarDayTypeUnknown,
     
     /* complete day, 24 hours */
     JxCalendarDayTypeWholeDay,
@@ -99,8 +103,29 @@ typedef NS_ENUM(NSUInteger, JxCalendarDayType) {
     /* half day, typicaly 4 hours */
     JxCalendarDayTypeHalfDay,
     
+    /* Half Day 0-12 */
+    JxCalendarDayTypeHalfDayMorning,
+    
+    /* Half Day 12-24 */
+    JxCalendarDayTypeHalfDayAfternoon,
+    
     /* free choice */
     JxCalendarDayTypeFreeChoice,
+    
 };
+
+typedef NS_OPTIONS(NSUInteger, JxCalendarDayTypeMask) {
+    JxCalendarDayTypeMaskUnknown = (1 << JxCalendarDayTypeUnknown),
+    JxCalendarDayTypeMaskWholeDay = (1 << JxCalendarDayTypeWholeDay),
+    JxCalendarDayTypeMaskWorkDay = (1 << JxCalendarDayTypeWorkDay),
+    JxCalendarDayTypeMaskHalfDay = (1 << JxCalendarDayTypeHalfDay),
+    JxCalendarDayTypeMaskHalfDayMorning = (1 << JxCalendarDayTypeHalfDayMorning),
+    JxCalendarDayTypeMaskHalfDayAfternoon = (1 << JxCalendarDayTypeHalfDayAfternoon),
+    JxCalendarDayTypeMaskFreeChoice = (1 << JxCalendarDayTypeFreeChoice),
+    
+    JxCalendarDayTypeMaskAll = (JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskWorkDay|JxCalendarDayTypeMaskHalfDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon|JxCalendarDayTypeMaskFreeChoice)
+};
+
+
 
 #endif /* JxCalendarDefinitions_h */
