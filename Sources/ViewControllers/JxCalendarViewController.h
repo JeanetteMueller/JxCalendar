@@ -25,4 +25,6 @@
 - (NSDateComponents *)startComponents;
 - (NSDateComponents *)componentsFromDate:(NSDate *)date;
 
+- (JxCalendarOverview *)getCalendarOverview;
+
 @end

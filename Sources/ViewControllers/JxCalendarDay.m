@@ -395,11 +395,28 @@
     if (self.delegate) {
         JxCalendarEvent *event = [self eventForIndexPath:indexPath];
         if (event) {
-            [self.delegate calendarDidSelectEvent:event whileOnAppearance:JxCalendarAppearanceDay];
+            
+            if ([self.delegate respondsToSelector:@selector(calendar:didSelectEvent:whileOnAppearance:)]) {
+                [self.delegate calendar:[self getCalendarOverview] didSelectEvent:event whileOnAppearance:JxCalendarAppearanceDay];
+            }else if ([self.delegate respondsToSelector:@selector(calendarDidSelectEvent:whileOnAppearance:)]) {
+                [self.delegate calendarDidSelectEvent:event whileOnAppearance:JxCalendarAppearanceDay];
+            }
+            
+            
             
             [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
         }
     }
 }
-
+- (JxCalendarOverview *)getCalendarOverview{
+    JxCalendarOverview *calendar;
+    
+    for (int i = (int)self.navigationController.viewControllers.count-1; i >= 0; i--) {
+        UIViewController *vc = self.navigationController.viewControllers[i];
+        if ([vc isKindOfClass:[JxCalendarOverview class]]) {
+            calendar = (JxCalendarOverview *)vc;
+        }
+    }
+    return calendar;
+}
 @end

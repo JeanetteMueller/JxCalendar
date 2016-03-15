@@ -81,33 +81,33 @@
 }
 
 #pragma mark <JxCalendarDelegate>
-- (BOOL)calendarShouldStartRanging{
+- (BOOL)calendarShouldStartRanging:(JxCalendarOverview *)calendar{
     return YES;
 }
-- (BOOL)calendarSelectionStyleSwitchable{
+- (BOOL)calendarSelectionStyleSwitchable:(JxCalendarOverview *)calendar{
     return YES;
 }
-- (void)calendarShouldClearSelections{
+- (void)calendarShouldClearSelections:(JxCalendarOverview *)calendar{
     
     [self.dataSource.selectedDates removeAllObjects];
     [self.dataSource.selectedEvents removeAllObjects];
 }
-- (void)calendarDidSelectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
+- (void)calendar:(JxCalendarOverview *)calendar didSelectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
     //DLog(@" %@", date);
     
     [self.dataSource.selectedDates addObject:date];
 }
-- (void)calendarDidDeselectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
+- (void)calendar:(JxCalendarOverview *)calendar didDeselectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
     //DLog(@" %@", date);
     
     [self.dataSource.selectedDates removeObject:date];
 }
-- (void)calendarDidSelectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance{
+- (void)calendar:(JxCalendarOverview *)calendar didSelectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance{
     //DLog(@" %@", event);
     
     [self.dataSource.selectedEvents addObject:event];
 }
-- (void)calendarDidDeselectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance{
+- (void)calendar:(JxCalendarOverview *)calendar didDeselectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance{
     //DLog(@" %@", event);
     
     [self.dataSource.selectedEvents removeObject:event];
@@ -138,10 +138,10 @@
 }
 
 #pragma mark Range
-- (void)calendarShouldClearRange{
+- (void)calendarShouldClearRange:(JxCalendarOverview *)calendar{
     [self.dataSource.rangedDates removeAllObjects];
 }
-- (void)calendarDidRange:(JxCalendarRangeElement *)rangeElement whileOnAppearance:(JxCalendarAppearance)appearance{
+- (void)calendar:(JxCalendarOverview *)calendar didRange:(JxCalendarRangeElement *)rangeElement whileOnAppearance:(JxCalendarAppearance)appearance{
     
     NSInteger index = [self indexOfDateInRange:rangeElement.date];
     
@@ -154,7 +154,7 @@
     }
     
 }
-- (void)calendarDidDeRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
+- (void)calendar:(JxCalendarOverview *)calendar didDeRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
     
     for (JxCalendarRangeElement *rangeElement in self.dataSource.rangedDates) {
         if ([rangeElement.date isEqual:date]) {

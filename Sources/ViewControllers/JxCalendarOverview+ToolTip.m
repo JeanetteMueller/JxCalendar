@@ -198,7 +198,13 @@ typedef enum {
     
     JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
                                                                      withStartDate:start andEndDate:end];
-    [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
+    
+    if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
+        [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
+    }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]) {
+        [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
+    }
+    
     
     NSIndexPath *path = [self getIndexPathForDate:self.toolTipDate];
     
@@ -212,8 +218,7 @@ typedef enum {
 - (void)updateToolTipAnimated:(BOOL)animated{
     
     JxCalendarToolTipArea area = JxCalendarToolTipAreaDetail;
-    JxCalendarDayTypeMask mask = [self.dataSource availableDayTypesForDate:self.toolTipDate];
-    
+
     JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:self.toolTipDate];
     
     
@@ -303,7 +308,12 @@ typedef enum {
         [freeChoiceButton setTitle:[NSString stringWithFormat:@"%@:%@", hour, min] forState:UIControlStateNormal];
     }
     
-    if ([self.delegate respondsToSelector:@selector(calendarShouldStartRanging)] && [self.delegate calendarShouldStartRanging]) {
+    if ((
+            [self.delegate respondsToSelector:@selector(calendarShouldStartRanging:)] && [self.delegate calendarShouldStartRanging:[self getCalendarOverview]]
+        ) || (
+            [self.delegate respondsToSelector:@selector(calendarShouldStartRanging)] && [self.delegate calendarShouldStartRanging]
+        )
+        ) {
         dayTypeButton.enabled = YES;
         freeChoiceButton.enabled = YES;
     }else{
@@ -468,7 +478,13 @@ typedef enum {
     [dayTypeButton setTitle:[self getTitleForDayType:doType] forState:UIControlStateNormal];
     
     JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate andDayType:doType inCalendar:self.dataSource.calendar andMaximumDayLength:self.lengthOfDayInHours];
-    [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
+    
+    if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
+        [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
+    }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]) {
+        [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
+    }
+    
     
     NSIndexPath *path = [self getIndexPathForDate:self.toolTipDate];
     

@@ -384,7 +384,11 @@
         
         JxCalendarEvent *event = [events objectAtIndex:indexPath.item];
         if (event) {
-            [self.delegate calendarDidSelectEvent:event whileOnAppearance:JxCalendarAppearanceWeek];
+            if ([self.delegate respondsToSelector:@selector(calendar:didSelectEvent:whileOnAppearance:)]) {
+                [self.delegate calendar:[self getCalendarOverview] didSelectEvent:event whileOnAppearance:JxCalendarAppearanceWeek];
+            }else if([self.delegate respondsToSelector:@selector(calendarDidSelectEvent:whileOnAppearance:)]){
+                [self.delegate calendarDidSelectEvent:event whileOnAppearance:JxCalendarAppearanceWeek];
+            }
             
             [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
         }
@@ -398,11 +402,15 @@
     if (date) {
         
         if ([self.dataSource isDaySelected:date]) {
-            if ([self.delegate respondsToSelector:@selector(calendarDidDeselectDate:whileOnAppearance:)]) {
+            if ([self.delegate respondsToSelector:@selector(calendar:didDeselectDate:whileOnAppearance:)]) {
+                [self.delegate calendar:[self getCalendarOverview] didDeselectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
+            }else if ([self.delegate respondsToSelector:@selector(calendarDidDeselectDate:whileOnAppearance:)]) {
                 [self.delegate calendarDidDeselectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
             }
         }else{
-            if ([self.delegate respondsToSelector:@selector(calendarDidSelectDate:whileOnAppearance:)]) {
+            if ([self.delegate respondsToSelector:@selector(calendar:didSelectDate:whileOnAppearance:)]) {
+                [self.delegate calendar:[self getCalendarOverview] didSelectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
+            }else if ([self.delegate respondsToSelector:@selector(calendarDidSelectDate:whileOnAppearance:)]) {
                 [self.delegate calendarDidSelectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
             }
         }

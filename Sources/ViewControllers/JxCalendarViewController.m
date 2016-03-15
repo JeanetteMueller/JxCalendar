@@ -78,15 +78,17 @@ static NSString * const reuseIdentifier = @"Cell";
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (JxCalendarOverview *)getCalendarOverview{
+    JxCalendarOverview *calendar;
+    
+    for (int i = (int)self.navigationController.viewControllers.count-1; i >= 0; i--) {
+        UIViewController *vc = self.navigationController.viewControllers[i];
+        if ([vc isKindOfClass:[JxCalendarOverview class]]) {
+            calendar = (JxCalendarOverview *)vc;
+        }
+    }
+    return calendar;
 }
-*/
 
 #pragma mark <UICollectionViewDataSource>
 

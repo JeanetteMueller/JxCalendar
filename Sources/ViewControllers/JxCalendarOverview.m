@@ -242,7 +242,9 @@
         }
         
         if (self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
-            if ([self.delegate respondsToSelector:@selector(calendarSelectionStyleSwitchable)] && [self.delegate calendarSelectionStyleSwitchable]) {
+            if (([self.delegate respondsToSelector:@selector(calendarSelectionStyleSwitchable:)] && [self.delegate calendarSelectionStyleSwitchable:[self getCalendarOverview]])
+                ||
+                ([self.delegate respondsToSelector:@selector(calendarSelectionStyleSwitchable)] && [self.delegate calendarSelectionStyleSwitchable])) {
                 
                 UIBarButtonItem *extraButton;
                 
@@ -541,7 +543,10 @@
 
 - (void)longPressAction:(UILongPressGestureRecognizer *)sender{
     
-    if (![self.delegate respondsToSelector:@selector(calendarShouldStartRanging)] || ![self.delegate calendarShouldStartRanging]) {
+    if ((![self.delegate respondsToSelector:@selector(calendarShouldStartRanging:)] && ![self.delegate respondsToSelector:@selector(calendarShouldStartRanging)]) ||
+        ([self.delegate respondsToSelector:@selector(calendarShouldStartRanging:)] && ![self.delegate calendarShouldStartRanging:[self getCalendarOverview]]) ||
+        ([self.delegate respondsToSelector:@selector(calendarShouldStartRanging)] && ![self.delegate calendarShouldStartRanging])
+        ) {
         return;
     }
     
@@ -554,7 +559,9 @@
         case UIGestureRecognizerStateBegan:{
             [self hideToolTip];
             
-            if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging)]) {
+            if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging:)]) {
+                [self.delegate calendarDidStartRanging:[self getCalendarOverview]];
+            }else if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging)]) {
                 [self.delegate calendarDidStartRanging];
             }
             
@@ -626,7 +633,9 @@
             [self.moveTimer invalidate];
             self.moveTimer = nil;
             
-            if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging)]) {
+            if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging:)]) {
+                [self.delegate calendarDidEndRanging:[self getCalendarOverview]];
+            }else if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging)]) {
                 [self.delegate calendarDidEndRanging];
             }
             
@@ -746,7 +755,12 @@
             NSDate *date = [self getDateForIndexPath:path];
             
             if ([self.dataSource isPartOfRange:date] && ![newPathes containsObject:path]) {
-                [self.delegate calendarDidDeRangeDate:date whileOnAppearance:[self getAppearance]];
+                if ([self.delegate respondsToSelector:@selector(calendar:didDeRangeDate:whileOnAppearance:)]) {
+                    [self.delegate calendar:[self getCalendarOverview] didDeRangeDate:date whileOnAppearance:[self getAppearance]];
+                }else if ([self.delegate respondsToSelector:@selector(calendarDidDeRangeDate:whileOnAppearance:)]){
+                    [self.delegate calendarDidDeRangeDate:date whileOnAppearance:[self getAppearance]];
+                }
+                
             }else{
                 if (![self.dataSource isPartOfRange:date]){
                     
@@ -755,7 +769,11 @@
                                                                                         inCalendar:self.dataSource.calendar
                                                                                andMaximumDayLength:self.lengthOfDayInHours];
                     
-                    [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
+                    if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
+                        [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
+                    }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]){
+                        [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
+                    }
                 }
             }
             
@@ -1270,11 +1288,15 @@
             }
             
             if ([self.dataSource isDaySelected:date]) {
-                if ([self.delegate respondsToSelector:@selector(calendarDidDeselectDate:whileOnAppearance:)]) {
+                if ([self.delegate respondsToSelector:@selector(calendar:didDeselectDate:whileOnAppearance:)]) {
+                    [self.delegate calendar:[self getCalendarOverview] didDeselectDate:date whileOnAppearance:[self getOverviewAppearance]];
+                }else if ([self.delegate respondsToSelector:@selector(calendarDidDeselectDate:whileOnAppearance:)]) {
                     [self.delegate calendarDidDeselectDate:date whileOnAppearance:[self getOverviewAppearance]];
                 }
             }else{
-                if ([self.delegate respondsToSelector:@selector(calendarDidSelectDate:whileOnAppearance:)]) {
+                if ([self.delegate respondsToSelector:@selector(calendar:didSelectDate:whileOnAppearance:)]) {
+                    [self.delegate calendar:[self getCalendarOverview] didSelectDate:date whileOnAppearance:[self getOverviewAppearance]];
+                }else if ([self.delegate respondsToSelector:@selector(calendarDidSelectDate:whileOnAppearance:)]) {
                     [self.delegate calendarDidSelectDate:date whileOnAppearance:[self getOverviewAppearance]];
                 }
             }
