@@ -1253,8 +1253,10 @@
         
         if ((self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ) && self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
             
-            if ([self.dataSource isPartOfRange:date]) {
+            if ([self.dataSource isPartOfRange:date] && [self.dataSource isRangeToolTipAvailableForDate:date]) {
                 [self openToolTipWithDate:date];
+                
+                
             }else{
                 [self hideToolTip];
                 
@@ -1270,7 +1272,9 @@
                     }else if (_longHoldStartIndexPath && !_longHoldEndIndexPath) {
                         _longHoldEndIndexPath = indexPath;
                     }else{
-                        if (_longHoldStartIndexPath && _longHoldEndIndexPath){
+                        if ([self.dataSource isPartOfRange:date]) {
+                            _longHoldEndIndexPath = indexPath;
+                        }else if (_longHoldStartIndexPath && _longHoldEndIndexPath){
                             if( indexPath.section > _longHoldEndIndexPath.section ||
                                (indexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < indexPath.row)) {
                                 

@@ -200,12 +200,16 @@
     return JxCalendarDayTypeMaskAll;// (JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon|JxCalendarDayTypeMaskFreeChoice);
 }
 - (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date{
+    
+    if ([self isEndOfRange:date] || [self isStartOfRange:date]) {
+        return YES;
+    }
 //    NSDateComponents *components = [[self calendar] components:NSCalendarUnitWeekday fromDate:date];
 //    
 //    if ([JxCalendarBasics normalizedWeekDay:components.weekday] == 1) {
 //        return NO;
 //    }
-    return YES;
+    return NO;
 }
 #pragma mark Helper
 - (void)sortRangedObjects{
