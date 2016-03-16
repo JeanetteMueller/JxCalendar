@@ -639,6 +639,13 @@
                 [self.delegate calendarDidEndRanging];
             }
             
+            if (_longHoldStartIndexPath && _longHoldEndIndexPath && (_longHoldStartIndexPath.section > _longHoldEndIndexPath.section ||
+                (_longHoldStartIndexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < _longHoldStartIndexPath.row))) {
+                NSIndexPath *tempStart = _longHoldStartIndexPath;
+                _longHoldStartIndexPath = _longHoldEndIndexPath;
+                _longHoldEndIndexPath = tempStart;
+            }
+            
         }break;
     }
 
@@ -1050,7 +1057,7 @@
                     
                     partOfDay = rangeElement.duration / (float)(self.lengthOfDayInHours*60*60);
                     
-                    NSLog(@"partofday %f = %f / %f", partOfDay , rangeElement.duration , (float)(self.lengthOfDayInHours*60*60));
+                    
                     
                     if (rangeElement.dayType == JxCalendarDayTypeHalfDayMorning) {
                         startPosition = 0.f;
@@ -1241,12 +1248,56 @@
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     __block NSDate *date = [self getDateForIndexPath:indexPath];
     
+
     if (date) {
         
         if ((self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ) && self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
             
             if ([self.dataSource isPartOfRange:date]) {
                 [self openToolTipWithDate:date];
+            }else{
+                [self hideToolTip];
+                
+                if ([self.dataSource isDayRangeable:date]) {
+                    if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging:)]) {
+                        [self.delegate calendarDidStartRanging:[self getCalendarOverview]];
+                    }else if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging)]) {
+                        [self.delegate calendarDidStartRanging];
+                    }
+                    
+                    if (!_longHoldStartIndexPath) {
+                        _longHoldStartIndexPath = indexPath;
+                    }else if (_longHoldStartIndexPath && !_longHoldEndIndexPath) {
+                        _longHoldEndIndexPath = indexPath;
+                    }else{
+                        if (_longHoldStartIndexPath && _longHoldEndIndexPath){
+                            if( indexPath.section > _longHoldEndIndexPath.section ||
+                               (indexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < indexPath.row)) {
+                                
+                                _longHoldEndIndexPath = indexPath;
+                            }else{
+                                _longHoldStartIndexPath = indexPath;
+                            }
+                        }
+                    }
+                    
+                    
+                    
+                    [self updateLongHoldSelectedCells];
+                    
+                    if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging:)]) {
+                        [self.delegate calendarDidEndRanging:[self getCalendarOverview]];
+                    }else if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging)]) {
+                        [self.delegate calendarDidEndRanging];
+                    }
+                    
+                    if (_longHoldStartIndexPath && _longHoldEndIndexPath && ( _longHoldStartIndexPath.section > _longHoldEndIndexPath.section ||
+                        (_longHoldStartIndexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < _longHoldStartIndexPath.row))) {
+                        NSIndexPath *tempStart = _longHoldStartIndexPath;
+                        _longHoldStartIndexPath = _longHoldEndIndexPath;
+                        _longHoldEndIndexPath = tempStart;
+                    }
+                }
             }
             return;
         }
