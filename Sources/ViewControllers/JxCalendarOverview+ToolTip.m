@@ -27,8 +27,14 @@
 #define kJxCalendarToolTipTagFreeChoiceMinuteSlider 8898
 #define kJxCalendarToolTipTagFreeChoiceMinuteMarker 889800
 #define kJxCalendarToolTipTagFreeChoiceMinuteLabel  889900
+#define kJxCalendarToolTipTagFreeChoiceDoneButton   8900
+#define kJxCalendarToolTipTagArrow                  8901
 
 #define kJxCalendarToolTipTagEveryNstepHourLabel 2
+
+#define kJxCalendarToolTipMinDistanceToBorder 5
+#define kJxCalendarToolTipBasicWidth 130
+#define kJxCalendarToolTipFreeChoiceExtraHeight 40
 
 static void * toolTipDatePropertyKey = &toolTipDatePropertyKey;
 
@@ -59,8 +65,8 @@ typedef enum {
         toolTipView.tag = kJxCalendarToolTipTagView;
         toolTipView.backgroundColor = [UIColor whiteColor];
         toolTipView.layer.shadowOffset = CGSizeMake(0, 0);
-        toolTipView.layer.shadowOpacity = 0.75;
-        toolTipView.layer.shadowRadius = 8;
+        toolTipView.layer.shadowOpacity = 0.6;
+        toolTipView.layer.shadowRadius = 12;
         toolTipView.layer.cornerRadius = 8.f;
         
         UIView *container = [[UIView alloc] init];
@@ -117,6 +123,16 @@ typedef enum {
         freeChoiceMinuteSlider.maximumValue = 60;
         [freeContainer addSubview:freeChoiceMinuteSlider];
         
+        UIButton *freeChoiceDoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        freeChoiceDoneButton.tag = kJxCalendarToolTipTagFreeChoiceDoneButton;
+        [freeChoiceDoneButton addTarget:self action:@selector(freeChoiceDone:) forControlEvents:UIControlEventTouchUpInside];
+        [freeChoiceDoneButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        freeChoiceDoneButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
+        freeChoiceDoneButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+        freeChoiceDoneButton.contentEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 10);
+        [freeChoiceDoneButton setTitle:@"Done" forState:UIControlStateNormal];
+        [freeContainer addSubview:freeChoiceDoneButton];
+        
         UIColor *markerColor = [UIColor lightGrayColor];
         for (int i = 0; i < self.lengthOfDayInHours/kJxCalendarToolTipTagEveryNstepHourLabel; i++) {
             UILabel *lab = [[UILabel alloc] init];
@@ -154,6 +170,14 @@ typedef enum {
 //        dayTypeButton.backgroundColor = [[UIColor cyanColor] colorWithAlphaComponent:0.5];
         
         [self.view addSubview:toolTipView];
+        
+        UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(50, 20, 14, 10)];
+        
+        arrowView.tag = kJxCalendarToolTipTagArrow;
+        arrowView.backgroundColor = [UIColor clearColor];
+        
+        [self.view addSubview:arrowView];
+        
         [self updateToolTipAnimated:NO];
     }
 }
@@ -211,16 +235,29 @@ typedef enum {
     [self updateRangeForCell:(JxCalendarCell *)[self.collectionView cellForItemAtIndexPath:path] atIndexPath:path animated:YES];
     
 }
+- (IBAction)freeChoiceDone:(id)sender{
+    
+    
+    [self updateToolTipAnimated:YES];
+    /*
+     UIView *toolTipView = [self.view viewWithTag:kJxCalendarToolTipTagView];
+    [self updateToolTipSizeWithRect:CGRectMake(kJxCalendarToolTipMinDistanceToBorder,
+                                               toolTipView.frame.origin.y,
+                                               kJxCalendarToolTipBasicWidth,
+                                               toolTipView.frame.size.height)
+                           animated:YES withVisibleArea:JxCalendarToolTipAreaDetailExtended];
+     */
+}
 - (void)hideToolTip{
     self.toolTipDate = nil;
     [[self.view viewWithTag:kJxCalendarToolTipTagView] removeFromSuperview];
+    [[self.view viewWithTag:kJxCalendarToolTipTagArrow] removeFromSuperview];
 }
 - (void)updateToolTipAnimated:(BOOL)animated{
     
     JxCalendarToolTipArea area = JxCalendarToolTipAreaDetail;
 
     JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:self.toolTipDate];
-    
     
     NSIndexPath *indexPath = [self getIndexPathForDate:self.toolTipDate];
     
@@ -236,30 +273,92 @@ typedef enum {
     UIView *toolTipView = [self.view viewWithTag:kJxCalendarToolTipTagView];
     UIView *container = [toolTipView viewWithTag:kJxCalendarToolTipTagContainer];
     UIView *freeContainer = [toolTipView viewWithTag:kJxCalendarToolTipTagFreeChoiceContainer];
+    UIImageView *arrowView = [self.view viewWithTag:kJxCalendarToolTipTagArrow];
     
     CGFloat freeChoiceExtraHeight = 0;
     if (rangeElement.dayType == JxCalendarDayTypeFreeChoice) {
         
-        freeChoiceExtraHeight = 40;
+        freeChoiceExtraHeight = kJxCalendarToolTipFreeChoiceExtraHeight;
         
         area = JxCalendarToolTipAreaDetailExtended;
         
     }
     
-    CGSize toolTipSize = CGSizeMake(130, 80 + freeChoiceExtraHeight);
+    CGSize toolTipSize = CGSizeMake(kJxCalendarToolTipBasicWidth, 80 + freeChoiceExtraHeight);
     
     CGRect toolTipRect = CGRectMake(rect.origin.x + (rect.size.width/2) - (toolTipSize.width/2), rect.origin.y-toolTipSize.height, toolTipSize.width, toolTipSize.height);
     
-    if (toolTipRect.origin.x < 5) {
-        toolTipRect.origin.x = 5;
+    if (toolTipRect.origin.x < kJxCalendarToolTipMinDistanceToBorder) {
+        toolTipRect.origin.x = kJxCalendarToolTipMinDistanceToBorder;
     }
     if (toolTipRect.origin.x + toolTipRect.size.width > self.collectionView.frame.size.width) {
-        toolTipRect.origin.x = self.collectionView.frame.size.width - toolTipRect.size.width - 5;
+        toolTipRect.origin.x = self.collectionView.frame.size.width - toolTipRect.size.width - kJxCalendarToolTipMinDistanceToBorder;
     }
-    NSLog(@"abstand von oben %f", self.collectionView.contentOffset.y - toolTipRect.origin.y);
-    
-    if (toolTipRect.origin.y  < 5) {
+
+    if (toolTipRect.origin.y  < kJxCalendarToolTipMinDistanceToBorder) {
+        NSLog(@"tooltip unter rect");
         toolTipRect.origin.y = rect.origin.y+rect.size.height;
+        arrowView.frame = CGRectMake(rect.origin.x + (rect.size.width-arrowView.frame.size.width)/2, rect.origin.y+rect.size.height-arrowView.frame.size.height,
+                                     arrowView.frame.size.width, arrowView.frame.size.height);
+        
+        UIGraphicsBeginImageContext(arrowView.frame.size);
+        
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        
+        CGContextSetRGBFillColor(context, 1, 1, 1, 1.0);
+        CGContextSetLineJoin(context, kCGLineJoinRound);
+        
+        CGMutablePathRef pathRef = CGPathCreateMutable();
+        
+        /* do something with pathRef. For example:*/
+        CGPathMoveToPoint(pathRef, NULL, 0, 10);
+        CGPathAddLineToPoint(pathRef, NULL, 7, 0);
+        CGPathAddLineToPoint(pathRef, NULL, 14, 10);
+        CGPathCloseSubpath(pathRef);
+        
+        CGContextAddPath(context, pathRef);
+        CGContextFillPath(context);
+        
+        
+        CGContextDrawPath(context, kCGPathFillStroke);
+        
+        CGPathRelease(pathRef);
+        
+        arrowView.image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+    }else{
+        NSLog(@"tooltip over rect");
+        arrowView.frame = CGRectMake(rect.origin.x + (rect.size.width-arrowView.frame.size.width)/2, rect.origin.y,
+                                     arrowView.frame.size.width, arrowView.frame.size.height);
+
+        
+        UIGraphicsBeginImageContext(arrowView.frame.size);
+        
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        
+        CGContextSetRGBFillColor(context, 1, 1, 1, 1.0);
+        CGContextSetLineJoin(context, kCGLineJoinRound);
+        
+        CGMutablePathRef pathRef = CGPathCreateMutable();
+        
+        /* do something with pathRef. For example:*/
+        CGPathMoveToPoint(pathRef, NULL, 0, 0);
+        CGPathAddLineToPoint(pathRef, NULL, 7, 10);
+        CGPathAddLineToPoint(pathRef, NULL, 14, 0);
+        CGPathCloseSubpath(pathRef);
+        
+        CGContextAddPath(context, pathRef);
+        CGContextFillPath(context);
+        
+        
+        CGContextDrawPath(context, kCGPathFillStroke);
+        
+        CGPathRelease(pathRef);
+        
+        arrowView.image = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
     }
     
     UIButton *dayTypeButton = [container viewWithTag:kJxCalendarToolTipTagDayTypeButton];
@@ -359,6 +458,7 @@ typedef enum {
     UIButton *freeChoiceButton = [container viewWithTag:kJxCalendarToolTipTagFreeChoiceButton];
     UISlider *freeChoiceHourSlider = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceHourSlider];
     UISlider *freeChoiceMinuteSlider = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceMinuteSlider];
+    UIButton *freeChoiceDoneButton = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceDoneButton];
     
     void (^animation)(void) = ^{
         
@@ -369,8 +469,10 @@ typedef enum {
         label.frame =                   CGRectMake((container.frame.size.width - 100)/2,  0, 100, 40);
         dayTypeButton.frame =           CGRectMake(0, 40, container.frame.size.width, 40);
         freeChoiceButton.frame =        CGRectMake(0, 80, container.frame.size.width, 40);
-        freeChoiceHourSlider.frame =    CGRectMake(0, 20, freeContainer.frame.size.width, 40);
-        freeChoiceMinuteSlider.frame =  CGRectMake(0, 80, freeContainer.frame.size.width, 40);
+        freeChoiceHourSlider.frame =    CGRectMake(0, 20, freeContainer.frame.size.width, 30);
+        freeChoiceMinuteSlider.frame =  CGRectMake(0, 60, freeContainer.frame.size.width, 30);
+        freeChoiceDoneButton.frame =    CGRectMake(0, 90, freeContainer.frame.size.width, 30);
+        
         
         if (area == JxCalendarToolTipAreaDetailExtended) {
             freeChoiceButton.alpha = 1.0f;
@@ -421,11 +523,11 @@ typedef enum {
     
     for (int i = 0; i < 5; i++) {
         UILabel *lab = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceMinuteLabel+i];
-        lab.frame = CGRectMake(((freeContainer.frame.size.width-buttonWidth) / (5-1) * i)+(buttonWidth/2) - (labelWidth/2), 70, labelWidth, 10);
+        lab.frame = CGRectMake(((freeContainer.frame.size.width-buttonWidth) / (5-1) * i)+(buttonWidth/2) - (labelWidth/2), 50, labelWidth, 10);
         
         
         UIView *marker = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceMinuteMarker+i];
-        marker.frame = CGRectMake(((freeContainer.frame.size.width-buttonWidth) / (5-1) * i)+(buttonWidth/2) - 0.5f, 83, 1, 7);
+        marker.frame = CGRectMake(((freeContainer.frame.size.width-buttonWidth) / (5-1) * i)+(buttonWidth/2) - 0.5f, 63, 1, 7);
     }
     
     UISlider *freeChoiceHourSlider = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceHourSlider];
@@ -515,18 +617,14 @@ typedef enum {
     
     UIView *toolTipView = [self.view viewWithTag:kJxCalendarToolTipTagView];
 
-    CGFloat borderDistance = 10;
-    
-    [self updateToolTipSizeWithRect:CGRectMake(borderDistance, toolTipView.frame.origin.y, self.view.frame.size.width-(borderDistance*2), toolTipView.frame.size.height)
+
+    [self updateToolTipSizeWithRect:CGRectMake(kJxCalendarToolTipMinDistanceToBorder,
+                                               toolTipView.frame.origin.y,
+                                               self.view.frame.size.width-(kJxCalendarToolTipMinDistanceToBorder*2),
+                                               toolTipView.frame.size.height)
                            animated:YES withVisibleArea:JxCalendarToolTipAreaFreeChoice];
     
 }
-- (IBAction)closeToolTipVC:(id)sender{
-    if (self.presentedViewController) {
-        [self.presentedViewController dismissViewControllerAnimated:YES completion:^{
-            [self updateToolTipAnimated:NO];
-        }];
-    }
-}
+
 
 @end
