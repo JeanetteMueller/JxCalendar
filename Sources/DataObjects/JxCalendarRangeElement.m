@@ -29,13 +29,13 @@
                 components.minute = 0;
                 components.second = 0;
                 
-                self.start = [calendar dateFromComponents:components];
+                self.start = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
                 
                 components.hour = maxDayHours;
                 components.minute = 0;
                 components.second = 0;
                 
-                self.end = [calendar dateFromComponents:components];
+                self.end = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
             }break;
             case JxCalendarDayTypeHalfDay:
             case JxCalendarDayTypeHalfDayMorning:{
@@ -44,13 +44,13 @@
                 components.minute = 0;
                 components.second = 0;
                 
-                self.start = [calendar dateFromComponents:components];
+                self.start = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
                 
                 components.hour = maxDayHours/2;
                 components.minute = 0;
                 components.second = 0;
                 
-                self.end = [calendar dateFromComponents:components];
+                self.end = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
             }break;
             case JxCalendarDayTypeHalfDayAfternoon:{
                 
@@ -58,16 +58,15 @@
                 components.minute = 0;
                 components.second = 0;
                 
-                self.start = [calendar dateFromComponents:components];
+                self.start = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
                 
                 components.hour = maxDayHours;
                 components.minute = 0;
                 components.second = 0;
                 
-                self.end = [calendar dateFromComponents:components];
+                self.end = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
             }break;
         }
-        
     }
     return self;
 }
