@@ -30,16 +30,10 @@
                 components.second = 0;
                 
                 self.start = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
-                
-                if (maxDayHours >= 24) {
-                    components.hour = 23;
-                    components.minute = 59;
-                    components.second = 59;
-                }else{
-                    components.hour = maxDayHours;
-                    components.minute = 0;
-                    components.second = 0;
-                }
+            
+                components.hour = maxDayHours-1;
+                components.minute = 59;
+                components.second = 59;
                 
                 self.end = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
             }break;
@@ -65,16 +59,10 @@
                 components.second = 0;
                 
                 self.start = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
-                if (maxDayHours >= 24) {
-                    components.hour = 23;
-                    components.minute = 59;
-                    components.second = 59;
-                }else{
-                    components.hour = maxDayHours;
-                    components.minute = 0;
-                    components.second = 0;
-                }
                 
+                components.hour = maxDayHours-1;
+                components.minute = 59;
+                components.second = 59;
                 
                 self.end = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
             }break;

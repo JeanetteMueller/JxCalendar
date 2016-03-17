@@ -213,8 +213,8 @@ typedef enum {
         min = 0;
     }
     
-    if (hour >= 24 && min == 0) {
-        components.hour = 23;
+    if (hour >= self.lengthOfDayInHours) {
+        components.hour = self.lengthOfDayInHours-1;
         components.minute = 59;
         components.second = 59;
     }else{
