@@ -203,7 +203,7 @@ typedef enum {
     components.hour = 0;
     components.minute = 0;
     components.second = 0;
-    NSDate *start = [self.dataSource.calendar dateFromComponents:components];
+    NSDate *start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
     
     int hour = freeChoiceHourSlider.value;
     int min = freeChoiceMinuteSlider.value;
@@ -217,7 +217,7 @@ typedef enum {
     components.hour = hour;
     components.minute = min;
     components.second = 0;
-    NSDate *end = [self.dataSource.calendar dateFromComponents:components];
+    NSDate *end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
     
     
     JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
