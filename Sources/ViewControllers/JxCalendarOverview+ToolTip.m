@@ -213,10 +213,18 @@ typedef enum {
         min = 0;
     }
     
+    if (hour >= 24 && min == 0) {
+        components.hour = 23;
+        components.minute = 59;
+        components.second = 59;
+    }else{
+        components.hour = hour;
+        components.minute = min;
+        components.second = 0;
+    }
     
-    components.hour = hour;
-    components.minute = min;
-    components.second = 0;
+    
+    
     NSDate *end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
     
     
