@@ -177,13 +177,6 @@
     }
     return NO;
 }
-- (JxCalendarDayType)dayTypeOfDateInRange:(NSDate *)date{
-    JxCalendarRangeElement *rangeElement = [self rangeElementForDate:date];
-    if (rangeElement) {
-        return rangeElement.dayType;
-    }
-    return JxCalendarDayTypeUnknown;
-}
 - (JxCalendarRangeElement *)rangeElementForDate:(NSDate *)date{
     if ([self isPartOfRange:date]) {
         for (JxCalendarRangeElement *rangeElement in self.rangedDates) {
@@ -198,6 +191,9 @@
 - (JxCalendarDayTypeMask)availableDayTypesForDate:(NSDate *)date{
     
     return JxCalendarDayTypeMaskAll;// (JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon|JxCalendarDayTypeMaskFreeChoice);
+}
+- (JxCalendarDayType)defaultDayTypeForDate:(NSDate *)date{
+    return JxCalendarDayTypeHalfDayAfternoon;
 }
 - (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date{
     

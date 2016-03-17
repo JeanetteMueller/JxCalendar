@@ -771,8 +771,13 @@
             }else{
                 if (![self.dataSource isPartOfRange:date]){
                     
+                    JxCalendarDayType newDayType = JxCalendarDayTypeWholeDay;
+                    if ([self.dataSource respondsToSelector:@selector(defaultDayTypeForDate:)]) {
+                        newDayType = [self.dataSource defaultDayTypeForDate:date];
+                    }
+                    
                     JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:date
-                                                                                        andDayType:JxCalendarDayTypeWholeDay
+                                                                                        andDayType:newDayType
                                                                                         inCalendar:self.dataSource.calendar
                                                                                andMaximumDayLength:self.lengthOfDayInHours];
                     
@@ -783,6 +788,65 @@
                     }
                 }
             }
+            
+        }
+        
+        NSMutableArray *availableOptions = [NSMutableArray array];
+        
+        for (JxCalendarRangeElement *rangeElement in self.dataSource.rangedDates) {
+            
+            
+            JxCalendarDayTypeMask mask = [self.dataSource availableDayTypesForDate:rangeElement.date];
+            
+            [availableOptions removeAllObjects];
+            
+            
+            if ((mask & JxCalendarDayTypeMaskWholeDay) == JxCalendarDayTypeMaskWholeDay) {
+                [availableOptions addObject:@(JxCalendarDayTypeWholeDay)];
+            }
+            if ((mask & JxCalendarDayTypeMaskWorkDay) == JxCalendarDayTypeMaskWorkDay) {
+                [availableOptions addObject:@(JxCalendarDayTypeWorkDay)];
+            }
+            if ((mask & JxCalendarDayTypeMaskHalfDay) == JxCalendarDayTypeMaskHalfDay) {
+                [availableOptions addObject:@(JxCalendarDayTypeHalfDay)];
+            }
+            if ((mask & JxCalendarDayTypeMaskHalfDayMorning) == JxCalendarDayTypeMaskHalfDayMorning) {
+                [availableOptions addObject:@(JxCalendarDayTypeHalfDayMorning)];
+            }
+            if ((mask & JxCalendarDayTypeMaskHalfDayAfternoon) == JxCalendarDayTypeMaskHalfDayAfternoon) {
+                [availableOptions addObject:@(JxCalendarDayTypeHalfDayAfternoon)];
+            }
+            if ((mask & JxCalendarDayTypeMaskFreeChoice) == JxCalendarDayTypeMaskFreeChoice) {
+                [availableOptions addObject:@(JxCalendarDayTypeFreeChoice)];
+            }
+            
+            
+            
+            JxCalendarDayType newDayType = JxCalendarDayTypeWholeDay;
+            if ([self.dataSource respondsToSelector:@selector(defaultDayTypeForDate:)]) {
+                newDayType = [self.dataSource defaultDayTypeForDate:rangeElement.date];
+            }
+            
+            if (![availableOptions containsObject:@(rangeElement.dayType)]) {
+                
+                JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:rangeElement.date
+                                                                                    andDayType:newDayType
+                                                                                    inCalendar:self.dataSource.calendar
+                                                                           andMaximumDayLength:self.lengthOfDayInHours];
+                
+                if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
+                    [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
+                }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]){
+                    [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
+                }
+                
+                NSIndexPath *path = [self getIndexPathForDate:rangeElement.date];
+                
+                if (![updatePathes containsObject:path]) {
+                    [updatePathes addObject:path];
+                }
+            }
+            
             
         }
         

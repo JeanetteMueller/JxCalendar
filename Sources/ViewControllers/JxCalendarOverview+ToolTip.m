@@ -363,7 +363,7 @@ typedef enum {
     
     UIButton *dayTypeButton = [container viewWithTag:kJxCalendarToolTipTagDayTypeButton];
 
-    switch ([self.dataSource dayTypeOfDateInRange:self.toolTipDate]) {
+    switch (rangeElement.dayType) {
         case JxCalendarDayTypeUnknown:
             [dayTypeButton setTitle:kJxCalendarDayTypeOptionUnknown forState:UIControlStateNormal];
             break;
@@ -384,13 +384,14 @@ typedef enum {
             break;
         case JxCalendarDayTypeFreeChoice:
             [dayTypeButton setTitle:kJxCalendarDayTypeOptionFreeChoice forState:UIControlStateNormal];
+            break;
     }
     
     
     UIButton *freeChoiceButton = [container viewWithTag:kJxCalendarToolTipTagFreeChoiceButton];
     
     
-    if ([self.dataSource dayTypeOfDateInRange:self.toolTipDate] == JxCalendarDayTypeFreeChoice) {
+    if (rangeElement.dayType == JxCalendarDayTypeFreeChoice) {
         
         NSTimeInterval duration = [rangeElement.end timeIntervalSinceDate:rangeElement.start];
         
@@ -541,6 +542,7 @@ typedef enum {
     UIButton *dayTypeButton = sender;
     
     JxCalendarDayTypeMask mask = [self.dataSource availableDayTypesForDate:self.toolTipDate];
+    JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:self.toolTipDate];
     
     NSMutableArray *availableOptions = [NSMutableArray array];
     
@@ -570,7 +572,7 @@ typedef enum {
     
     for (int i = 0; i < availableOptions.count; i++) {
         NSNumber *type = availableOptions[i];
-        if ([self.dataSource dayTypeOfDateInRange:self.toolTipDate] == type.intValue ) {
+        if (rangeElement.dayType == type.intValue ) {
             
             doType = [availableOptions[i+1] intValue];
             break;
