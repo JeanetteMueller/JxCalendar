@@ -15,20 +15,29 @@
 
 #pragma mark tooltip
 
-#define kJxCalendarToolTipTagView                   8890
-#define kJxCalendarToolTipTagContainer              8891
-#define kJxCalendarToolTipTagLabel                  8892
-#define kJxCalendarToolTipTagDayTypeButton          8893
-#define kJxCalendarToolTipTagFreeChoiceButton       8894
-#define kJxCalendarToolTipTagFreeChoiceContainer    8895
-#define kJxCalendarToolTipTagFreeChoiceHourSlider   8896
-#define kJxCalendarToolTipTagFreeChoiceHourMarker   889600
-#define kJxCalendarToolTipTagFreeChoiceHourLabel    889700
-#define kJxCalendarToolTipTagFreeChoiceMinuteSlider 8898
-#define kJxCalendarToolTipTagFreeChoiceMinuteMarker 889800
-#define kJxCalendarToolTipTagFreeChoiceMinuteLabel  889900
-#define kJxCalendarToolTipTagFreeChoiceDoneButton   8900
-#define kJxCalendarToolTipTagArrow                  8901
+typedef enum{
+
+    JxCalendarToolTipTagView = 8890,
+    JxCalendarToolTipTagContainer,
+    JxCalendarToolTipTagLabel,
+    JxCalendarToolTipTagDayTypeButton,
+    JxCalendarToolTipTagFreeChoiceButton,
+    JxCalendarToolTipTagFreeChoiceContainer,
+    JxCalendarToolTipTagFreeChoiceHourSlider,
+    JxCalendarToolTipTagFreeChoiceMinuteSlider,
+    JxCalendarToolTipTagFreeChoiceDoneButton,
+    JxCalendarToolTipTagArrow,
+    
+    JxCalendarToolTipTagFreeChoiceTimePicker,
+    
+    JxCalendarToolTipTagFreeChoiceHourMarker   = 889600,
+    JxCalendarToolTipTagFreeChoiceHourLabel    = 889700,
+
+    JxCalendarToolTipTagFreeChoiceMinuteMarker = 889800,
+    JxCalendarToolTipTagFreeChoiceMinuteLabel  = 889900,
+    
+    
+}JxCalendarToolTipViewTag;
 
 #define kJxCalendarToolTipTagEveryNstepHourLabel 2
 
@@ -62,7 +71,7 @@ typedef enum {
         self.toolTipDate = date;
         
         UIView *toolTipView = [[UIView alloc] init];
-        toolTipView.tag = kJxCalendarToolTipTagView;
+        toolTipView.tag = JxCalendarToolTipTagView;
         toolTipView.backgroundColor = [UIColor whiteColor];
         toolTipView.layer.shadowOffset = CGSizeMake(0, 0);
         toolTipView.layer.shadowOpacity = 0.6;
@@ -70,13 +79,13 @@ typedef enum {
         toolTipView.layer.cornerRadius = 8.f;
         
         UIView *container = [[UIView alloc] init];
-        container.tag = kJxCalendarToolTipTagContainer;
+        container.tag = JxCalendarToolTipTagContainer;
         container.clipsToBounds = YES;
         container.backgroundColor = [UIColor clearColor];
         [toolTipView addSubview:container];
         
         UILabel *label = [[UILabel alloc] init];
-        label.tag = kJxCalendarToolTipTagLabel;
+        label.tag = JxCalendarToolTipTagLabel;
         label.textAlignment = NSTextAlignmentCenter;
         label.textColor = [UIColor darkGrayColor];
         label.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:16];
@@ -86,7 +95,7 @@ typedef enum {
         [container addSubview:label];
         
         UIButton *dayTypeButton = [[UIButton alloc] init];
-        dayTypeButton.tag = kJxCalendarToolTipTagDayTypeButton;
+        dayTypeButton.tag = JxCalendarToolTipTagDayTypeButton;
         [dayTypeButton addTarget:self action:@selector(dayTypeChange:) forControlEvents:UIControlEventTouchUpInside];
         [dayTypeButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
         dayTypeButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
@@ -94,7 +103,7 @@ typedef enum {
         
         
         UIButton *freeChoiceButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        freeChoiceButton.tag = kJxCalendarToolTipTagFreeChoiceButton;
+        freeChoiceButton.tag = JxCalendarToolTipTagFreeChoiceButton;
         [freeChoiceButton addTarget:self action:@selector(freeChoiceChange:) forControlEvents:UIControlEventTouchUpInside];
         [freeChoiceButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
         freeChoiceButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
@@ -103,28 +112,35 @@ typedef enum {
         
         
         UIView *freeContainer = [[UIView alloc] init];
-        freeContainer.tag = kJxCalendarToolTipTagFreeChoiceContainer;
+        freeContainer.tag = JxCalendarToolTipTagFreeChoiceContainer;
         freeContainer.clipsToBounds = YES;
         freeContainer.alpha = 0.0f;
         freeContainer.backgroundColor = [UIColor clearColor];
         [toolTipView addSubview:freeContainer];
         
+        UIPickerView *freeChoicePicker = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width-(kJxCalendarToolTipMinDistanceToBorder*2), 216)];
+        freeChoicePicker.tag = JxCalendarToolTipTagFreeChoiceTimePicker;
+        freeChoicePicker.dataSource = self;
+        freeChoicePicker.delegate = self;
+        [freeContainer addSubview:freeChoicePicker];
+        
+        /*
         UISlider *freeChoiceHourSlider = [[UISlider alloc] init];
-        freeChoiceHourSlider.tag = kJxCalendarToolTipTagFreeChoiceHourSlider;
+        freeChoiceHourSlider.tag = JxCalendarToolTipTagFreeChoiceHourSlider;
         [freeChoiceHourSlider addTarget:self action:@selector(freeChoiceValueChanged:) forControlEvents:UIControlEventValueChanged];
         freeChoiceHourSlider.maximumValue = self.lengthOfDayInHours-1;
         freeChoiceHourSlider.minimumValue = 0;
         [freeContainer addSubview:freeChoiceHourSlider];
         
         UISlider *freeChoiceMinuteSlider = [[UISlider alloc] init];
-        freeChoiceMinuteSlider.tag = kJxCalendarToolTipTagFreeChoiceMinuteSlider;
+        freeChoiceMinuteSlider.tag = JxCalendarToolTipTagFreeChoiceMinuteSlider;
         [freeChoiceMinuteSlider addTarget:self action:@selector(freeChoiceValueChanged:) forControlEvents:UIControlEventValueChanged];
         freeChoiceMinuteSlider.minimumValue = 0;
         freeChoiceMinuteSlider.maximumValue = 60;
         [freeContainer addSubview:freeChoiceMinuteSlider];
         
         UIButton *freeChoiceDoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        freeChoiceDoneButton.tag = kJxCalendarToolTipTagFreeChoiceDoneButton;
+        freeChoiceDoneButton.tag = JxCalendarToolTipTagFreeChoiceDoneButton;
         [freeChoiceDoneButton addTarget:self action:@selector(freeChoiceDone:) forControlEvents:UIControlEventTouchUpInside];
         [freeChoiceDoneButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
         freeChoiceDoneButton.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:14];
@@ -140,18 +156,18 @@ typedef enum {
             lab.textAlignment = NSTextAlignmentCenter;
             lab.font = [UIFont fontWithName:@"HelveticaNeue" size:10];
             lab.textColor = markerColor;
-            lab.tag = kJxCalendarToolTipTagFreeChoiceHourLabel+i;
+            lab.tag = JxCalendarToolTipTagFreeChoiceHourLabel+i;
             [freeContainer addSubview:lab];
         }
         for (int i = 0; i < self.lengthOfDayInHours; i++) {
             UIView *marker = [[UIView alloc] init];
-            marker.tag = kJxCalendarToolTipTagFreeChoiceHourMarker + i;
+            marker.tag = JxCalendarToolTipTagFreeChoiceHourMarker + i;
             marker.backgroundColor = markerColor;
             [freeContainer addSubview:marker];
         }
         for (int i = 0; i < 5; i++) {
             UIView *marker = [[UIView alloc] init];
-            marker.tag = kJxCalendarToolTipTagFreeChoiceMinuteMarker + i;
+            marker.tag = JxCalendarToolTipTagFreeChoiceMinuteMarker + i;
             marker.backgroundColor = markerColor;
             [freeContainer addSubview:marker];
             
@@ -160,20 +176,20 @@ typedef enum {
             lab.textAlignment = NSTextAlignmentCenter;
             lab.font = [UIFont fontWithName:@"HelveticaNeue" size:10];
             lab.textColor = markerColor;
-            lab.tag = kJxCalendarToolTipTagFreeChoiceMinuteLabel+i;
+            lab.tag = JxCalendarToolTipTagFreeChoiceMinuteLabel+i;
             [freeContainer addSubview:lab];
         }
-        
+        */
         
 //        toolTipView.backgroundColor = [[UIColor orangeColor] colorWithAlphaComponent:0.5];
 //        label.backgroundColor = [[UIColor greenColor] colorWithAlphaComponent:0.5];
 //        dayTypeButton.backgroundColor = [[UIColor cyanColor] colorWithAlphaComponent:0.5];
-        
+//        freeContainer.backgroundColor = [[UIColor cyanColor] colorWithAlphaComponent:0.3];
         [self.view addSubview:toolTipView];
         
         UIImageView *arrowView = [[UIImageView alloc] initWithFrame:CGRectMake(50, 20, 14, 10)];
         
-        arrowView.tag = kJxCalendarToolTipTagArrow;
+        arrowView.tag = JxCalendarToolTipTagArrow;
         arrowView.backgroundColor = [UIColor clearColor];
         
         [self.view addSubview:arrowView];
@@ -182,10 +198,10 @@ typedef enum {
     }
 }
 - (IBAction)freeChoiceValueChanged:(UISlider *)sender{
-    UIView *toolTipView = [self.view viewWithTag:kJxCalendarToolTipTagView];
-    UIView *freeContainer = [toolTipView viewWithTag:kJxCalendarToolTipTagFreeChoiceContainer];
-    UISlider *freeChoiceHourSlider = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceHourSlider];
-    UISlider *freeChoiceMinuteSlider = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceMinuteSlider];
+    UIView *toolTipView = [self.view viewWithTag:JxCalendarToolTipTagView];
+    UIView *freeContainer = [toolTipView viewWithTag:JxCalendarToolTipTagFreeChoiceContainer];
+    UISlider *freeChoiceHourSlider = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceHourSlider];
+    UISlider *freeChoiceMinuteSlider = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceMinuteSlider];
     
     
     float hourStepValue = 1;
@@ -258,8 +274,8 @@ typedef enum {
 }
 - (void)hideToolTip{
     self.toolTipDate = nil;
-    [[self.view viewWithTag:kJxCalendarToolTipTagView] removeFromSuperview];
-    [[self.view viewWithTag:kJxCalendarToolTipTagArrow] removeFromSuperview];
+    [[self.view viewWithTag:JxCalendarToolTipTagView] removeFromSuperview];
+    [[self.view viewWithTag:JxCalendarToolTipTagArrow] removeFromSuperview];
 }
 - (void)updateToolTipAnimated:(BOOL)animated{
     
@@ -278,10 +294,10 @@ typedef enum {
     
     
     
-    UIView *toolTipView = [self.view viewWithTag:kJxCalendarToolTipTagView];
-    UIView *container = [toolTipView viewWithTag:kJxCalendarToolTipTagContainer];
-    UIView *freeContainer = [toolTipView viewWithTag:kJxCalendarToolTipTagFreeChoiceContainer];
-    UIImageView *arrowView = [self.view viewWithTag:kJxCalendarToolTipTagArrow];
+    UIView *toolTipView = [self.view viewWithTag:JxCalendarToolTipTagView];
+    UIView *container = [toolTipView viewWithTag:JxCalendarToolTipTagContainer];
+    UIView *freeContainer = [toolTipView viewWithTag:JxCalendarToolTipTagFreeChoiceContainer];
+    UIImageView *arrowView = [self.view viewWithTag:JxCalendarToolTipTagArrow];
     
     CGFloat freeChoiceExtraHeight = 0;
     if (rangeElement.dayType == JxCalendarDayTypeFreeChoice) {
@@ -369,7 +385,7 @@ typedef enum {
         
     }
     
-    UIButton *dayTypeButton = [container viewWithTag:kJxCalendarToolTipTagDayTypeButton];
+    UIButton *dayTypeButton = [container viewWithTag:JxCalendarToolTipTagDayTypeButton];
 
     switch (rangeElement.dayType) {
         case JxCalendarDayTypeUnknown:
@@ -396,7 +412,7 @@ typedef enum {
     }
     
     
-    UIButton *freeChoiceButton = [container viewWithTag:kJxCalendarToolTipTagFreeChoiceButton];
+    UIButton *freeChoiceButton = [container viewWithTag:JxCalendarToolTipTagFreeChoiceButton];
     
     
     if (rangeElement.dayType == JxCalendarDayTypeFreeChoice) {
@@ -429,8 +445,8 @@ typedef enum {
         freeChoiceButton.enabled = NO;
     }
     
-    UISlider *freeChoiceHourSlider = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceHourSlider];
-    UISlider *freeChoiceMinuteSlider = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceMinuteSlider];
+    UISlider *freeChoiceHourSlider = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceHourSlider];
+    UISlider *freeChoiceMinuteSlider = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceMinuteSlider];
     
     
     
@@ -454,20 +470,32 @@ typedef enum {
     freeChoiceHourSlider.value = hours;
     freeChoiceMinuteSlider.value = minutes;
     
+    UIPickerView *freeChoiceTimePicker = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceTimePicker];
+    
+    NSDateComponents *startComponents = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute fromDate:rangeElement.start];
+    [freeChoiceTimePicker selectRow:startComponents.hour inComponent:0 animated:YES];
+    [freeChoiceTimePicker selectRow:startComponents.minute inComponent:1 animated:YES];
+    
+    NSDateComponents *endComponents = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute fromDate:rangeElement.end];
+    [freeChoiceTimePicker selectRow:endComponents.hour inComponent:3 animated:YES];
+    [freeChoiceTimePicker selectRow:endComponents.minute inComponent:4 animated:YES];
+    
+    
     [self updateToolTipSizeWithRect:toolTipRect animated:animated withVisibleArea:area];
 }
 - (void)updateToolTipSizeWithRect:(CGRect)rect animated:(BOOL)animated withVisibleArea:(JxCalendarToolTipArea)area{
     
-    UIView *toolTipView = [self.view viewWithTag:kJxCalendarToolTipTagView];
-    UIView *container = [toolTipView viewWithTag:kJxCalendarToolTipTagContainer];
+    UIView *toolTipView = [self.view viewWithTag:JxCalendarToolTipTagView];
+    UIView *container = [toolTipView viewWithTag:JxCalendarToolTipTagContainer];
     
-    UIView *freeContainer = [toolTipView viewWithTag:kJxCalendarToolTipTagFreeChoiceContainer];
-    UILabel *label = [container viewWithTag:kJxCalendarToolTipTagLabel];
-    UIButton *dayTypeButton = [container viewWithTag:kJxCalendarToolTipTagDayTypeButton];
-    UIButton *freeChoiceButton = [container viewWithTag:kJxCalendarToolTipTagFreeChoiceButton];
-    UISlider *freeChoiceHourSlider = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceHourSlider];
-    UISlider *freeChoiceMinuteSlider = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceMinuteSlider];
-    UIButton *freeChoiceDoneButton = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceDoneButton];
+    UIView *freeContainer               = [toolTipView viewWithTag:JxCalendarToolTipTagFreeChoiceContainer];
+    UILabel *label                      = [container   viewWithTag:JxCalendarToolTipTagLabel];
+    UIButton *dayTypeButton             = [container   viewWithTag:JxCalendarToolTipTagDayTypeButton];
+    UIButton *freeChoiceButton          = [container   viewWithTag:JxCalendarToolTipTagFreeChoiceButton];
+    UISlider *freeChoiceHourSlider      = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceHourSlider];
+    UISlider *freeChoiceMinuteSlider    = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceMinuteSlider];
+    UIButton *freeChoiceDoneButton      = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceDoneButton];
+    UIPickerView *freeChoiceTimePicker  = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceTimePicker];
     
     void (^animation)(void) = ^{
         
@@ -482,6 +510,10 @@ typedef enum {
         freeChoiceMinuteSlider.frame =  CGRectMake(0, 60, freeContainer.frame.size.width, 30);
         freeChoiceDoneButton.frame =    CGRectMake(0, 90, freeContainer.frame.size.width, 30);
         
+        freeChoiceTimePicker.frame = CGRectMake(0, (rect.size.height-freeChoiceTimePicker.frame.size.height)/2, freeContainer.frame.size.width, freeChoiceTimePicker.frame.size.height);
+        
+        [freeChoiceTimePicker reloadAllComponents];
+        NSLog(@"%f x %f size %f x %f", freeChoiceTimePicker.frame.origin.x,freeChoiceTimePicker.frame.origin.y, freeChoiceTimePicker.frame.size.width, freeChoiceTimePicker.frame.size.height);
         
         if (area == JxCalendarToolTipAreaDetailExtended) {
             freeChoiceButton.alpha = 1.0f;
@@ -512,8 +544,8 @@ typedef enum {
 }
 - (void)placeMarkersInRect:(CGRect)rect{
     
-    UIView *toolTipView = [self.view viewWithTag:kJxCalendarToolTipTagView];
-    UIView *freeContainer = [toolTipView viewWithTag:kJxCalendarToolTipTagFreeChoiceContainer];
+    UIView *toolTipView = [self.view viewWithTag:JxCalendarToolTipTagView];
+    UIView *freeContainer = [toolTipView viewWithTag:JxCalendarToolTipTagFreeChoiceContainer];
     
     CGFloat buttonWidth = 30;
     
@@ -522,25 +554,25 @@ typedef enum {
     
     
     for (int i = 0; i < self.lengthOfDayInHours/kJxCalendarToolTipTagEveryNstepHourLabel; i++) {
-        UILabel *label = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceHourLabel+i];
+        UILabel *label = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceHourLabel+i];
         label.frame = CGRectMake(((freeContainer.frame.size.width-buttonWidth) / (self.lengthOfDayInHours-1) * (i*kJxCalendarToolTipTagEveryNstepHourLabel))+(buttonWidth/2) -(labelWidth/2), 10, labelWidth, 10);
     }
     for (int i = 0; i < self.lengthOfDayInHours; i++) {
-        UIView *marker = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceHourMarker+i];
+        UIView *marker = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceHourMarker+i];
         marker.frame = CGRectMake(((freeContainer.frame.size.width-buttonWidth) / (self.lengthOfDayInHours-1) * i)+(buttonWidth/2) - 0.5f, 23, 1, 7);
     }
     
     for (int i = 0; i < 5; i++) {
-        UILabel *lab = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceMinuteLabel+i];
+        UILabel *lab = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceMinuteLabel+i];
         lab.frame = CGRectMake(((freeContainer.frame.size.width-buttonWidth) / (5-1) * i)+(buttonWidth/2) - (labelWidth/2), 50, labelWidth, 10);
         
         
-        UIView *marker = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceMinuteMarker+i];
+        UIView *marker = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceMinuteMarker+i];
         marker.frame = CGRectMake(((freeContainer.frame.size.width-buttonWidth) / (5-1) * i)+(buttonWidth/2) - 0.5f, 63, 1, 7);
     }
     
-    UISlider *freeChoiceHourSlider = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceHourSlider];
-    UISlider *freeChoiceMinuteSlider = [freeContainer viewWithTag:kJxCalendarToolTipTagFreeChoiceMinuteSlider];
+    UISlider *freeChoiceHourSlider = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceHourSlider];
+    UISlider *freeChoiceMinuteSlider = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceMinuteSlider];
     
     [freeContainer bringSubviewToFront:freeChoiceHourSlider];
     [freeContainer bringSubviewToFront:freeChoiceMinuteSlider];
@@ -631,7 +663,7 @@ typedef enum {
 - (IBAction)freeChoiceChange:(id)sender{
     NSLog(@"timepicker oder ähnliches öffnen");
     
-    UIView *toolTipView = [self.view viewWithTag:kJxCalendarToolTipTagView];
+    UIView *toolTipView = [self.view viewWithTag:JxCalendarToolTipTagView];
 
 
     [self updateToolTipSizeWithRect:CGRectMake(kJxCalendarToolTipMinDistanceToBorder,
@@ -642,5 +674,117 @@ typedef enum {
     
 }
 
+#pragma mark <UIPickerDataSource>
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{
+    return 5;
+}
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
+    switch (component) {
+        case 0:
+        case 3:
+            return 24;
+        case 1:
+        case 4:
+            return 60;
+        default:
+            return 1;
+            break;
+    }
+}
+#pragma mark <UIPickerDelegate>
+
+
+//- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component{
+//    return pickerView.frame.size.width/5;
+//}
+//- (CGFloat)pickerView:(UIPickerView *)pickerView rowHeightForComponent:(NSInteger)component __TVOS_PROHIBITED;
+
+// these methods return either a plain NSString, a NSAttributedString, or a view (e.g UILabel) to display the row for the component.
+// for the view versions, we cache any hidden and thus unused views and pass them back for reuse.
+// If you return back a different object, the old one will be released. the view will be centered in the row rect
+- (nullable NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component{
+    //NSAttributedString *title = [[NSAttributedString alloc] initWithString:@"titel" attributes:@{}];
+    return @"title";
+}
+- (nullable NSAttributedString *)pickerView:(UIPickerView *)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component{
+    switch (component) {
+        case 0:
+        case 3:
+            return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld", (long)row] attributes:@{}];;
+        case 1:
+        case 4:
+            return [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%ld", (long)row] attributes:@{}];;
+        default:
+            return [[NSAttributedString alloc] initWithString:@" – " attributes:@{}];
+            break;
+    }
+    return nil;
+}
+- (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component{
+
+    if (component == 2) {
+        return;
+    }
+    //check hours
+    if (component == 3) {
+        if ([pickerView selectedRowInComponent:0] > row) {
+            [pickerView selectRow:row inComponent:0 animated:YES];
+        }
+    }else if (component == 0) {
+        if ([pickerView selectedRowInComponent:3] < row) {
+            [pickerView selectRow:row inComponent:3 animated:YES];
+        }
+    }
+    
+    
+    //check minutes
+    if ([pickerView selectedRowInComponent:0] == [pickerView selectedRowInComponent:3]) {
+        //gleiche stunde
+        if (component > 2) {
+            if ([pickerView selectedRowInComponent:1] > [pickerView selectedRowInComponent:4]) {
+                [pickerView selectRow:row inComponent:1 animated:YES];
+            }
+        }else if(component < 2){
+            if ([pickerView selectedRowInComponent:1] > [pickerView selectedRowInComponent:4]) {
+                [pickerView selectRow:[pickerView selectedRowInComponent:1] inComponent:4 animated:YES];
+            }
+        }
+    }
+    
+    NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
+    components.hour = [pickerView selectedRowInComponent:0];
+    components.minute = [pickerView selectedRowInComponent:1];
+    components.second = 0;
+    NSDate *start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+    
+    components.hour = [pickerView selectedRowInComponent:3];
+    components.minute = [pickerView selectedRowInComponent:4];
+    components.second = 0;
+    NSDate *end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+
+    if ([end timeIntervalSinceDate:start] > self.lengthOfDayInHours*60*60) {
+        end = [self.dataSource.calendar dateByAddingUnit:NSCalendarUnitHour value:self.lengthOfDayInHours toDate:start options:NSCalendarMatchStrictly];
+        NSDateComponents *newEndComponents = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:end];
+        
+        [pickerView selectRow:newEndComponents.hour inComponent:3 animated:YES];
+        [pickerView selectRow:newEndComponents.minute inComponent:4 animated:YES];
+    }
+    
+    
+    JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
+                                                                     withStartDate:start andEndDate:end];
+    
+    if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
+        [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
+    }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]) {
+        [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
+    }
+    
+    
+    NSIndexPath *path = [self getIndexPathForDate:self.toolTipDate];
+    
+    [self updateRangeForCell:(JxCalendarCell *)[self.collectionView cellForItemAtIndexPath:path] atIndexPath:path animated:YES];
+    
+}
 
 @end

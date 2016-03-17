@@ -193,20 +193,20 @@
         return JxCalendarDayTypeMaskWholeDay;
     }
     
-    return JxCalendarDayTypeMaskAll;// (JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon|JxCalendarDayTypeMaskFreeChoice);
+    return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon);
 }
 - (JxCalendarDayType)defaultDayTypeForDate:(NSDate *)date{
     if ([self isEndOfRange:date] || [self isStartOfRange:date]) {
         return JxCalendarDayTypeWholeDay;
     }
-    return JxCalendarDayTypeHalfDayAfternoon;
+    return JxCalendarDayTypeFreeChoice;
 }
 - (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date{
     
     return YES;
-    if ([self isEndOfRange:date] || [self isStartOfRange:date]) {
-        return YES;
-    }
+//    if ([self isEndOfRange:date] || [self isStartOfRange:date]) {
+//        return YES;
+//    }
 //    NSDateComponents *components = [[self calendar] components:NSCalendarUnitWeekday fromDate:date];
 //    
 //    if ([JxCalendarBasics normalizedWeekDay:components.weekday] == 1) {
