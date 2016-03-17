@@ -189,14 +189,21 @@
 }
 
 - (JxCalendarDayTypeMask)availableDayTypesForDate:(NSDate *)date{
+    if ([self isEndOfRange:date] || [self isStartOfRange:date]) {
+        return JxCalendarDayTypeMaskWholeDay;
+    }
     
     return JxCalendarDayTypeMaskAll;// (JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon|JxCalendarDayTypeMaskFreeChoice);
 }
 - (JxCalendarDayType)defaultDayTypeForDate:(NSDate *)date{
+    if ([self isEndOfRange:date] || [self isStartOfRange:date]) {
+        return JxCalendarDayTypeWholeDay;
+    }
     return JxCalendarDayTypeHalfDayAfternoon;
 }
 - (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date{
     
+    return YES;
     if ([self isEndOfRange:date] || [self isStartOfRange:date]) {
         return YES;
     }

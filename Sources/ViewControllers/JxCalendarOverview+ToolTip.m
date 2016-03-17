@@ -574,7 +574,7 @@ typedef enum {
         [availableOptions addObject:@(JxCalendarDayTypeFreeChoice)];
     }
     
-    [availableOptions addObject:availableOptions[0]];
+    [availableOptions addObjectsFromArray:availableOptions];
     
     JxCalendarDayType doType = JxCalendarDayTypeUnknown;
     
@@ -586,23 +586,29 @@ typedef enum {
             break;
         }
     }
-    
-    [dayTypeButton setTitle:[self getTitleForDayType:doType] forState:UIControlStateNormal];
-    
-    JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate andDayType:doType inCalendar:self.dataSource.calendar andMaximumDayLength:self.lengthOfDayInHours];
-    
-    if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
-        [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
-    }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]) {
-        [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
+    if (doType == JxCalendarDayTypeUnknown && availableOptions.count > 0) {
+        doType = (JxCalendarDayType)[availableOptions[0] intValue];
     }
     
-    
+    if (doType != rangeElement.dayType) {
+        [dayTypeButton setTitle:[self getTitleForDayType:doType] forState:UIControlStateNormal];
+        
+        JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate andDayType:doType inCalendar:self.dataSource.calendar andMaximumDayLength:self.lengthOfDayInHours];
+        
+        if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
+            [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
+        }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]) {
+            [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
+        }
+    }
+        
     NSIndexPath *path = [self getIndexPathForDate:self.toolTipDate];
     
     [self updateRangeForCell:(JxCalendarCell *)[self.collectionView cellForItemAtIndexPath:path] atIndexPath:path animated:YES];
     
     [self updateToolTipAnimated:YES];
+    
+    
 }
 - (NSString *)getTitleForDayType:(JxCalendarDayType)type{
     switch (type) {
