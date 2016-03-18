@@ -1084,6 +1084,12 @@
             cell.rangeFrom.backgroundColor          = kJxCalendarRangeBackgroundColor;
             cell.rangeTo.backgroundColor            = kJxCalendarRangeBackgroundColor;
             
+            if ([self.dataSource isStartOfRange:thisDate] && !_longHoldStartIndexPath) {
+                _longHoldStartIndexPath = indexPath;
+            }
+            if ([self.dataSource isEndOfRange:thisDate] && !_longHoldEndIndexPath) {
+                _longHoldEndIndexPath = indexPath;
+            }
                 
             void (^animation)(void) = ^{
                 
@@ -1093,7 +1099,7 @@
                 
                 
                 
-                if([self.dataSource isPartOfRange:thisDate]) {
+                if([self.dataSource isDayRangeable:thisDate] &&  [self.dataSource isPartOfRange:thisDate]) {
                     if ([self nextCellIsInRangeWithIndexPath:indexPath]) {
                         cell.rangeFrom.alpha = 1.f;
                     }else{
@@ -1211,7 +1217,7 @@
         NSDate *nextDate = [self getDateForIndexPath:nextPath];
         
         if (nextDate) {
-            if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:nextDate]) {
+            if ([self.dataSource respondsToSelector:@selector(isDayRangeable:)] && [self.dataSource isDayRangeable:nextDate] && [self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:nextDate]) {
                 return YES;
             }
         }
@@ -1232,7 +1238,8 @@
         NSDate *lastDate = [self getDateForIndexPath:lastPath];
         
         if (lastDate) {
-            if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:lastDate]) {
+            if ([self.dataSource respondsToSelector:@selector(isDayRangeable:)] && [self.dataSource isDayRangeable:lastDate] &&
+                [self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:lastDate]) {
                 return YES;
             }
         }

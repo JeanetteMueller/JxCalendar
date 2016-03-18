@@ -64,7 +64,7 @@
                                                        andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)
                                                   andStartDate:[NSDate date]
                                             andStartAppearance:JxCalendarAppearanceMonth
-                                             andSelectionStyle:JxCalendarSelectionStyleDefault];
+                                             andSelectionStyle:JxCalendarSelectionStyleRangeOnly];
     
     _overview.delegate = self;
     _overview.renderWeekDayLabels = YES;

@@ -11,11 +11,11 @@
 
 @interface JxCalendarRangeElement : NSObject
 
-@property (strong, nonatomic) NSDate *date;
-@property (nonatomic, readwrite) JxCalendarDayType dayType;
+@property (nonatomic, readonly) JxCalendarDayType dayType;
 
-@property (strong, nonatomic) NSDate *start;
-@property (strong, nonatomic) NSDate *end;
+@property (strong, nonatomic, readonly) NSDate *date;
+@property (strong, nonatomic, readonly) NSDate *start;
+@property (strong, nonatomic, readonly) NSDate *end;
 
 @property (nonatomic, readonly) NSTimeInterval duration;
 

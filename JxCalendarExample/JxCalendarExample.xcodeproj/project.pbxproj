@@ -8,25 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		260D6F7E1C18575100904A44 /* TestCalendarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 260D6F7D1C18575100904A44 /* TestCalendarDataSource.m */; };
+		263734AF1C9C337E008E58E7 /* JxCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269829C21C85EFD2006C523F /* JxCalendar.framework */; };
+		263734B01C9C337E008E58E7 /* JxCalendar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 269829C21C85EFD2006C523F /* JxCalendar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		26B67C801C18566B000FC387 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B67C7F1C18566B000FC387 /* main.m */; };
 		26B67C831C18566B000FC387 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B67C821C18566B000FC387 /* AppDelegate.m */; };
 		26B67C861C18566B000FC387 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B67C851C18566B000FC387 /* ViewController.m */; };
 		26B67C891C18566B000FC387 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26B67C871C18566B000FC387 /* Main.storyboard */; };
 		26B67C8B1C18566B000FC387 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26B67C8A1C18566B000FC387 /* Assets.xcassets */; };
 		26B67C8E1C18566B000FC387 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 26B67C8C1C18566B000FC387 /* LaunchScreen.storyboard */; };
-		26F89EC41C917BF100EC49D4 /* JxCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 266811BB1C43FB6900A96565 /* JxCalendar.framework */; };
-		26F89EC51C917BF100EC49D4 /* JxCalendar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 266811BB1C43FB6900A96565 /* JxCalendar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		26FAA3EC1C1ECB04001C4DA6 /* JxCalendar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2673E84D1C18594F0070D2C5 /* JxCalendar.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		26F89EC61C917BF100EC49D4 /* Embed Frameworks */ = {
+		263734B11C9C337E008E58E7 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				26F89EC51C917BF100EC49D4 /* JxCalendar.framework in Embed Frameworks */,
+				263734B01C9C337E008E58E7 /* JxCalendar.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -56,7 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				26F89EC41C917BF100EC49D4 /* JxCalendar.framework in Frameworks */,
+				263734AF1C9C337E008E58E7 /* JxCalendar.framework in Frameworks */,
 				26FAA3EC1C1ECB04001C4DA6 /* JxCalendar.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -118,7 +118,7 @@
 				26B67C771C18566B000FC387 /* Sources */,
 				26B67C781C18566B000FC387 /* Frameworks */,
 				26B67C791C18566B000FC387 /* Resources */,
-				26F89EC61C917BF100EC49D4 /* Embed Frameworks */,
+				263734B11C9C337E008E58E7 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

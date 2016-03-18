@@ -22,7 +22,35 @@
     if (self) {
         self.selectedDates = [NSMutableArray array];
         self.selectedEvents = [NSMutableArray array];
+        
+        
+        
+        
         self.rangedDates = [NSMutableArray array];
+        
+        NSDate *baseDate = [NSDate new];
+        
+        NSDateComponents *components = [self.calendar components:NSCalendarUnitYear fromDate:baseDate];
+        
+        for(int i = 13; i < 22; i++){
+            
+            components.hour = 0;
+            components.minute = 0;
+            components.second = 0;
+            
+            components.day = i;
+            components.month = 3;
+            
+            NSDate *newDate = [self.calendar dateFromComponents:components];
+            JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:newDate
+                                                                                andDayType:[self defaultDayTypeForDate:newDate]
+                                                                                inCalendar:self.calendar
+                                                                       andMaximumDayLength:8];
+            
+            [self.rangedDates addObject:element];
+            
+        }
+
     }
     return self;
 }

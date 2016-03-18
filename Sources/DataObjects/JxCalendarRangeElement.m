@@ -7,6 +7,15 @@
 //
 
 #import "JxCalendarRangeElement.h"
+@interface JxCalendarRangeElement ()
+
+@property (nonatomic, readwrite) JxCalendarDayType dayType;
+
+@property (strong, nonatomic, readwrite) NSDate *date;
+@property (strong, nonatomic, readwrite) NSDate *start;
+@property (strong, nonatomic, readwrite) NSDate *end;
+
+@end
 
 @implementation JxCalendarRangeElement
 
