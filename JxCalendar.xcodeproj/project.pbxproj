@@ -36,8 +36,6 @@
 		26EBE1FC1C18446700A0DB2E /* JxCalendarEventCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1D21C18446700A0DB2E /* JxCalendarEventCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE1FD1C18446700A0DB2E /* JxCalendarEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1D31C18446700A0DB2E /* JxCalendarEventCell.m */; };
 		26EBE1FE1C18446700A0DB2E /* JxCalendarEventCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26EBE1D41C18446700A0DB2E /* JxCalendarEventCell.xib */; };
-		26EBE1FF1C18446700A0DB2E /* JxCalendarGridCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1D51C18446700A0DB2E /* JxCalendarGridCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		26EBE2001C18446700A0DB2E /* JxCalendarGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1D61C18446700A0DB2E /* JxCalendarGridCell.m */; };
 		26EBE2011C18446700A0DB2E /* JxCalendarHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1D71C18446700A0DB2E /* JxCalendarHeader.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE2021C18446700A0DB2E /* JxCalendarHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1D81C18446700A0DB2E /* JxCalendarHeader.m */; };
 		26EBE2031C18446700A0DB2E /* JxCalendarHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26EBE1D91C18446700A0DB2E /* JxCalendarHeader.xib */; };
@@ -100,8 +98,6 @@
 		26EBE1D21C18446700A0DB2E /* JxCalendarEventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarEventCell.h; sourceTree = "<group>"; };
 		26EBE1D31C18446700A0DB2E /* JxCalendarEventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarEventCell.m; sourceTree = "<group>"; };
 		26EBE1D41C18446700A0DB2E /* JxCalendarEventCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarEventCell.xib; sourceTree = "<group>"; };
-		26EBE1D51C18446700A0DB2E /* JxCalendarGridCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarGridCell.h; sourceTree = "<group>"; };
-		26EBE1D61C18446700A0DB2E /* JxCalendarGridCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarGridCell.m; sourceTree = "<group>"; };
 		26EBE1D71C18446700A0DB2E /* JxCalendarHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarHeader.h; sourceTree = "<group>"; };
 		26EBE1D81C18446700A0DB2E /* JxCalendarHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarHeader.m; sourceTree = "<group>"; };
 		26EBE1D91C18446700A0DB2E /* JxCalendarHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarHeader.xib; sourceTree = "<group>"; };
@@ -195,8 +191,6 @@
 				265FD5F71C217BA400FCC8AE /* JxCalendarWeekEventCell.h */,
 				265FD5F81C217BA400FCC8AE /* JxCalendarWeekEventCell.m */,
 				265FD5F91C217BA400FCC8AE /* JxCalendarWeekEventCell.xib */,
-				26EBE1D51C18446700A0DB2E /* JxCalendarGridCell.h */,
-				26EBE1D61C18446700A0DB2E /* JxCalendarGridCell.m */,
 				26EBE1D71C18446700A0DB2E /* JxCalendarHeader.h */,
 				26EBE1D81C18446700A0DB2E /* JxCalendarHeader.m */,
 				26EBE1D91C18446700A0DB2E /* JxCalendarHeader.xib */,
@@ -290,7 +284,6 @@
 				266D38131C2AAE64004FEBF1 /* JxCalendarWeekHeader.h in Headers */,
 				26EBE21B1C18446700A0DB2E /* JxCalendarOverview.h in Headers */,
 				26EBE1F61C18446700A0DB2E /* JxCalendarCell.h in Headers */,
-				26EBE1FF1C18446700A0DB2E /* JxCalendarGridCell.h in Headers */,
 				26EBE1F91C18446700A0DB2E /* JxCalendarDayHeader.h in Headers */,
 				26614D521C4F9A7900591976 /* UIViewController+CalendarBackButtonHandler.h in Headers */,
 				26EBE2011C18446700A0DB2E /* JxCalendarHeader.h in Headers */,
@@ -390,7 +383,6 @@
 				260EBC571C96F10700677876 /* JxCalendarOverview+ToolTip.m in Sources */,
 				26FAA3EB1C1EC04F001C4DA6 /* JxCalendarLayoutOverview.m in Sources */,
 				26EBE2161C18446700A0DB2E /* JxCalendarLayoutMonthGrid.m in Sources */,
-				26EBE2001C18446700A0DB2E /* JxCalendarGridCell.m in Sources */,
 				26EBE20B1C18446700A0DB2E /* JxCalendarEvent.m in Sources */,
 				26FAA3F21C1F0F0F001C4DA6 /* JxCalendarLayoutWeek.m in Sources */,
 				26EBE1FA1C18446700A0DB2E /* JxCalendarDayHeader.m in Sources */,

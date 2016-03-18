@@ -210,7 +210,7 @@
     CGRect newRect = CGRectMake(indexPath.section * (self.headerReferenceSize.width+self.minimumInteritemSpacing),
                                 self.headerReferenceSize.height + self.minimumLineSpacing + (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing)) + (startComponents.hour * (60*kCalendarLayoutDaySectionHeightMultiplier) + startComponents.minute*kCalendarLayoutDaySectionHeightMultiplier),
                                 20,
-                                event.duration*kCalendarLayoutDaySectionHeightMultiplier - (2*self.minimumInteritemSpacing));
+                                (event.duration/60)*kCalendarLayoutDaySectionHeightMultiplier - (2*self.minimumInteritemSpacing));
     
     while (![self checkIfRectIsAvailable:newRect forType:kJxCalendarWeekLayoutCells]){
         

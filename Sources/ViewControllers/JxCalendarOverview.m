@@ -1028,22 +1028,21 @@
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         JxCalendarHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarHeader" forIndexPath:indexPath];
         header.clipsToBounds = YES;
-        UILabel *titleLabel = [header viewWithTag:333];
         
         NSInteger month = indexPath.section+1;
         
-        titleLabel.text = [NSString stringWithFormat:@"%@", [[[JxCalendarBasics defaultFormatter] monthSymbols] objectAtIndex:month-1]];
+        header.titleLabel.text = [NSString stringWithFormat:@"%@", [[[JxCalendarBasics defaultFormatter] monthSymbols] objectAtIndex:month-1]];
         
         switch (self.style) {
             case JxCalendarOverviewStyleYearGrid:
                 if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad){
-                    titleLabel.font = [titleLabel.font fontWithSize:18];
+                    header.titleLabel.font = [header.titleLabel.font fontWithSize:18];
                 }else{
-                    titleLabel.font = [titleLabel.font fontWithSize:14];
+                    header.titleLabel.font = [header.titleLabel.font fontWithSize:14];
                 }
                 break;
             case JxCalendarOverviewStyleMonthGrid:
-                titleLabel.font = [titleLabel.font fontWithSize:16];
+                header.titleLabel.font = [header.titleLabel.font fontWithSize:16];
                 break;
         }
         //header.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.3];
@@ -1327,7 +1326,7 @@
         if ((self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ) && self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
             
             if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] &&
-                [self.dataSource respondsToSelector:@selector(isDayRangeable:)]) {
+                [self.dataSource respondsToSelector:@selector(isDayRangeable:)] && [self.dataSource isDayRangeable:date] && [self.dataSource isPartOfRange:date]) {
                 
             
                 if ([self.dataSource isPartOfRange:date] && [self.dataSource isRangeToolTipAvailableForDate:date]) {
@@ -1388,13 +1387,12 @@
             
             __weak __typeof(self)weakSelf = self;
             
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-                if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:date]) {
-                    
-                    [self openToolTipWithDate:date];
-                    
-                    return;
-                }
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [self.dataSource respondsToSelector:@selector(isPartOfRange:)] &&
+                [self.dataSource respondsToSelector:@selector(isDayRangeable:)] && [self.dataSource isDayRangeable:date] && [self.dataSource isPartOfRange:date]) {
+                
+                [self openToolTipWithDate:date];
+                
+                return;
             }
             
             [self switchStyle:JxCalendarOverviewStyleMonthGrid
@@ -1413,7 +1411,8 @@
                      animated:YES];
             
         }else{
-            if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:date]) {
+            if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] &&
+                [self.dataSource respondsToSelector:@selector(isDayRangeable:)] && [self.dataSource isDayRangeable:date] && [self.dataSource isPartOfRange:date]) {
                 
                 [self openToolTipWithDate:date];
                 

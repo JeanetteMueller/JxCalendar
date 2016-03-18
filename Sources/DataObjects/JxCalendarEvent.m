@@ -30,19 +30,19 @@
         
         
         
-        CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0
+        CGFloat hue = ( arc4random() % 256 / 256.0 ) + 0.1f;  //  0.0 to 1.0
         CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from white
         CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
         self.borderColor = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
         
         //self.borderColor = [UIColor blueColor];
-        self.backgroundColor = [self.borderColor colorWithAlphaComponent:0.75f];
+        self.backgroundColor = [self.borderColor colorWithAlphaComponent:0.8f];
         
         
         
         self.fontColorSelected = [UIColor whiteColor];
         self.borderColorSelected = [UIColor redColor];
-        self.backgroundColorSelected = [self.borderColorSelected colorWithAlphaComponent:0.75f];
+        self.backgroundColorSelected = [self.borderColorSelected colorWithAlphaComponent:0.8f];
     }
     return self;
 }

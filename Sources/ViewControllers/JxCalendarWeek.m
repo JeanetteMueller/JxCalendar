@@ -13,10 +13,12 @@
 #import "JxCalendarWeekEventCell.h"
 #import "JxCalendarEvent.h"
 #import "JxCalendarEventDay.h"
+#import "JxCalendarEventDuration.h"
 #import "JxCalendarDayHeader.h"
 #import "JxCalendarLayoutDay.h"
 #import "JxCalendarDay.h"
 #import "UIViewController+CalendarBackButtonHandler.h"
+
 
 @interface JxCalendarWeek ()
 
@@ -336,31 +338,23 @@
     JxCalendarWeekEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"JxCalendarWeekEventCell" forIndexPath:indexPath];
     
     NSDate *thisDate = [self getDateForSection:indexPath.section];
-    
-    
     NSArray *events = [self.dataSource eventsAt:thisDate];
     
     JxCalendarEvent *e = [events objectAtIndex:indexPath.item];
     
-    UILabel *textLabel = (UILabel *)[cell viewWithTag:333];
-    textLabel.numberOfLines = 0;
+    cell.textLabel.numberOfLines = 0;
     
+    JxCalendarEventDay *event = (JxCalendarEventDay *)e;
+    cell.textLabel.text = event.title;
     
-    if ([e isKindOfClass:[JxCalendarEventDay class]]) {
-        JxCalendarEventDay *event = (JxCalendarEventDay *)e;
-        textLabel.text = event.title;
-    }else{
-        textLabel.text = @"";
-    }
-    
-    
+    NSLog(@"title: %@", cell.textLabel.text);
     
     if ([self.dataSource respondsToSelector:@selector(isEventSelected:)] && [self.dataSource isEventSelected:e]) {
-        textLabel.textColor = e.fontColorSelected;
+        cell.textLabel.textColor = e.fontColorSelected;
         cell.backgroundColor = e.backgroundColorSelected;
         [cell.layer setBorderColor:[UIColor redColor].CGColor];
     }else{
-        textLabel.textColor = e.fontColor;
+        cell.textLabel.textColor = e.fontColor;
         cell.backgroundColor = e.backgroundColor;
         [cell.layer setBorderColor:e.borderColor.CGColor];
     }
@@ -368,6 +362,15 @@
     
     [cell.layer setBorderWidth:1.5f];
     [cell.layer setCornerRadius:5];
+    
+    
+    [cell.textLabel setTransform:CGAffineTransformMakeRotation(0)];
+    
+    if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
+        cell.textLabel.transform = CGAffineTransformMakeRotation(M_PI_2);
+        cell.textLabel.frame = CGRectMake(0, 2, cell.frame.size.width, cell.frame.size.height-4);
+    }
+
     
     return cell;
 }
@@ -442,7 +445,6 @@
         [header.button addTarget:self action:@selector(openDayView:) forControlEvents:UIControlEventTouchUpInside];
         
         header.clipsToBounds = YES;
-        UILabel *titleLabel = [header viewWithTag:333];
         
         NSDate *thisDate = [self getDateForSection:indexPath.section];
         if (thisDate) {
@@ -454,7 +456,7 @@
             NSDateFormatter *weekday = [JxCalendarBasics defaultFormatter];
             [weekday setDateFormat: @"EEE"];
             
-            titleLabel.text = [NSString stringWithFormat:@"%li.\n%@", (long)dateComponents.day, [weekday stringFromDate:thisDate]];
+            header.titleLabel.text = [NSString stringWithFormat:@"%li.\n%@", (long)dateComponents.day, [weekday stringFromDate:thisDate]];
             
             if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
                 header.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
@@ -465,17 +467,17 @@
             if ([self.dataSource respondsToSelector:@selector(isDaySelected:)] && [self.dataSource isDaySelected:thisDate]) {
                 
                 header.layer.borderColor = [UIColor redColor].CGColor;
-                titleLabel.textColor = [UIColor redColor];
+                header.titleLabel.textColor = [UIColor redColor];
             }else{
                 header.layer.borderColor = [UIColor darkGrayColor].CGColor;
-                titleLabel.textColor = [UIColor darkGrayColor];
+                header.titleLabel.textColor = [UIColor darkGrayColor];
             }
             header.layer.borderWidth = 1.0f;
             
             header.eventMarker.hidden = !([self.dataSource eventsAt:thisDate].count > 0);
             
         }else{
-            titleLabel.text = @"";
+            header.titleLabel.text = @"";
             header.backgroundColor = [UIColor colorWithRed:.95 green:.95 blue:.95 alpha:1];
             header.layer.borderColor = self.collectionView.backgroundColor.CGColor;
         }

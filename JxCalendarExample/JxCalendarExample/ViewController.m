@@ -63,8 +63,8 @@
                                                       andStyle:JxCalendarOverviewStyleMonthGrid
                                                        andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)
                                                   andStartDate:[NSDate date]
-                                            andStartAppearance:JxCalendarAppearanceMonth
-                                             andSelectionStyle:JxCalendarSelectionStyleRangeOnly];
+                                            andStartAppearance:JxCalendarAppearanceWeek
+                                             andSelectionStyle:JxCalendarSelectionStyleDefault];
     
     _overview.delegate = self;
     _overview.renderWeekDayLabels = YES;
@@ -120,19 +120,22 @@
     
     if (toAppearance == JxCalendarAppearanceWeek || toAppearance == JxCalendarAppearanceDay) {
         
-        NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear fromDate:[NSDate new]];
-        components.day = 17;
+        //you may want to scroll to a event:
+        //in this example the calendar week or day layout will scroll to the 9. event if the current day is 17. 
         
-        NSDate *date = [[self.dataSource calendar] dateFromComponents:components];
-        
-        DLog(@"date %@", date);
-
-        NSArray *events = [self.dataSource eventsAt:date];
-        
-        DLog(@"events %@", events);
-        if (events.count > 0) {
-            [_overview scrollToEvent:events[9]];
-        }
+//        NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear fromDate:[NSDate new]];
+//        components.day = 17;
+//        
+//        NSDate *date = [[self.dataSource calendar] dateFromComponents:components];
+//        
+//        DLog(@"date %@", date);
+//
+//        NSArray *events = [self.dataSource eventsAt:date];
+//        
+//        DLog(@"events %@", events);
+//        if (events.count > 0) {
+//            [_overview scrollToEvent:events[9]];
+//        }
         
     }
 }

@@ -10,4 +10,5 @@
 
 @interface JxCalendarDayHeader : UICollectionReusableView
 
+@property (strong, nonatomic) IBOutlet UILabel *titleLabel;
 @end

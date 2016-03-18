@@ -351,19 +351,50 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"JxCalendarEventCell" forIndexPath:indexPath];
+    JxCalendarEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"JxCalendarEventCell" forIndexPath:indexPath];
 
     JxCalendarEvent *event = [self eventForIndexPath:indexPath];
+
+    NSAttributedString *title = [[NSAttributedString alloc] initWithString:event.title
+                                                                attributes:@{NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue-medium" size:12],
+                                                                             }];
     
-    UILabel *textLabel = (UILabel *)[cell viewWithTag:333];
-    textLabel.text = event.title;
+    
+    if ([event isKindOfClass:[JxCalendarEventDuration class]]) {
+        
+        JxCalendarEventDuration *durationEvent = (JxCalendarEventDuration *)event;
+        NSDateFormatter *formatter = [JxCalendarBasics defaultFormatter];
+        formatter.dateFormat = @"HH:mm";
+        
+        NSAttributedString *date = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@-%@", [formatter stringFromDate:durationEvent.start],
+                                                                               [formatter stringFromDate:durationEvent.end]]
+                                                                   attributes:@{NSFontAttributeName: [UIFont fontWithName:@"HelveticaNeue" size:10]}];
+        NSAttributedString *linebreak = [[NSAttributedString alloc] initWithString:@"\n"
+                                                                    attributes:@{}];
+        
+        
+        
+        NSMutableAttributedString *text = [[NSMutableAttributedString alloc] init];
+        
+        [text appendAttributedString:date];
+        [text appendAttributedString:linebreak];
+        [text appendAttributedString:title];
+        
+        
+        cell.textView.attributedText = text;
+        
+    }else{
+
+        cell.textView.attributedText = title;
+    }
+    
     
     if ([self.dataSource respondsToSelector:@selector(isEventSelected:)] && [self.dataSource isEventSelected:event]) {
-        textLabel.textColor = event.fontColorSelected;
+        cell.textView.textColor = event.fontColorSelected;
         cell.backgroundColor = event.backgroundColorSelected;
         [cell.layer setBorderColor:event.borderColorSelected.CGColor];
     }else{
-        textLabel.textColor = event.fontColor;
+        cell.textView.textColor = event.fontColor;
         cell.backgroundColor = event.backgroundColor;
         [cell.layer setBorderColor:event.borderColor.CGColor];
     }
@@ -378,10 +409,7 @@
     
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         JxCalendarDayHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarDayHeader" forIndexPath:indexPath];
-        
-        UILabel *textLabel;
-        textLabel = [header viewWithTag:333];
-        textLabel.text = [NSString stringWithFormat:@"%ld Uhr", (long)indexPath.section % 24];
+        header.titleLabel.text = [NSString stringWithFormat:@"%ld Uhr", (long)indexPath.section % 24];
         header.backgroundColor = [UIColor clearColor];
         return header;
     }

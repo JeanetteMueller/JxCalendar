@@ -33,7 +33,7 @@
 #define kCalendarLayoutDayHeaderHalfHeight          24
 #define kCalendarLayoutDayHeaderTextWidth           65
 
-#define kCalendarLayoutWholeDayHeight               20
+#define kCalendarLayoutWholeDayHeight               30
 
 #define kJxCalendarBackgroundColor                  [UIColor colorWithRed:0.93 green:0.93 blue:0.93 alpha:1.0]
 

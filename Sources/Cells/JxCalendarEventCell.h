@@ -10,4 +10,5 @@
 
 @interface JxCalendarEventCell : UICollectionViewCell
 
+@property (strong, nonatomic) IBOutlet UITextView *textView;
 @end

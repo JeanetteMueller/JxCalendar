@@ -10,4 +10,5 @@
 
 @interface JxCalendarWeekEventCell : UICollectionViewCell
 
+@property (strong, nonatomic) IBOutlet UILabel *textLabel;
 @end
