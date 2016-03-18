@@ -761,30 +761,32 @@
         for (NSIndexPath *path in updatePathes) {
             NSDate *date = [self getDateForIndexPath:path];
             
-            if ([self.dataSource isPartOfRange:date] && ![newPathes containsObject:path]) {
-                if ([self.delegate respondsToSelector:@selector(calendar:didDeRangeDate:whileOnAppearance:)]) {
-                    [self.delegate calendar:[self getCalendarOverview] didDeRangeDate:date whileOnAppearance:[self getAppearance]];
-                }else if ([self.delegate respondsToSelector:@selector(calendarDidDeRangeDate:whileOnAppearance:)]){
-                    [self.delegate calendarDidDeRangeDate:date whileOnAppearance:[self getAppearance]];
-                }
-                
-            }else{
-                if (![self.dataSource isPartOfRange:date]){
-                    
-                    JxCalendarDayType newDayType = JxCalendarDayTypeWholeDay;
-                    if ([self.dataSource respondsToSelector:@selector(defaultDayTypeForDate:)]) {
-                        newDayType = [self.dataSource defaultDayTypeForDate:date];
+            if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)]){
+                if ([self.dataSource isPartOfRange:date] && ![newPathes containsObject:path]) {
+                    if ([self.delegate respondsToSelector:@selector(calendar:didDeRangeDate:whileOnAppearance:)]) {
+                        [self.delegate calendar:[self getCalendarOverview] didDeRangeDate:date whileOnAppearance:[self getAppearance]];
+                    }else if ([self.delegate respondsToSelector:@selector(calendarDidDeRangeDate:whileOnAppearance:)]){
+                        [self.delegate calendarDidDeRangeDate:date whileOnAppearance:[self getAppearance]];
                     }
                     
-                    JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:date
-                                                                                        andDayType:newDayType
-                                                                                        inCalendar:self.dataSource.calendar
-                                                                               andMaximumDayLength:self.lengthOfDayInHours];
-                    
-                    if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
-                        [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
-                    }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]){
-                        [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
+                }else{
+                    if (![self.dataSource isPartOfRange:date]){
+                        
+                        JxCalendarDayType newDayType = JxCalendarDayTypeWholeDay;
+                        if ([self.dataSource respondsToSelector:@selector(defaultDayTypeForDate:)]) {
+                            newDayType = [self.dataSource defaultDayTypeForDate:date];
+                        }
+                        
+                        JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:date
+                                                                                            andDayType:newDayType
+                                                                                            inCalendar:self.dataSource.calendar
+                                                                                   andMaximumDayLength:self.lengthOfDayInHours];
+                        
+                        if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
+                            [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
+                        }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]){
+                            [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
+                        }
                     }
                 }
             }
@@ -1209,7 +1211,7 @@
         NSDate *nextDate = [self getDateForIndexPath:nextPath];
         
         if (nextDate) {
-            if ([self.dataSource isPartOfRange:nextDate]) {
+            if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:nextDate]) {
                 return YES;
             }
         }
@@ -1230,7 +1232,7 @@
         NSDate *lastDate = [self getDateForIndexPath:lastPath];
         
         if (lastDate) {
-            if ([self.dataSource isPartOfRange:lastDate]) {
+            if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:lastDate]) {
                 return YES;
             }
         }
@@ -1317,57 +1319,62 @@
         
         if ((self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ) && self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
             
-            if ([self.dataSource isPartOfRange:date] && [self.dataSource isRangeToolTipAvailableForDate:date]) {
-                [self openToolTipWithDate:date];
+            if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] &&
+                [self.dataSource respondsToSelector:@selector(isDayRangeable:)]) {
                 
-                
-            }else{
-                [self hideToolTip];
-                
-                if ([self.dataSource isDayRangeable:date]) {
-                    if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging:)]) {
-                        [self.delegate calendarDidStartRanging:[self getCalendarOverview]];
-                    }else if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging)]) {
-                        [self.delegate calendarDidStartRanging];
-                    }
+            
+                if ([self.dataSource isPartOfRange:date] && [self.dataSource isRangeToolTipAvailableForDate:date]) {
+                    [self openToolTipWithDate:date];
                     
-                    if (!_longHoldStartIndexPath) {
-                        _longHoldStartIndexPath = indexPath;
-                    }else if (_longHoldStartIndexPath && !_longHoldEndIndexPath) {
-                        _longHoldEndIndexPath = indexPath;
-                    }else{
-                        if ([self.dataSource isPartOfRange:date]) {
+                    
+                }else{
+                    [self hideToolTip];
+                    
+                    if ([self.dataSource isDayRangeable:date]) {
+                        if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging:)]) {
+                            [self.delegate calendarDidStartRanging:[self getCalendarOverview]];
+                        }else if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging)]) {
+                            [self.delegate calendarDidStartRanging];
+                        }
+                        
+                        if (!_longHoldStartIndexPath) {
+                            _longHoldStartIndexPath = indexPath;
+                        }else if (_longHoldStartIndexPath && !_longHoldEndIndexPath) {
                             _longHoldEndIndexPath = indexPath;
-                        }else if (_longHoldStartIndexPath && _longHoldEndIndexPath){
-                            if( indexPath.section > _longHoldEndIndexPath.section ||
-                               (indexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < indexPath.row)) {
-                                
+                        }else{
+                            if ([self.dataSource isPartOfRange:date]) {
                                 _longHoldEndIndexPath = indexPath;
-                            }else{
-                                _longHoldStartIndexPath = indexPath;
+                            }else if (_longHoldStartIndexPath && _longHoldEndIndexPath){
+                                if( indexPath.section > _longHoldEndIndexPath.section ||
+                                   (indexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < indexPath.row)) {
+                                    
+                                    _longHoldEndIndexPath = indexPath;
+                                }else{
+                                    _longHoldStartIndexPath = indexPath;
+                                }
                             }
                         }
-                    }
-                    
-                    
-                    
-                    [self updateLongHoldSelectedCells];
-                    
-                    if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging:)]) {
-                        [self.delegate calendarDidEndRanging:[self getCalendarOverview]];
-                    }else if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging)]) {
-                        [self.delegate calendarDidEndRanging];
-                    }
-                    
-                    if (_longHoldStartIndexPath && _longHoldEndIndexPath && ( _longHoldStartIndexPath.section > _longHoldEndIndexPath.section ||
-                        (_longHoldStartIndexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < _longHoldStartIndexPath.row))) {
-                        NSIndexPath *tempStart = _longHoldStartIndexPath;
-                        _longHoldStartIndexPath = _longHoldEndIndexPath;
-                        _longHoldEndIndexPath = tempStart;
+                        
+                        
+                        
+                        [self updateLongHoldSelectedCells];
+                        
+                        if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging:)]) {
+                            [self.delegate calendarDidEndRanging:[self getCalendarOverview]];
+                        }else if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging)]) {
+                            [self.delegate calendarDidEndRanging];
+                        }
+                        
+                        if (_longHoldStartIndexPath && _longHoldEndIndexPath && ( _longHoldStartIndexPath.section > _longHoldEndIndexPath.section ||
+                            (_longHoldStartIndexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < _longHoldStartIndexPath.row))) {
+                            NSIndexPath *tempStart = _longHoldStartIndexPath;
+                            _longHoldStartIndexPath = _longHoldEndIndexPath;
+                            _longHoldEndIndexPath = tempStart;
+                        }
                     }
                 }
+                return;
             }
-            return;
         }
     
         if (self.style == JxCalendarOverviewStyleYearGrid) {
@@ -1375,7 +1382,7 @@
             __weak __typeof(self)weakSelf = self;
             
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-                if ([self.dataSource isPartOfRange:date]) {
+                if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:date]) {
                     
                     [self openToolTipWithDate:date];
                     
@@ -1399,7 +1406,7 @@
                      animated:YES];
             
         }else{
-            if ([self.dataSource isPartOfRange:date]) {
+            if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] && [self.dataSource isPartOfRange:date]) {
                 
                 [self openToolTipWithDate:date];
                 
