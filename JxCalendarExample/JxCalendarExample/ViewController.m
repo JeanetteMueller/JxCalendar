@@ -63,8 +63,8 @@
                                                       andStyle:JxCalendarOverviewStyleMonthGrid
                                                        andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)
                                                   andStartDate:[NSDate date]
-                                            andStartAppearance:JxCalendarAppearanceWeek
-                                             andSelectionStyle:JxCalendarSelectionStyleDefault];
+                                            andStartAppearance:JxCalendarAppearanceMonth
+                                             andSelectionStyle:JxCalendarSelectionStyleRangeOnly];
     
     _overview.delegate = self;
     _overview.renderWeekDayLabels = YES;

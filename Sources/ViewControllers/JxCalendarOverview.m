@@ -1326,7 +1326,7 @@
         if ((self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ) && self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
             
             if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] &&
-                [self.dataSource respondsToSelector:@selector(isDayRangeable:)] && [self.dataSource isDayRangeable:date] && [self.dataSource isPartOfRange:date]) {
+                [self.dataSource respondsToSelector:@selector(isDayRangeable:)] && [self.dataSource isDayRangeable:date]) {
                 
             
                 if ([self.dataSource isPartOfRange:date] && [self.dataSource isRangeToolTipAvailableForDate:date]) {
@@ -1379,8 +1379,8 @@
                         }
                     }
                 }
-                return;
             }
+            return;
         }
     
         if (self.style == JxCalendarOverviewStyleYearGrid) {
