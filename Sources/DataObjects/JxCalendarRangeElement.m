@@ -29,6 +29,19 @@
                                                    fromDate:self.date];
         
         switch (dayType) {
+            case JxCalendarDayTypeFreeChoiceMax:{
+                components.hour = 0;
+                components.minute = 0;
+                components.second = 0;
+                
+                self.start = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
+                
+                components.hour = maxDayHours/2;
+                components.minute = 0;
+                components.second = 0;
+                
+                self.end = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
+            }break;
             case JxCalendarDayTypeUnknown:
             case JxCalendarDayTypeWholeDay:
             case JxCalendarDayTypeWorkDay:
@@ -79,17 +92,34 @@
     }
     return self;
 }
-- (id)initWithDate:(NSDate *)date withStartDate:(NSDate *)start andEndDate:(NSDate *)end{
+- (id)initWithDate:(NSDate *)date andDayType:(JxCalendarDayType)dayType withStartDate:(NSDate *)start andEndDate:(NSDate *)end{
     self = [super init];
     if (self) {
         self.date = date;
-        self.dayType = JxCalendarDayTypeFreeChoice;
+        self.dayType = dayType;
+//        if((start && !end) || (!start && end) ){
+//            self.dayType = JxCalendarDayTypeFreeChoiceMax;
+//        }else{
+//            self.dayType = JxCalendarDayTypeFreeChoice;
+//        }
+        
         self.start = start;
         self.end = end;
+
     }
     return self;
 }
 - (NSTimeInterval)duration{
     return [self.end timeIntervalSinceDate:self.start];
+}
+- (BOOL)isFromValueWhileFreeChoiceMaxWithCalendar:(NSCalendar *)calendar{
+    if (self.dayType == JxCalendarDayTypeFreeChoiceMax) {
+        NSDateComponents *startComponents = [calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.start];
+        
+        if (startComponents.hour == 0 && startComponents.minute == 0 && startComponents.second == 0) {
+            return YES;
+        }
+    }
+    return NO;
 }
 @end

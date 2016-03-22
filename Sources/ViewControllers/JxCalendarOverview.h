@@ -49,6 +49,7 @@
 
 //For internal use only;
 - (JxCalendarAppearance)getOverviewAppearance;
-
+- (BOOL)nextCellIsInRangeWithIndexPath:(NSIndexPath *)indexPath;
+- (BOOL)lastCellIsInRangeWithIndexPath:(NSIndexPath *)indexPath;
 @end
 

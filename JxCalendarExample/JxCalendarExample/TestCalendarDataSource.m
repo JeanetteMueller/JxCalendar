@@ -217,7 +217,7 @@
 //        return JxCalendarDayTypeMaskWholeDay;
 //    }
     
-    return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon);
+    return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMax|JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon);
 }
 - (JxCalendarDayType)defaultDayTypeForDate:(NSDate *)date{
     if ([self isEndOfRange:date] || [self isStartOfRange:date]) {

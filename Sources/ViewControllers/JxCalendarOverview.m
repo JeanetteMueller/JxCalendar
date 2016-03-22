@@ -1131,16 +1131,24 @@
                     partOfDay = rangeElement.duration / (float)(self.lengthOfDayInHours*60*60);
                     
                     if (rangeElement.dayType == JxCalendarDayTypeWholeDay || (rangeElement.dayType == JxCalendarDayTypeFreeChoice && rangeElement.duration +1 == self.lengthOfDayInHours*60*60)){
-                        startPosition = 0.f;
-                        partOfDay = 1.0f;
+                        startPosition = .0f;
+                        partOfDay = 1.f;
                     }else if (rangeElement.dayType == JxCalendarDayTypeHalfDayMorning) {
                         startPosition = 0.f;
                         partOfDay = .5f;
                     }else if (rangeElement.dayType == JxCalendarDayTypeHalfDayAfternoon) {
-                        startPosition = 0.5f;
+                        startPosition = .5f;
                         partOfDay = .5f;
-                        
-                    }else if(partOfDay < 1.0f){
+                    }else if(rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax){
+                        if ([rangeElement isFromValueWhileFreeChoiceMaxWithCalendar:self.dataSource.calendar]) {
+                            startPosition = .5f;
+                            partOfDay = .5f;
+                        }else{
+                            startPosition = .0f;
+                            partOfDay = .5f;
+                        }
+                    
+                    }else if(partOfDay < 1.f){
                         startPosition = ((1-partOfDay)/2);
                     }
 
@@ -1154,27 +1162,27 @@
                     rangeStyle = [self.dataSource rangeStyleForDate:thisDate];
                 }
                 
-                if (partOfDay < 1.0) {
+                if (partOfDay < 1.f) {
                     if (!self.proportionalRangeTime) {
-                        partOfDay = 0.5;
+                        partOfDay = .5;
                         NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour fromDate:rangeElement.start];
                         if (components.hour < self.lengthOfDayInHours/2) {
-                            startPosition = 0.0f;
+                            startPosition = .0f;
                         }else{
-                            startPosition = 0.5f;
+                            startPosition = .5f;
                         }
                     }
                 }else{
-                    partOfDay = 1.0f;
-                    startPosition = 0.0f;
+                    partOfDay = 1.f;
+                    startPosition = .0f;
                 }
                     
                 UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
                 UICollectionViewLayoutAttributes *attr = [layout layoutAttributesForItemAtIndexPath:indexPath];
                 
                 CGSize cellSize = attr.frame.size;
-                CGFloat borderHeightPercent = 80.0f;
-                CGFloat dotHeightPercent = 80.0f;
+                CGFloat borderHeightPercent = 80.f;
+                CGFloat dotHeightPercent = 80.f;
                 CGFloat spacing = ceil([(UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout minimumInteritemSpacing] / 2);
                 
                 cell.rangeDotBackground.backgroundColor = kJxCalendarRangeDotBackgroundColor;

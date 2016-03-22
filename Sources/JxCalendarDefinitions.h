@@ -64,7 +64,7 @@
 
 #define kJxCalendarDayTypeOptionWorkDay             @"Arbeitstag >"
 #define kJxCalendarDayTypeOptionFreeChoice          @"Freie Wahl >"
-
+#define kJxCalendarDayTypeOptionFreeChoiceMax       @"Freie Wahl von/bis >"
 
 typedef NS_ENUM(NSInteger, JxCalendarAppearance) {
     JxCalendarAppearanceNone,
@@ -112,6 +112,8 @@ typedef NS_ENUM(NSInteger, JxCalendarDayType) {
     /* free choice */
     JxCalendarDayTypeFreeChoice,
     
+    /* free choice with on end to max value like x-24 or 0-x */
+    JxCalendarDayTypeFreeChoiceMax,
 };
 
 typedef NS_OPTIONS(NSUInteger, JxCalendarDayTypeMask) {
@@ -122,8 +124,11 @@ typedef NS_OPTIONS(NSUInteger, JxCalendarDayTypeMask) {
     JxCalendarDayTypeMaskHalfDayMorning = (1 << JxCalendarDayTypeHalfDayMorning),
     JxCalendarDayTypeMaskHalfDayAfternoon = (1 << JxCalendarDayTypeHalfDayAfternoon),
     JxCalendarDayTypeMaskFreeChoice = (1 << JxCalendarDayTypeFreeChoice),
+    JxCalendarDayTypeMaskFreeChoiceMax = (1 << JxCalendarDayTypeFreeChoiceMax),
     
-    JxCalendarDayTypeMaskAll = (JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskWorkDay|JxCalendarDayTypeMaskHalfDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon|JxCalendarDayTypeMaskFreeChoice)
+    JxCalendarDayTypeMaskFreeChoices = (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMax),
+    
+    JxCalendarDayTypeMaskAll = (JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskWorkDay|JxCalendarDayTypeMaskHalfDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon|JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMax)
 };
 
 typedef NS_ENUM (NSInteger, JxCalendarRangeStyleInCell){
