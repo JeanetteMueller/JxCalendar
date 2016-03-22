@@ -213,9 +213,9 @@
 }
 
 - (JxCalendarDayTypeMask)availableDayTypesForDate:(NSDate *)date{
-    if ([self isEndOfRange:date] || [self isStartOfRange:date]) {
-        return JxCalendarDayTypeMaskWholeDay;
-    }
+//    if ([self isEndOfRange:date] || [self isStartOfRange:date]) {
+//        return JxCalendarDayTypeMaskWholeDay;
+//    }
     
     return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon);
 }
@@ -243,5 +243,8 @@
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];
     self.rangedDates = [[self.rangedDates sortedArrayUsingDescriptors:@[sortDescriptor]] mutableCopy];
     
+}
+- (JxCalendarRangeStyleInCell)rangeStyleForDate:(NSDate *)date{
+    return JxCalendarRangeStyleInCellHorizontal;
 }
 @end

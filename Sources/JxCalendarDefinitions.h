@@ -126,6 +126,10 @@ typedef NS_OPTIONS(NSUInteger, JxCalendarDayTypeMask) {
     JxCalendarDayTypeMaskAll = (JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskWorkDay|JxCalendarDayTypeMaskHalfDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon|JxCalendarDayTypeMaskFreeChoice)
 };
 
+typedef NS_ENUM (NSInteger, JxCalendarRangeStyleInCell){
+    JxCalendarRangeStyleInCellVertical,
+    JxCalendarRangeStyleInCellHorizontal
+};
 
 
 #endif /* JxCalendarDefinitions_h */

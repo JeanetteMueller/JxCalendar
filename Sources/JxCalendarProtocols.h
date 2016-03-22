@@ -45,8 +45,10 @@
 - (BOOL)isPartOfRange:(NSDate *)date;
 - (JxCalendarRangeElement *)rangeElementForDate:(NSDate *)date;
 - (JxCalendarDayTypeMask)availableDayTypesForDate:(NSDate *)date;
-- (JxCalendarDayType)defaultDayTypeForDate:(NSDate *)date;
+- (JxCalendarDayType)defaultDayTypeForDate:(NSDate *)date; // default: JxCalendarDayTypeWholeDay
 - (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date;
+- (JxCalendarRangeStyleInCell)rangeStyleForDate:(NSDate *)date; // default: JxCalendarRangeStyleInCellHorizontal
+
 @end
 
 

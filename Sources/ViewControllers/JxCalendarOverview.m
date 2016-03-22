@@ -1089,7 +1089,10 @@
             if ([self.dataSource isEndOfRange:thisDate] && !_longHoldEndIndexPath) {
                 _longHoldEndIndexPath = indexPath;
             }
-                
+            
+            JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:thisDate];
+            
+            
             void (^animation)(void) = ^{
                 
                 CGFloat partOfDay = 1.0;
@@ -1124,16 +1127,19 @@
                         }
                     }
                     
-                    JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:thisDate];
                     
                     partOfDay = rangeElement.duration / (float)(self.lengthOfDayInHours*60*60);
                     
-                    
-                    
-                    if (rangeElement.dayType == JxCalendarDayTypeHalfDayMorning) {
+                    if (rangeElement.dayType == JxCalendarDayTypeWholeDay || (rangeElement.dayType == JxCalendarDayTypeFreeChoice && rangeElement.duration +1 == self.lengthOfDayInHours*60*60)){
                         startPosition = 0.f;
+                        partOfDay = 1.0f;
+                    }else if (rangeElement.dayType == JxCalendarDayTypeHalfDayMorning) {
+                        startPosition = 0.f;
+                        partOfDay = .5f;
                     }else if (rangeElement.dayType == JxCalendarDayTypeHalfDayAfternoon) {
                         startPosition = 0.5f;
+                        partOfDay = .5f;
+                        
                     }else if(partOfDay < 1.0f){
                         startPosition = ((1-partOfDay)/2);
                     }
@@ -1141,7 +1147,27 @@
                 }else{
                     [self resetRangeForCell:cell];
                 }
-                    
+                
+                
+                JxCalendarRangeStyleInCell rangeStyle = JxCalendarRangeStyleInCellHorizontal;
+                if ([self.dataSource respondsToSelector:@selector(rangeStyleForDate:)]) {
+                    rangeStyle = [self.dataSource rangeStyleForDate:thisDate];
+                }
+                
+                if (partOfDay < 1.0) {
+                    if (!self.proportionalRangeTime) {
+                        partOfDay = 0.5;
+                        NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour fromDate:rangeElement.start];
+                        if (components.hour < self.lengthOfDayInHours/2) {
+                            startPosition = 0.0f;
+                        }else{
+                            startPosition = 0.5f;
+                        }
+                    }
+                }else{
+                    partOfDay = 1.0f;
+                    startPosition = 0.0f;
+                }
                     
                 UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
                 UICollectionViewLayoutAttributes *attr = [layout layoutAttributesForItemAtIndexPath:indexPath];
@@ -1156,26 +1182,83 @@
                 cell.rangeFrom.backgroundColor          = kJxCalendarRangeBackgroundColor;
                 cell.rangeTo.backgroundColor            = kJxCalendarRangeBackgroundColor;
                 
-                
+                CGFloat cellSizeWidth = cellSize.width;
                 CGFloat cellSizeWidthHalf = ceil(cellSize.width/2);
                 
                 CGFloat height = (cellSize.height/100*borderHeightPercent);
                 
-                cell.rangeFrom.frame = CGRectMake(cellSizeWidthHalf,
-                                                  ((cellSize.height-height)/2) + (height * startPosition),
-                                                  cellSizeWidthHalf + spacing,
-                                                  height * partOfDay);
+                switch (rangeStyle) {
+                    case JxCalendarRangeStyleInCellVertical:{
+                        cell.rangeFrom.frame = CGRectMake(cellSizeWidthHalf,
+                                                          ((cellSize.height-height)/2) + (height * startPosition),
+                                                          cellSizeWidthHalf + spacing,
+                                                          height * partOfDay);
+                        cell.rangeTo.hidden = NO;
+                        cell.rangeTo.frame = CGRectMake(-spacing,
+                                                        ((cellSize.height-height)/2) + height * startPosition,
+                                                        cellSizeWidthHalf+spacing,
+                                                        height * partOfDay);
+                        
+                        
+                        cell.rangeDotBackground.frame = CGRectMake(0,
+                                                                   0 + (cellSize.height/100*borderHeightPercent) * startPosition,
+                                                                   (cellSize.height/100*dotHeightPercent),
+                                                                   (cellSize.height/100*dotHeightPercent) *partOfDay);
+                    }break;
+                        
+                    case JxCalendarRangeStyleInCellHorizontal:{
+                        if ([self lastCellIsInRangeWithIndexPath:indexPath] && [self nextCellIsInRangeWithIndexPath:indexPath]) {
+                            //im bereich
+                            
+                            cell.rangeTo.hidden = NO;
+                            cell.rangeTo.frame = CGRectMake(cellSizeWidth * startPosition - ((startPosition == 0.0)?spacing:0),
+                                                            ((cellSize.height-height)/2),
+                                                            cellSizeWidth * partOfDay + ((startPosition == 0.0)?spacing:0),
+                                                            height);
+                            cell.rangeFrom.hidden = NO;
+                            cell.rangeFrom.frame = CGRectMake(cellSizeWidth * startPosition - ((startPosition == 0.0)?spacing:0),
+                                                              ((cellSize.height-height)/2),
+                                                              cellSizeWidth * partOfDay + ((startPosition == 0.0)?spacing:0),
+                                                              height);
+                            
+                        }else{
+                            //endstück
+                            if ([self lastCellIsInRangeWithIndexPath:indexPath]) {
+                                //ende
+                                cell.rangeTo.hidden = NO;
+                                cell.rangeTo.frame = CGRectMake(-spacing,
+                                                                ((cellSize.height-height)/2),
+                                                                cellSizeWidthHalf+spacing,
+                                                                height);
+                                
+                                cell.rangeFrom.hidden = YES;
+                                cell.rangeFrom.frame = CGRectMake(cellSizeWidthHalf,
+                                                                  ((cellSize.height-height)/2),
+                                                                  cellSizeWidthHalf,
+                                                                  height);
+                            }else if([self nextCellIsInRangeWithIndexPath:indexPath]){
+                                //anfang
+                                cell.rangeTo.hidden = YES;
+                                cell.rangeTo.frame = CGRectMake(-spacing,
+                                                                ((cellSize.height-height)/2),
+                                                                cellSizeWidthHalf+spacing,
+                                                                height);
+                                cell.rangeFrom.hidden = NO;
+                                cell.rangeFrom.frame = CGRectMake(cellSizeWidthHalf,
+                                                                  ((cellSize.height-height)/2),
+                                                                  cellSizeWidthHalf+spacing,
+                                                                  height);
+                            }
+                            
+                        }
+                        
+                        cell.rangeDotBackground.frame = CGRectMake((cellSizeWidth/100*dotHeightPercent) * startPosition,
+                                                                   0,
+                                                                   (cellSizeWidth/100*dotHeightPercent)*partOfDay,
+                                                                   (cellSize.height/100*dotHeightPercent) );
+                    }break;
+                }
                 
-                cell.rangeTo.frame = CGRectMake(-spacing,
-                                                ((cellSize.height-height)/2) + height * startPosition,
-                                                cellSizeWidthHalf+spacing,
-                                                height * partOfDay);
-                
-                
-                cell.rangeDotBackground.frame = CGRectMake(0,
-                                                           0 + (cellSize.height/100*borderHeightPercent) * startPosition,
-                                                           (cellSize.height/100*dotHeightPercent),
-                                                           (cellSize.height/100*dotHeightPercent) *partOfDay);
                 cell.rangeDot.frame = CGRectMake((cellSize.width - (cellSize.height/100*dotHeightPercent))/2,
                                                  (cellSize.height/100*((100-dotHeightPercent)/2)),
                                                  (cellSize.height/100*dotHeightPercent),

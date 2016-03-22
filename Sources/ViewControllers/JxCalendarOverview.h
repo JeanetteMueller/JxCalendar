@@ -26,6 +26,10 @@
 /* default = 24 */
 @property (nonatomic, readwrite) NSInteger lengthOfDayInHours;
 
+/* display proportional ranged time on cell */
+/* default = NO */
+@property (nonatomic, readwrite) BOOL proportionalRangeTime;
+
 
 - (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource
                 andStyle:(JxCalendarOverviewStyle)style

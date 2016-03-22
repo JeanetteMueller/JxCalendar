@@ -68,7 +68,7 @@
     
     _overview.delegate = self;
     _overview.renderWeekDayLabels = YES;
-    _overview.lengthOfDayInHours = 8;
+    _overview.lengthOfDayInHours = 24;
     
     
     self.navRoot = [[UINavigationController alloc] initWithRootViewController:_overview];
