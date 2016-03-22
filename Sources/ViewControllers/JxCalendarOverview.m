@@ -821,7 +821,12 @@
             if ((mask & JxCalendarDayTypeMaskFreeChoice) == JxCalendarDayTypeMaskFreeChoice) {
                 [availableOptions addObject:@(JxCalendarDayTypeFreeChoice)];
             }
-            
+            if ((mask & JxCalendarDayTypeMaskFreeChoiceMin) == JxCalendarDayTypeMaskFreeChoiceMin) {
+                [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMin)];
+            }
+            if ((mask & JxCalendarDayTypeMaskFreeChoiceMax) == JxCalendarDayTypeMaskFreeChoiceMax) {
+                [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMax)];
+            }
             
             
             JxCalendarDayType newDayType = JxCalendarDayTypeWholeDay;
@@ -830,11 +835,10 @@
             }
             
             if (![availableOptions containsObject:@(rangeElement.dayType)]) {
+                NSIndexPath *path = [self getIndexPathForDate:rangeElement.date];
                 
                 JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:rangeElement.date
-                                                                                    andDayType:newDayType
-                                                                                    inCalendar:self.dataSource.calendar
-                                                                           andMaximumDayLength:self.lengthOfDayInHours];
+                                                                                    andDayType:newDayType withStartDate:rangeElement.start andEndDate:rangeElement.end];
                 
                 if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
                     [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
@@ -842,7 +846,7 @@
                     [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
                 }
                 
-                NSIndexPath *path = [self getIndexPathForDate:rangeElement.date];
+                
                 
                 if (![updatePathes containsObject:path]) {
                     [updatePathes addObject:path];
@@ -1139,15 +1143,12 @@
                     }else if (rangeElement.dayType == JxCalendarDayTypeHalfDayAfternoon) {
                         startPosition = .5f;
                         partOfDay = .5f;
+                    }else if(rangeElement.dayType == JxCalendarDayTypeFreeChoiceMin){
+                        startPosition = .0f;
+                        partOfDay = .5f;
                     }else if(rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax){
-                        if ([rangeElement isFromValueWhileFreeChoiceMaxWithCalendar:self.dataSource.calendar]) {
-                            startPosition = .5f;
-                            partOfDay = .5f;
-                        }else{
-                            startPosition = .0f;
-                            partOfDay = .5f;
-                        }
-                    
+                        startPosition = .5f;
+                        partOfDay = .5f;
                     }else if(partOfDay < 1.f){
                         startPosition = ((1-partOfDay)/2);
                     }
@@ -1166,7 +1167,7 @@
                     if (!self.proportionalRangeTime) {
                         partOfDay = .5;
                         NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour fromDate:rangeElement.start];
-                        if (components.hour < self.lengthOfDayInHours/2) {
+                        if (components.hour < self.lengthOfDayInHours/2 && rangeElement.dayType != JxCalendarDayTypeFreeChoiceMax) {
                             startPosition = .0f;
                         }else{
                             startPosition = .5f;

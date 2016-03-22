@@ -217,12 +217,12 @@
 //        return JxCalendarDayTypeMaskWholeDay;
 //    }
     
-    return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMax|JxCalendarDayTypeMaskWholeDay|JxCalendarDayTypeMaskHalfDayMorning|JxCalendarDayTypeMaskHalfDayAfternoon);
+    return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMin);
 }
 - (JxCalendarDayType)defaultDayTypeForDate:(NSDate *)date{
-    if ([self isEndOfRange:date] || [self isStartOfRange:date]) {
-        return JxCalendarDayTypeWholeDay;
-    }
+//    if ([self isEndOfRange:date] || [self isStartOfRange:date]) {
+//        return JxCalendarDayTypeWholeDay;
+//    }
     return JxCalendarDayTypeFreeChoice;
 }
 - (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date{

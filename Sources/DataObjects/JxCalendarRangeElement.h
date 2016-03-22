@@ -22,5 +22,4 @@
 - (id)initWithDate:(NSDate *)date andDayType:(JxCalendarDayType)dayType inCalendar:(NSCalendar *)calendar andMaximumDayLength:(NSInteger)maxDayHours;
 - (id)initWithDate:(NSDate *)date andDayType:(JxCalendarDayType)dayType withStartDate:(NSDate *)start andEndDate:(NSDate *)end;
 
-- (BOOL)isFromValueWhileFreeChoiceMaxWithCalendar:(NSCalendar *)calendar;
 @end

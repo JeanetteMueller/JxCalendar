@@ -299,7 +299,7 @@ typedef enum {
     UIImageView *arrowView = [self.view viewWithTag:JxCalendarToolTipTagArrow];
     
     CGFloat freeChoiceExtraHeight = 0;
-    if (rangeElement.dayType == JxCalendarDayTypeFreeChoice || rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
+    if (rangeElement.dayType == JxCalendarDayTypeFreeChoice || rangeElement.dayType == JxCalendarDayTypeFreeChoiceMin || rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
         
         freeChoiceExtraHeight = kJxCalendarToolTipFreeChoiceExtraHeight;
         
@@ -381,15 +381,16 @@ typedef enum {
         case JxCalendarDayTypeFreeChoice:
             [dayTypeButton setTitle:kJxCalendarDayTypeOptionFreeChoice forState:UIControlStateNormal];
             break;
+        case JxCalendarDayTypeFreeChoiceMin:
         case JxCalendarDayTypeFreeChoiceMax:
-            [dayTypeButton setTitle:kJxCalendarDayTypeOptionFreeChoiceMax forState:UIControlStateNormal];
+            [dayTypeButton setTitle:kJxCalendarDayTypeOptionFreeChoiceMinMax forState:UIControlStateNormal];
             break;
     }
     
     
     UIButton *freeChoiceButton = [container viewWithTag:JxCalendarToolTipTagFreeChoiceButton];
     
-    
+    NSString *hour, *min;
     if (rangeElement.dayType == JxCalendarDayTypeFreeChoice) {
         
         NSTimeInterval duration = [rangeElement.end timeIntervalSinceDate:rangeElement.start];
@@ -398,30 +399,29 @@ typedef enum {
         NSUInteger minutes = seconds/60;
         NSUInteger hours = minutes/60;
         
-        NSString *hour = [NSString stringWithFormat:@"%lu", (unsigned long)hours];
-        NSString *min = [NSString stringWithFormat:@"%2lu", (unsigned long)minutes % 60];
+        hour = [NSString stringWithFormat:@"%lu", (unsigned long)hours];
+        min = [NSString stringWithFormat:@"%2lu", (unsigned long)minutes % 60];
         
         hour = [hour stringByReplacingOccurrencesOfString:@" " withString:@"0"];
         min = [min stringByReplacingOccurrencesOfString:@" " withString:@"0"];
         
         [freeChoiceButton setTitle:[NSString stringWithFormat:@"%@:%@", hour, min] forState:UIControlStateNormal];
+    }else if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMin) {
+        hour = [NSString stringWithFormat:@"%2d", endComponents.hour];
+        min = [NSString stringWithFormat:@"%2d", endComponents.minute];
+        hour = [hour stringByReplacingOccurrencesOfString:@" " withString:@"0"];
+        min = [min stringByReplacingOccurrencesOfString:@" " withString:@"0"];
+        [freeChoiceButton setTitle:[NSString stringWithFormat:@"bis %@:%@", hour, min] forState:UIControlStateNormal];
+        
     }else if(rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax){
         
         
-        NSString *hour, *min;
-        if ([rangeElement isFromValueWhileFreeChoiceMaxWithCalendar:self.dataSource.calendar]) {
-            hour = [NSString stringWithFormat:@"%2d", endComponents.hour];
-            min = [NSString stringWithFormat:@"%2d", endComponents.minute];
-            hour = [hour stringByReplacingOccurrencesOfString:@" " withString:@"0"];
-            min = [min stringByReplacingOccurrencesOfString:@" " withString:@"0"];
-            [freeChoiceButton setTitle:[NSString stringWithFormat:@"bis %@:%@", hour, min] forState:UIControlStateNormal];
-        }else{
-            hour = [NSString stringWithFormat:@"%2d", startComponents.hour];
-            min = [NSString stringWithFormat:@"%2d", startComponents.minute];
-            hour = [hour stringByReplacingOccurrencesOfString:@" " withString:@"0"];
-            min = [min stringByReplacingOccurrencesOfString:@" " withString:@"0"];
-            [freeChoiceButton setTitle:[NSString stringWithFormat:@"von %@:%@", hour, min] forState:UIControlStateNormal];
-        }
+        hour = [NSString stringWithFormat:@"%2d", startComponents.hour];
+        min = [NSString stringWithFormat:@"%2d", startComponents.minute];
+        hour = [hour stringByReplacingOccurrencesOfString:@" " withString:@"0"];
+        min = [min stringByReplacingOccurrencesOfString:@" " withString:@"0"];
+        [freeChoiceButton setTitle:[NSString stringWithFormat:@"von %@:%@", hour, min] forState:UIControlStateNormal];
+        
         
     }
     
@@ -466,22 +466,14 @@ typedef enum {
     
     UIPickerView *freeChoiceTimePicker = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceTimePicker];
     
-    if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
-        
-        if ([rangeElement isFromValueWhileFreeChoiceMaxWithCalendar:self.dataSource.calendar]) {
-            
-            [freeChoiceTimePicker selectRow:1 inComponent:0 animated:YES];
-            [freeChoiceTimePicker selectRow:endComponents.hour inComponent:1 animated:YES];
-            [freeChoiceTimePicker selectRow:endComponents.minute inComponent:2 animated:YES];
-        }else{
-            [freeChoiceTimePicker selectRow:0 inComponent:0 animated:YES];
-            [freeChoiceTimePicker selectRow:startComponents.hour inComponent:1 animated:YES];
-            [freeChoiceTimePicker selectRow:startComponents.minute inComponent:2 animated:YES];
-        }
-        
-        
-        
-        
+    if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMin) {
+        [freeChoiceTimePicker selectRow:1 inComponent:0 animated:YES];
+        [freeChoiceTimePicker selectRow:endComponents.hour inComponent:1 animated:YES];
+        [freeChoiceTimePicker selectRow:endComponents.minute inComponent:2 animated:YES];
+    }else if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
+        [freeChoiceTimePicker selectRow:0 inComponent:0 animated:YES];
+        [freeChoiceTimePicker selectRow:startComponents.hour inComponent:1 animated:YES];
+        [freeChoiceTimePicker selectRow:startComponents.minute inComponent:2 animated:YES];
     }else{
         [freeChoiceTimePicker selectRow:startComponents.hour inComponent:0 animated:YES];
         [freeChoiceTimePicker selectRow:startComponents.minute inComponent:1 animated:YES];
@@ -625,6 +617,9 @@ typedef enum {
     if ((mask & JxCalendarDayTypeMaskFreeChoiceMax) == JxCalendarDayTypeMaskFreeChoiceMax) {
         [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMax)];
     }
+    if ((mask & JxCalendarDayTypeMaskFreeChoiceMin) == JxCalendarDayTypeMaskFreeChoiceMin) {
+        [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMin)];
+    }
     [availableOptions addObjectsFromArray:availableOptions];
     
     JxCalendarDayType doType = JxCalendarDayTypeUnknown;
@@ -645,13 +640,13 @@ typedef enum {
         [dayTypeButton setTitle:[self getTitleForDayType:doType] forState:UIControlStateNormal];
         
         JxCalendarRangeElement *element;
-        if (doType == JxCalendarDayTypeFreeChoiceMax) {
+        if (doType == JxCalendarDayTypeFreeChoiceMin) {
             
             NSIndexPath *path = [self getIndexPathForDate:self.toolTipDate];
             
             NSDate *start, *end;
             NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
-            if ([self lastCellIsInRangeWithIndexPath:path]) {
+
                 //anfang bis
                 components.hour = 0;
                 components.minute = 0;
@@ -661,7 +656,17 @@ typedef enum {
                 components.minute = 0;
                 components.second = 0;
                 end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
-            }else{
+            
+            element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
+                                                                                andDayType:doType
+                                                                             withStartDate:start
+                                                                                andEndDate:end];
+        }else if (doType == JxCalendarDayTypeFreeChoiceMax) {
+            
+            NSIndexPath *path = [self getIndexPathForDate:self.toolTipDate];
+            
+            NSDate *start, *end;
+            NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
                 //von
                 components.hour = self.lengthOfDayInHours/2;
                 components.minute = 0;
@@ -671,11 +676,11 @@ typedef enum {
                 components.minute = 59;
                 components.second = 59;
                 end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
-            }
+            
             element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
-                                                                                andDayType:doType
-                                                                             withStartDate:start
-                                                                                andEndDate:end];
+                                                        andDayType:doType
+                                                     withStartDate:start
+                                                        andEndDate:end];
         }else{
             element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
                                                                                 andDayType:doType
@@ -718,8 +723,9 @@ typedef enum {
             return kJxCalendarDayTypeOptionWorkDay;
         case JxCalendarDayTypeFreeChoice:
             return kJxCalendarDayTypeOptionFreeChoice;
+        case JxCalendarDayTypeFreeChoiceMin:
         case JxCalendarDayTypeFreeChoiceMax:
-            return kJxCalendarDayTypeOptionFreeChoiceMax;
+            return kJxCalendarDayTypeOptionFreeChoiceMinMax;
         case JxCalendarDayTypeUnknown:
             return kJxCalendarDayTypeOptionUnknown;
     }
@@ -743,7 +749,7 @@ typedef enum {
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{
     JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:self.toolTipDate];
     
-    if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
+    if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMin || rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
         return 3;
     }
     return 5;
@@ -751,10 +757,19 @@ typedef enum {
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
     JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:self.toolTipDate];
     
-    if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
+    if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMin || rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
         switch (component) {
-            case 0:
-                return 2;
+            case 0:{
+                int count = 0;
+                JxCalendarDayTypeMask mask = [self.dataSource availableDayTypesForDate:self.toolTipDate];
+                if ((mask & JxCalendarDayTypeMaskFreeChoiceMax) == JxCalendarDayTypeMaskFreeChoiceMax) {
+                    count++;
+                }
+                if ((mask & JxCalendarDayTypeMaskFreeChoiceMin) == JxCalendarDayTypeMaskFreeChoiceMin) {
+                    count++;
+                }
+                return count;
+            }break;
             case 1:
                 return 24;
             case 2:
@@ -801,14 +816,20 @@ typedef enum {
     
     JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:self.toolTipDate];
     
-    if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
+    if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMin || rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
         switch (component) {
             case 0:{
-                if (row == 0) {
-                    return [[NSAttributedString alloc] initWithString:@"von" attributes:@{}];
-                }else{
-                    return [[NSAttributedString alloc] initWithString:@"bis" attributes:@{}];
+                NSMutableArray *types = [NSMutableArray array];
+                
+                JxCalendarDayTypeMask mask = [self.dataSource availableDayTypesForDate:self.toolTipDate];
+                if ((mask & JxCalendarDayTypeMaskFreeChoiceMax) == JxCalendarDayTypeMaskFreeChoiceMax) {
+                    [types addObject:[[NSAttributedString alloc] initWithString:@"von" attributes:@{}]];
                 }
+                if ((mask & JxCalendarDayTypeMaskFreeChoiceMin) == JxCalendarDayTypeMaskFreeChoiceMin) {
+                    [types addObject:[[NSAttributedString alloc] initWithString:@"bis" attributes:@{}]];
+                }
+                
+                return types[row];
             }
             default:
                 return [[NSAttributedString alloc] initWithString:rowString attributes:@{}];
@@ -836,39 +857,70 @@ typedef enum {
     JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:self.toolTipDate];
     
     NSDate *start, *end;
+    JxCalendarDayType newDayType = rangeElement.dayType;
     
-    if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
+    if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMin || rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
         
-        NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
-        components.hour = [pickerView selectedRowInComponent:1];
-        components.minute = [pickerView selectedRowInComponent:2];
-        components.second = 0;
-        NSDate *date = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
-        
-        
-        
-        if ([pickerView selectedRowInComponent:0] == 0) {
-            //von
+        if (component == 0) {
             
-            start = date;
-            NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
-            components.hour = self.lengthOfDayInHours-1;
-            components.minute = 59;
-            components.second = 59;
+            NSMutableArray *types = [NSMutableArray array];
             
-            end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+            JxCalendarDayTypeMask mask = [self.dataSource availableDayTypesForDate:self.toolTipDate];
+            if ((mask & JxCalendarDayTypeMaskFreeChoiceMax) == JxCalendarDayTypeMaskFreeChoiceMax) {
+                [types addObject:[[NSAttributedString alloc] initWithString:@"von" attributes:@{}]];
+            }
+            if ((mask & JxCalendarDayTypeMaskFreeChoiceMin) == JxCalendarDayTypeMaskFreeChoiceMin) {
+                [types addObject:[[NSAttributedString alloc] initWithString:@"bis" attributes:@{}]];
+            }
             
-        }else{
-            //bis
+            if (types.count < 2) {
+                return;
+            }
             
-            NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
-            components.hour = 0;
-            components.minute = 0;
-            components.second = 0;
             
-            start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
-            end = date;
+            if(row == 0){
+                newDayType = JxCalendarDayTypeFreeChoiceMax;
+            }else{
+                newDayType = JxCalendarDayTypeFreeChoiceMin;
+            }
+
         }
+        
+        
+            NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
+            components.hour = [pickerView selectedRowInComponent:1];
+            components.minute = [pickerView selectedRowInComponent:2];
+            components.second = 0;
+            NSDate *date = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+            
+            
+            
+            if ([pickerView selectedRowInComponent:0] == 0) {
+                //von
+                
+                start = date;
+                NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
+                components.hour = self.lengthOfDayInHours-1;
+                components.minute = 59;
+                components.second = 59;
+                
+                end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+                
+            }else{
+                //bis
+                
+                NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
+                components.hour = 0;
+                components.minute = 0;
+                components.second = 0;
+                
+                start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+                end = date;
+            }
+        
+        
+        
+        
         
     }else{
         if (component == 2) {
@@ -919,11 +971,9 @@ typedef enum {
             [pickerView selectRow:newEndComponents.minute inComponent:4 animated:YES];
         }
     }
-    
-    
         
     JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
-                                                                        andDayType:rangeElement.dayType
+                                                                        andDayType:newDayType
                                                                      withStartDate:start
                                                                         andEndDate:end];
     
