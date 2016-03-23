@@ -593,6 +593,8 @@ typedef enum {
     JxCalendarDayTypeMask mask = [self.dataSource availableDayTypesForDate:self.toolTipDate];
     JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:self.toolTipDate];
     
+    NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
+    
     NSMutableArray *availableOptions = [NSMutableArray array];
     
     
@@ -660,37 +662,36 @@ typedef enum {
             NSIndexPath *path = [self getIndexPathForDate:self.toolTipDate];
             
             NSDate *start, *end;
-            NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
-
-                //anfang bis
-                components.hour = 0;
-                components.minute = 0;
-                components.second = 0;
-                start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
-                components.hour = self.lengthOfDayInHours/2;
-                components.minute = 0;
-                components.second = 0;
-                end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+            
+            //anfang bis
+            components.hour = 0;
+            components.minute = 0;
+            components.second = 0;
+            start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+            components.hour = self.lengthOfDayInHours/2;
+            components.minute = 0;
+            components.second = 0;
+            end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
             
             element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
-                                                                                andDayType:doType
-                                                                             withStartDate:start
-                                                                                andEndDate:end];
+                                                        andDayType:doType
+                                                     withStartDate:start
+                                                        andEndDate:end];
         }else if (doType == JxCalendarDayTypeFreeChoiceMax) {
             
             NSIndexPath *path = [self getIndexPathForDate:self.toolTipDate];
             
             NSDate *start, *end;
-            NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
-                //von
-                components.hour = self.lengthOfDayInHours/2;
-                components.minute = 0;
-                components.second = 0;
-                start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
-                components.hour = self.lengthOfDayInHours-1;
-                components.minute = 59;
-                components.second = 59;
-                end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+            
+            //von
+            components.hour = self.lengthOfDayInHours/2;
+            components.minute = 0;
+            components.second = 0;
+            start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+            components.hour = self.lengthOfDayInHours-1;
+            components.minute = 59;
+            components.second = 59;
+            end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
             
             element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
                                                         andDayType:doType
@@ -698,9 +699,9 @@ typedef enum {
                                                         andEndDate:end];
         }else{
             element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
-                                                                                andDayType:doType
-                                                                                inCalendar:self.dataSource.calendar
-                                                                       andMaximumDayLength:self.lengthOfDayInHours];
+                                                        andDayType:doType
+                                                        inCalendar:self.dataSource.calendar
+                                               andMaximumDayLength:self.lengthOfDayInHours];
         }
         
         
@@ -715,7 +716,7 @@ typedef enum {
         UIPickerView *freeChoiceTimePicker  = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceTimePicker];
         [freeChoiceTimePicker reloadAllComponents];
     }
-        
+    
     NSIndexPath *path = [self getIndexPathForDate:self.toolTipDate];
     
     [self updateRangeForCell:(JxCalendarCell *)[self.collectionView cellForItemAtIndexPath:path] atIndexPath:path animated:YES];
@@ -874,6 +875,8 @@ typedef enum {
     NSDate *start, *end;
     JxCalendarDayType newDayType = rangeElement.dayType;
     
+    NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
+    
     if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMin || rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
         
         if (component == 0) {
@@ -890,7 +893,7 @@ typedef enum {
 
         }
         
-        NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
+        
         components.hour = [pickerView selectedRowInComponent:1];
         components.minute = [pickerView selectedRowInComponent:2];
         components.second = 0;
@@ -898,9 +901,7 @@ typedef enum {
         
         if ([pickerView selectedRowInComponent:0] == 0) {
             //von
-            
             start = date;
-            NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
             components.hour = self.lengthOfDayInHours-1;
             components.minute = 59;
             components.second = 59;
@@ -909,8 +910,6 @@ typedef enum {
             
         }else{
             //bis
-            
-            NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
             components.hour = 0;
             components.minute = 0;
             components.second = 0;
@@ -948,7 +947,6 @@ typedef enum {
             }
         }
         
-        NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
         components.hour = [pickerView selectedRowInComponent:0];
         components.minute = [pickerView selectedRowInComponent:1];
         components.second = 0;
