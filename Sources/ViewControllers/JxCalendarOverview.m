@@ -1164,10 +1164,10 @@
                 }
                 
                 if (partOfDay < 1.f) {
-                    if (!self.proportionalRangeTime) {
+                    if (!self.proportionalRangeTime && rangeElement.dayType != JxCalendarDayTypeFreeChoiceMax && rangeElement.dayType != JxCalendarDayTypeFreeChoiceMin) {
                         partOfDay = .5;
                         NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour fromDate:rangeElement.start];
-                        if (components.hour < self.lengthOfDayInHours/2 && rangeElement.dayType != JxCalendarDayTypeFreeChoiceMax) {
+                        if (components.hour < self.lengthOfDayInHours/2) {
                             startPosition = .0f;
                         }else{
                             startPosition = .5f;
