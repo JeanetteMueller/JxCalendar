@@ -1077,7 +1077,8 @@
         if ([self.dataSource respondsToSelector:@selector(isDayRangeable:)] &&
             [self.dataSource respondsToSelector:@selector(isPartOfRange:)] &&
             [self.dataSource respondsToSelector:@selector(isStartOfRange:)] &&
-            [self.dataSource respondsToSelector:@selector(isEndOfRange:)]
+            [self.dataSource respondsToSelector:@selector(isEndOfRange:)] &&
+            [self.dataSource respondsToSelector:@selector(rangeElementForDate:)]
             ) {
             
             

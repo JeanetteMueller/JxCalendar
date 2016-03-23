@@ -387,14 +387,13 @@ typedef enum {
             break;
     }
     
-    
     UIButton *freeChoiceButton = [container viewWithTag:JxCalendarToolTipTagFreeChoiceButton];
     
     NSString *hour, *min;
+    
     if (rangeElement.dayType == JxCalendarDayTypeFreeChoice) {
         
         NSTimeInterval duration = [rangeElement.end timeIntervalSinceDate:rangeElement.start];
-        
         NSUInteger seconds = ABS((int)duration);
         NSUInteger minutes = seconds/60;
         NSUInteger hours = minutes/60;
@@ -406,25 +405,25 @@ typedef enum {
         min = [min stringByReplacingOccurrencesOfString:@" " withString:@"0"];
         
         [freeChoiceButton setTitle:[NSString stringWithFormat:@"%@:%@", hour, min] forState:UIControlStateNormal];
+        
     }else if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMin) {
+        
+        hour = [NSString stringWithFormat:@"%2d", startComponents.hour];
+        min = [NSString stringWithFormat:@"%2d", startComponents.minute];
+        
+        
         hour = [NSString stringWithFormat:@"%2d", endComponents.hour];
         min = [NSString stringWithFormat:@"%2d", endComponents.minute];
         hour = [hour stringByReplacingOccurrencesOfString:@" " withString:@"0"];
         min = [min stringByReplacingOccurrencesOfString:@" " withString:@"0"];
         [freeChoiceButton setTitle:[NSString stringWithFormat:@"bis %@:%@", hour, min] forState:UIControlStateNormal];
-        
     }else if(rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax){
-        
-        
         hour = [NSString stringWithFormat:@"%2d", startComponents.hour];
         min = [NSString stringWithFormat:@"%2d", startComponents.minute];
         hour = [hour stringByReplacingOccurrencesOfString:@" " withString:@"0"];
         min = [min stringByReplacingOccurrencesOfString:@" " withString:@"0"];
         [freeChoiceButton setTitle:[NSString stringWithFormat:@"von %@:%@", hour, min] forState:UIControlStateNormal];
-        
-        
     }
-    
     
     if ((
             [self.delegate respondsToSelector:@selector(calendarShouldStartRanging:)] && [self.delegate calendarShouldStartRanging:[self getCalendarOverview]]
@@ -441,8 +440,6 @@ typedef enum {
     
     UISlider *freeChoiceHourSlider = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceHourSlider];
     UISlider *freeChoiceMinuteSlider = [freeContainer viewWithTag:JxCalendarToolTipTagFreeChoiceMinuteSlider];
-    
-    
     
     [self placeMarkersInRect:toolTipRect];
     
@@ -481,8 +478,6 @@ typedef enum {
         [freeChoiceTimePicker selectRow:endComponents.hour inComponent:3 animated:YES];
         [freeChoiceTimePicker selectRow:endComponents.minute inComponent:4 animated:YES];
     }
-    
-    
     
     [self updateToolTipSizeWithRect:toolTipRect animated:animated withVisibleArea:area];
 }
@@ -899,7 +894,7 @@ typedef enum {
         components.second = 0;
         NSDate *date = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
         
-        if ([pickerView selectedRowInComponent:0] == 0) {
+        if (newDayType == JxCalendarDayTypeFreeChoiceMax) {
             //von
             start = date;
             components.hour = self.lengthOfDayInHours-1;

@@ -211,7 +211,6 @@
     }
     return nil;
 }
-
 - (JxCalendarDayTypeMask)availableDayTypesForDate:(NSDate *)date{
     if ([self isEndOfRange:date]){
         return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMin);
