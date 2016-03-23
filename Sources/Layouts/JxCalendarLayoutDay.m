@@ -14,8 +14,8 @@
 #import "JxCalendarDay.h"
 
 #define kJxCalendarLayoutDayMinimumEventHeight 40
-#define kJxCalendarLayoutDayOverlapItems .3
-
+#define kJxCalendarLayoutDayOverlapItemsPhone  .3
+#define kJxCalendarLayoutDayOverlapItemsPad    .0
 @interface JxCalendarLayoutDay ()
 
 @property (nonatomic, strong) NSDictionary *layoutInfo;
@@ -25,6 +25,12 @@
 
 @implementation JxCalendarLayoutDay
 
+- (CGFloat)overlapingEventsIndicator{
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+        return kJxCalendarLayoutDayOverlapItemsPad;
+    }
+    return kJxCalendarLayoutDayOverlapItemsPhone;
+}
 - (id)initWithSize:(CGSize)size andDay:(NSDate *)day{
     self = [self init];
     if (self) {
@@ -245,7 +251,7 @@
                              itemHeight);
     
     while (![self checkIfRectIsAvailable:rect forType:kJxCalendarDayLayoutCells]){
-        rect.origin.x = rect.origin.x + self.itemSize.width+ self.minimumInteritemSpacing - (rect.size.width*kJxCalendarLayoutDayOverlapItems);
+        rect.origin.x = rect.origin.x + self.itemSize.width + self.minimumInteritemSpacing - (rect.size.width * [self overlapingEventsIndicator]);
     }
     
     return rect;
@@ -268,7 +274,7 @@
         if (count == 3) {
             count = 0;
             
-            rect.origin.x = rect.origin.x + self.itemSize.width+ self.minimumInteritemSpacing;
+            rect.origin.x = rect.origin.x + (self.itemSize.width+self.minimumInteritemSpacing)*2;
             rect.origin.y = self.collectionView.contentOffset.y;
         }
     }
@@ -281,7 +287,7 @@
 #pragma mark - Headers Layout
 
 - (CGFloat)wholeDayAreaHeight{
-    return (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing));
+    return 3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing);
 }
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
@@ -299,7 +305,11 @@
     if (self.layoutInfo) {
         for (UICollectionViewLayoutAttributes *attributes in [self.layoutInfo[type] allValues]) {
             
-            if (CGRectIntersectsRect(attributes.frame, CGRectMake(rect.origin.x + rect.size.width * kJxCalendarLayoutDayOverlapItems, rect.origin.y, rect.size.width*kJxCalendarLayoutDayOverlapItems, rect.size.height))) {
+            if (CGRectIntersectsRect(attributes.frame,
+                                     CGRectMake(rect.origin.x + rect.size.width * [self overlapingEventsIndicator],
+                                                rect.origin.y,
+                                                rect.size.width * [self overlapingEventsIndicator],
+                                                rect.size.height))) {
                 return NO;
             }
             
