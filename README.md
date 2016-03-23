@@ -1,5 +1,6 @@
 # JxCalendar
-Extensive calendar to use as DatePicker or Event Display
+Extensive calendar to use as DatePicker or Event Display<br/>
+Developed for Abacus Research AG
 
 # Views
 
