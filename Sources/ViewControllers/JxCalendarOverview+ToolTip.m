@@ -207,13 +207,10 @@ typedef enum {
     float hourStepValue = 1;
     float newHourStep = roundf((freeChoiceHourSlider.value) / hourStepValue);
     freeChoiceHourSlider.value = newHourStep * hourStepValue;
-    NSLog(@"value hour changed %f", freeChoiceHourSlider.value);
-    
+
     float minuteStepValue = 15;
     float newMinuteStep = roundf((freeChoiceMinuteSlider.value) / minuteStepValue);
     freeChoiceMinuteSlider.value = newMinuteStep * minuteStepValue;
-    NSLog(@"value minute changed %f", freeChoiceMinuteSlider.value);
-    
     
     NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
     components.hour = 0;
@@ -321,12 +318,12 @@ typedef enum {
     
     
     if (toolTipRect.origin.y  < kJxCalendarToolTipMinDistanceToBorder) {
-        NSLog(@"tooltip unter rect");
+        // tooltip unter rect
         toolTipRect.origin.y = rect.origin.y+rect.size.height;
         arrowView.frame = CGRectMake(rect.origin.x + (rect.size.width-arrowView.frame.size.width)/2, rect.origin.y+rect.size.height-arrowView.frame.size.height,
                                      arrowView.frame.size.width, arrowView.frame.size.height);
     }else{
-        NSLog(@"tooltip over rect");
+        // tooltip over rect
         arrowView.frame = CGRectMake(rect.origin.x + (rect.size.width-arrowView.frame.size.width)/2, rect.origin.y,
                                      arrowView.frame.size.width, arrowView.frame.size.height);
     }
@@ -338,12 +335,12 @@ typedef enum {
     CGMutablePathRef pathRef = CGPathCreateMutable();
     
     if (toolTipRect.origin.y  < kJxCalendarToolTipMinDistanceToBorder) {
-        NSLog(@"tooltip unter rect");
+        // tooltip unter rect
         CGPathMoveToPoint(pathRef, NULL, 0, 10);
         CGPathAddLineToPoint(pathRef, NULL, 7, 0);
         CGPathAddLineToPoint(pathRef, NULL, 14, 10);
     }else{
-        NSLog(@"tooltip over rect");
+        // tooltip over rect
         CGPathMoveToPoint(pathRef, NULL, 0, 0);
         CGPathAddLineToPoint(pathRef, NULL, 7, 10);
         CGPathAddLineToPoint(pathRef, NULL, 14, 0);
@@ -448,8 +445,6 @@ typedef enum {
     NSUInteger seconds = ABS((int)duration);
     NSUInteger minutes = seconds/60;
     NSUInteger hours = minutes/60;
-    
-    NSLog(@"hours %lu minutes %lu", (unsigned long)hours, (unsigned long)minutes % 60);
     
     minutes = minutes%60;
     
@@ -742,7 +737,7 @@ typedef enum {
     }
 }
 - (IBAction)freeChoiceChange:(id)sender{
-    NSLog(@"timepicker oder ähnliches öffnen");
+    // timepicker oder ähnliches öffnen
     
     UIView *toolTipView = [self.view viewWithTag:JxCalendarToolTipTagView];
 

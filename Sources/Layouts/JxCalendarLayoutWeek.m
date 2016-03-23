@@ -226,14 +226,8 @@
 }
 - (BOOL)checkIfRectIsAvailable:(CGRect)rect forType:(NSString *)type{
     
-    //NSLog(@"rect %f x %f size %f x %f", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
-    
     if (self.layoutInfo) {
         for (UICollectionViewLayoutAttributes *attributes in [self.layoutInfo[type] allValues]) {
-            
-            
-            
-            //NSLog(@"intersect %f x %f size %f x %f", attributes.frame.origin.x, attributes.frame.origin.y, attributes.frame.size.width, attributes.frame.size.height);
             
             if (CGRectIntersectsRect(attributes.frame, rect)) {
                 return NO;

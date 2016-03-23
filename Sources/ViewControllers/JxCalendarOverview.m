@@ -91,7 +91,6 @@
             self.startDate = [NSDate date];
         }
         
-        NSLog(@"renderWeekDayLabels %d", self.renderWeekDayLabels);
     }
     return self;
 }
@@ -1548,8 +1547,6 @@
 #pragma mark <UIScrollViewDelegate>
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     [self hideToolTip];
-    
-    //NSLog(@"offset Y: %f", scrollView.contentOffset.y);
 }
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     if (decelerate) {

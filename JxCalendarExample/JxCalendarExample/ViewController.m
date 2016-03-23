@@ -55,16 +55,12 @@
     
     self.dataSource = [[TestCalendarDataSource alloc] init];
     
-    
-    //NSLog(@"usable size %f x %f", self.view.frame.size.width, self.view.frame.size.height);
-    
-    
     _overview = [[JxCalendarOverview alloc] initWithDataSource:_dataSource
                                                       andStyle:JxCalendarOverviewStyleMonthGrid
                                                        andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)
                                                   andStartDate:[NSDate date]
                                             andStartAppearance:JxCalendarAppearanceMonth
-                                             andSelectionStyle:JxCalendarSelectionStyleRangeOnly];
+                                             andSelectionStyle:JxCalendarSelectionStyleDefault];
     
     _overview.delegate = self;
     _overview.renderWeekDayLabels = YES;
@@ -150,10 +146,8 @@
     
     if (index >= 0) {
         [self.dataSource.rangedDates replaceObjectAtIndex:index withObject:rangeElement];
-        NSLog(@"replace date");
     }else{
         [self.dataSource.rangedDates addObject:rangeElement];
-        NSLog(@"add date");
     }
     
 }

@@ -122,28 +122,16 @@
 }
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     
-    NSLog(@"viewWillTransitionToSize %f x %f", size.width, size.height);
+    self.collectionView.pagingEnabled = NO;
     
-    
-    
-    //    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-    
-
-            self.collectionView.pagingEnabled = NO;
-            
-            [self.collectionView.collectionViewLayout invalidateLayout];
+    [self.collectionView.collectionViewLayout invalidateLayout];
     
     JxCalendarLayoutWeek *layout = [[JxCalendarLayoutWeek alloc] initWithSize:size];
     layout.source = self;
     
-            [self.collectionView setCollectionViewLayout:layout animated:NO];
-            
-   
-    [self viewDidLayoutSubviews];
+    [self.collectionView setCollectionViewLayout:layout animated:NO];
     
-    //    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-    //
-    //    }];
+    [self viewDidLayoutSubviews];
     
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
@@ -273,8 +261,7 @@
     }
 }
 - (void)scrollToDate:(NSDate *)date{
-    NSLog(@"week scroll to date");
-    
+
     JxCalendarLayoutWeek *layout = (JxCalendarLayoutWeek *)self.collectionView.collectionViewLayout;
     
     
@@ -347,8 +334,6 @@
     JxCalendarEventDay *event = (JxCalendarEventDay *)e;
     cell.textLabel.text = event.title;
     
-    NSLog(@"title: %@", cell.textLabel.text);
-    
     if ([self.dataSource respondsToSelector:@selector(isEventSelected:)] && [self.dataSource isEventSelected:e]) {
         cell.textLabel.textColor = e.fontColorSelected;
         cell.backgroundColor = e.backgroundColorSelected;
@@ -375,8 +360,6 @@
     return cell;
 }
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    
-    //NSLog(@"indexpath %ld section %ld", (long)indexPath.item, (long)indexPath.section);
     
     if (self.delegate) {
         
