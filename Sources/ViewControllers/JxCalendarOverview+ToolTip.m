@@ -614,12 +614,27 @@ typedef enum {
     if ((mask & JxCalendarDayTypeMaskFreeChoice) == JxCalendarDayTypeMaskFreeChoice) {
         [availableOptions addObject:@(JxCalendarDayTypeFreeChoice)];
     }
-    if ((mask & JxCalendarDayTypeMaskFreeChoiceMax) == JxCalendarDayTypeMaskFreeChoiceMax) {
-        [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMax)];
+    
+    if ((mask & JxCalendarDayTypeMaskFreeChoiceMax) == JxCalendarDayTypeMaskFreeChoiceMax || (mask & JxCalendarDayTypeMaskFreeChoiceMin) == JxCalendarDayTypeMaskFreeChoiceMin) {
+        NSIndexPath *path = [self getIndexPathForDate:rangeElement.date];
+        if ([self nextCellIsInRangeWithIndexPath:path]) {
+            if ((mask & JxCalendarDayTypeMaskFreeChoiceMax) == JxCalendarDayTypeMaskFreeChoiceMax){
+                [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMax)];
+                
+            }else{
+                [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMin)];
+            }
+        }else{
+            if ((mask & JxCalendarDayTypeMaskFreeChoiceMin) == JxCalendarDayTypeMaskFreeChoiceMin){
+                [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMin)];
+                
+            }else{
+                [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMax)];
+            }
+        }
+        
     }
-    if ((mask & JxCalendarDayTypeMaskFreeChoiceMin) == JxCalendarDayTypeMaskFreeChoiceMin) {
-        [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMin)];
-    }
+
     [availableOptions addObjectsFromArray:availableOptions];
     
     JxCalendarDayType doType = JxCalendarDayTypeUnknown;

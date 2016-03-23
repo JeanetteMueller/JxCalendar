@@ -213,16 +213,17 @@
 }
 
 - (JxCalendarDayTypeMask)availableDayTypesForDate:(NSDate *)date{
-//    if ([self isEndOfRange:date] || [self isStartOfRange:date]) {
-//        return JxCalendarDayTypeMaskWholeDay;
-//    }
+    if ([self isEndOfRange:date]){
+        return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMin);
+    }
+    if ([self isStartOfRange:date]) {
+        return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMax);
+    }
     
-    return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMin);
+    return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMin|JxCalendarDayTypeMaskFreeChoiceMax);
 }
 - (JxCalendarDayType)defaultDayTypeForDate:(NSDate *)date{
-//    if ([self isEndOfRange:date] || [self isStartOfRange:date]) {
-//        return JxCalendarDayTypeWholeDay;
-//    }
+    
     return JxCalendarDayTypeFreeChoice;
 }
 - (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date{
