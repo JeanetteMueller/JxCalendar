@@ -878,20 +878,9 @@ typedef enum {
         
         if (component == 0) {
             
-            NSMutableArray *types = [NSMutableArray array];
-            
-            JxCalendarDayTypeMask mask = [self.dataSource availableDayTypesForDate:self.toolTipDate];
-            if ((mask & JxCalendarDayTypeMaskFreeChoiceMax) == JxCalendarDayTypeMaskFreeChoiceMax) {
-                [types addObject:[[NSAttributedString alloc] initWithString:@"von" attributes:@{}]];
-            }
-            if ((mask & JxCalendarDayTypeMaskFreeChoiceMin) == JxCalendarDayTypeMaskFreeChoiceMin) {
-                [types addObject:[[NSAttributedString alloc] initWithString:@"bis" attributes:@{}]];
-            }
-            
-            if (types.count < 2) {
+            if ([pickerView numberOfRowsInComponent:0] < 2) {
                 return;
             }
-            
             
             if(row == 0){
                 newDayType = JxCalendarDayTypeFreeChoiceMax;
@@ -901,41 +890,34 @@ typedef enum {
 
         }
         
+        NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
+        components.hour = [pickerView selectedRowInComponent:1];
+        components.minute = [pickerView selectedRowInComponent:2];
+        components.second = 0;
+        NSDate *date = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
         
+        if ([pickerView selectedRowInComponent:0] == 0) {
+            //von
+            
+            start = date;
             NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
-            components.hour = [pickerView selectedRowInComponent:1];
-            components.minute = [pickerView selectedRowInComponent:2];
+            components.hour = self.lengthOfDayInHours-1;
+            components.minute = 59;
+            components.second = 59;
+            
+            end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+            
+        }else{
+            //bis
+            
+            NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
+            components.hour = 0;
+            components.minute = 0;
             components.second = 0;
-            NSDate *date = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
             
-            
-            
-            if ([pickerView selectedRowInComponent:0] == 0) {
-                //von
-                
-                start = date;
-                NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
-                components.hour = self.lengthOfDayInHours-1;
-                components.minute = 59;
-                components.second = 59;
-                
-                end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
-                
-            }else{
-                //bis
-                
-                NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.toolTipDate];
-                components.hour = 0;
-                components.minute = 0;
-                components.second = 0;
-                
-                start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
-                end = date;
-            }
-        
-        
-        
-        
+            start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+            end = date;
+        }
         
     }else{
         if (component == 2) {
@@ -951,7 +933,6 @@ typedef enum {
                 [pickerView selectRow:row inComponent:3 animated:YES];
             }
         }
-        
         
         //check minutes
         if ([pickerView selectedRowInComponent:0] == [pickerView selectedRowInComponent:3]) {
