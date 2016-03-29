@@ -6,15 +6,11 @@
 //  Copyright © 2015 Jeanette Müller. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "JxCalendarViewController.h"
 #import "JxCalendarDefinitions.h"
 #import "JxCalendarProtocols.h"
 
-@interface JxCalendarDay : UICollectionViewController <UICollectionViewDelegateFlowLayout>
-
-@property (nonatomic, unsafe_unretained) id<JxCalendarDataSource> dataSource;
-@property (nonatomic, unsafe_unretained) id<JxCalendarDelegate> delegate;
-@property (strong, nonatomic) NSDate *startDate;
+@interface JxCalendarDay : JxCalendarViewController <UICollectionViewDelegateFlowLayout>
 
 - (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource andSize:(CGSize)size andStartDate:(NSDate *)start;
 

@@ -238,6 +238,17 @@
 //    }
     return NO;
 }
+
+- (UIView *)viewForPullToRefreshHeaderWhileOnAppearance:(JxCalendarAppearance)appearance{
+    UIView *v = [[UIView alloc] init];
+    v.backgroundColor = [UIColor cyanColor];
+    return v;
+}
+- (UIView *)viewForPullToRefreshFooterWhileOnAppearance:(JxCalendarAppearance)appearance{
+    UIView *v = [[UIView alloc] init];
+    v.backgroundColor = [UIColor purpleColor];
+    return v;
+}
 #pragma mark Helper
 - (void)sortRangedObjects{
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];

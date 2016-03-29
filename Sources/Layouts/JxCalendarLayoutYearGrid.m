@@ -137,7 +137,7 @@
                                     CGRectGetMaxY(lastLayoutAttributes.frame) + ((self.itemSize.height+self.minimumLineSpacing) * 6 ) + self.sectionInset.bottom);
     
     if (contentSize.height < self.collectionView.frame.size.height) {
-        contentSize.height = self.collectionView.frame.size.height;
+        contentSize.height = self.collectionView.frame.size.height+1;
     }
     return contentSize;
 

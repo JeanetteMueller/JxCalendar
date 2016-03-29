@@ -21,10 +21,13 @@
 @property (nonatomic, readwrite) JxCalendarAppearance startAppearance;
 
 @property (nonatomic, readwrite) BOOL renderWeekDayLabels; /* default YES */
+@property (nonatomic, readwrite) BOOL initialScrollDone;
 
 - (NSDateComponents *)startComponents;
 - (NSDateComponents *)componentsFromDate:(NSDate *)date;
 
 - (JxCalendarOverview *)getCalendarOverview;
-
+- (JxCalendarAppearance)getAppearance;
+- (void)startUpdateRefreshViews;
+- (void)updateRefreshViews;
 @end

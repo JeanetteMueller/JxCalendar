@@ -16,6 +16,7 @@
 #define kJxCalendarLayoutDayMinimumEventHeight 40
 #define kJxCalendarLayoutDayOverlapItemsPhone  .3
 #define kJxCalendarLayoutDayOverlapItemsPad    .0
+
 @interface JxCalendarLayoutDay ()
 
 @property (nonatomic, strong) NSDictionary *layoutInfo;

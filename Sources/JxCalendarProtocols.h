@@ -49,6 +49,9 @@
 - (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date;
 - (JxCalendarRangeStyleInCell)rangeStyleForDate:(NSDate *)date; // default: JxCalendarRangeStyleInCellHorizontal
 
+- (UIView *)viewForPullToRefreshHeaderWhileOnAppearance:(JxCalendarAppearance)appearance;
+- (UIView *)viewForPullToRefreshFooterWhileOnAppearance:(JxCalendarAppearance)appearance;
+
 @end
 
 
@@ -60,9 +63,13 @@
 - (void)calendarWillTransitionFrom:(JxCalendarAppearance)fromAppearance to:(JxCalendarAppearance)toAppearance;
 - (void)calendarDidTransitionTo:(JxCalendarAppearance)toAppearance;
 
-
-
-
+- (void)calendar:(JxCalendarOverview *)calendar didScroll:(CGPoint)offset whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendar:(JxCalendarOverview *)calendar didReachRefreshOffsetForHeader:(UIView *)header whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendar:(JxCalendarOverview *)calendar didReachRefreshOffsetForFooter:(UIView *)footer whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendar:(JxCalendarOverview *)calendar didRefreshByHeader:(UIView *)header whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendar:(JxCalendarOverview *)calendar didRefreshByFooter:(UIView *)footer whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendar:(JxCalendarOverview *)calendar didLeftRefreshOffsetForHeader:(UIView *)header whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendar:(JxCalendarOverview *)calendar didLeftRefreshOffsetForFooter:(UIView *)footer whileOnAppearance:(JxCalendarAppearance)appearance;
 
 #pragma mark Selections
 - (BOOL)calendarSelectionStyleSwitchable;

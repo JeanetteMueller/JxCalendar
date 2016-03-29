@@ -26,10 +26,12 @@
     self = [self init];
     if (self) {
         
+        CGFloat borders = 0;
+        
         self.headerReferenceSize = CGSizeMake(size.width, 64.0f);
         
-        self.minimumLineSpacing = 1;
-        self.minimumInteritemSpacing = 1;
+        self.minimumLineSpacing = borders;
+        self.minimumInteritemSpacing = borders;
         
     
         CGFloat maxWidth = floor(size.width /7)-self.minimumInteritemSpacing;

@@ -22,8 +22,6 @@
 
 @interface JxCalendarWeek ()
 
-@property (nonatomic, readwrite) BOOL initialScrollDone;
-
 @end
 
 @implementation JxCalendarWeek
@@ -136,12 +134,9 @@
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 - (void)viewDidLayoutSubviews{
-    [super viewDidLayoutSubviews];
-    
     JxCalendarLayoutWeek *layout = (JxCalendarLayoutWeek *)self.collectionView.collectionViewLayout;
     
     if (!self.initialScrollDone) {
-        self.initialScrollDone = YES;
         NSDate *now = [NSDate date];
         NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:now];
         
@@ -150,8 +145,13 @@
         
         NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:floor(section/7)*7];
         
+        CGFloat offset = components.hour*(60*kCalendarLayoutDaySectionHeightMultiplier) + (3*(kCalendarLayoutWholeDayHeight+layout.minimumLineSpacing))-kCalendarLayoutDayHeaderHalfHeight;
+        
+        if (offset > self.collectionView.contentSize.height-self.collectionView.frame.size.height) {
+            offset = self.collectionView.contentSize.height-self.collectionView.frame.size.height;
+        }
         [self.collectionView setContentOffset:CGPointMake([self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:headerIndexPath].frame.origin.x,
-                                                          components.hour*(60*kCalendarLayoutDaySectionHeightMultiplier) + (3*(kCalendarLayoutWholeDayHeight+layout.minimumLineSpacing))-kCalendarLayoutDayHeaderHalfHeight) animated:NO];
+                                                          offset) animated:NO];
     }
     UIColor *color = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
     
@@ -199,7 +199,7 @@
         
         
     }
-    
+    [super viewDidLayoutSubviews];
 }
 - (BOOL)navigationShouldPopOnBackButton{
     
@@ -442,26 +442,28 @@
             header.titleLabel.text = [NSString stringWithFormat:@"%li.\n%@", (long)dateComponents.day, [weekday stringFromDate:thisDate]];
             
             if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
-                header.backgroundColor = [UIColor colorWithRed:.8 green:.8 blue:.8 alpha:1];
+                header.backgroundColor = kJxCalendarWeekendBackgroundColor;
+                header.titleLabel.textColor = kJxCalendarWeekendTextColor;
             }else{
-                header.backgroundColor = [UIColor colorWithRed:.9 green:.9 blue:.9 alpha:1];
+                header.backgroundColor = kJxCalendarDayBackgroundColor;
+                header.titleLabel.textColor = kJxCalendarDayTextColor;
             }
             
             if ([self.dataSource respondsToSelector:@selector(isDaySelected:)] && [self.dataSource isDaySelected:thisDate]) {
-                
-                header.layer.borderColor = [UIColor redColor].CGColor;
-                header.titleLabel.textColor = [UIColor redColor];
-            }else{
-                header.layer.borderColor = [UIColor darkGrayColor].CGColor;
-                header.titleLabel.textColor = [UIColor darkGrayColor];
+                if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
+                    header.backgroundColor = kJxCalendarSelectedWeekendBackgroundColor;
+                }else{
+                    header.backgroundColor = kJxCalendarSelectedDayBackgroundColor;
+                }
+                header.titleLabel.textColor = kJxCalendarSelectedDayTextColor;
             }
-            header.layer.borderWidth = 1.0f;
             
             header.eventMarker.hidden = !([self.dataSource eventsAt:thisDate].count > 0);
             
         }else{
             header.titleLabel.text = @"";
-            header.backgroundColor = [UIColor colorWithRed:.95 green:.95 blue:.95 alpha:1];
+            header.eventMarker.hidden = YES;
+            header.backgroundColor = self.collectionView.backgroundColor;
             header.layer.borderColor = self.collectionView.backgroundColor.CGColor;
         }
         

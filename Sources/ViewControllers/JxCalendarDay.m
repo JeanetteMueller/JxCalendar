@@ -21,7 +21,6 @@
 
 @interface JxCalendarDay ()
 
-@property (nonatomic, readwrite) BOOL initialScrollDone;
 @property (strong, nonatomic) UIView *zeiger;
 @property (strong, nonatomic) NSTimer *zeigerPositionTimer;
 
@@ -79,38 +78,33 @@
                                                                      NSCalendarUnitMonth |
                                                                      NSCalendarUnitYear |
                                                                      NSCalendarUnitWeekday)
-                                                           fromDate:_startDate];
+                                                           fromDate:self.startDate];
     
     [self loadNow];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
-    [self setCurrentDate:_startDate];
+    [self setCurrentDate:self.startDate];
     
     [self.collectionView setScrollIndicatorInsets:UIEdgeInsetsMake(3*(kCalendarLayoutWholeDayHeight+[(JxCalendarLayoutDay *)self.collectionView.collectionViewLayout minimumLineSpacing]), 0, 0, 0)];
     
     [self updateZeigerPosition];
-
-    
 }
 
 - (void)viewDidLayoutSubviews {
     // If we haven't done the initial scroll, do it once.
     if (!self.initialScrollDone) {
-        self.initialScrollDone = YES;
         
         NSDate *now = [NSDate date];
         NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:now];
         CGFloat offset = [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                                                                                                   atIndexPath:[NSIndexPath indexPathForItem:0 inSection:components.hour]].frame.origin.y;
         
+        if (offset > self.collectionView.contentSize.height-self.collectionView.frame.size.height) {
+            offset = self.collectionView.contentSize.height-self.collectionView.frame.size.height;
+        }
         [self.collectionView setContentOffset:CGPointMake(0, offset) animated:NO];
     
         [self updateZeigerPosition];
@@ -124,6 +118,7 @@
         _zeiger.frame = zeigerFrame;
         
     }
+    [super viewDidLayoutSubviews];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -169,7 +164,7 @@
 }
 
 - (void)setCurrentDate:(NSDate *)currentDate{
-    _startDate = currentDate;
+    self.startDate = currentDate;
     
     if ([self.delegate respondsToSelector:@selector(calendarTitleOnDate:whileOnAppearance:)]) {
         
@@ -224,7 +219,7 @@
 }
 
 - (NSIndexPath *)indexPathForEvent:(JxCalendarEvent *)searchedEvent{
-    NSArray *events = [_dataSource eventsAt:self.startDate];
+    NSArray *events = [self.dataSource eventsAt:self.startDate];
     
     NSDateComponents *searchedComponents = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:searchedEvent.start];
     
@@ -248,7 +243,7 @@
 
 - (JxCalendarEvent *)eventForIndexPath:(NSIndexPath *)indexPath{
     
-    NSArray *events = [_dataSource eventsAt:self.startDate];
+    NSArray *events = [self.dataSource eventsAt:self.startDate];
     
     NSMutableArray *items = [NSMutableArray array];
     
@@ -325,7 +320,7 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    NSArray *events = [_dataSource eventsAt:self.startDate];
+    NSArray *events = [self.dataSource eventsAt:self.startDate];
     
     NSInteger count = 0;
     

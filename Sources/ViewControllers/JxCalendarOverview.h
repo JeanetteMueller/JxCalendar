@@ -51,5 +51,11 @@
 - (JxCalendarAppearance)getOverviewAppearance;
 - (BOOL)nextCellIsInRangeWithIndexPath:(NSIndexPath *)indexPath;
 - (BOOL)lastCellIsInRangeWithIndexPath:(NSIndexPath *)indexPath;
+
+- (void)startRefreshForHeader;
+- (void)startRefreshForFooter;
+
+- (void)finishRefreshForHeader;
+- (void)finishRefreshForFooter;
 @end
 

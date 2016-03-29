@@ -35,7 +35,6 @@
 
 
 
-@property (nonatomic, readwrite) BOOL initialScrollDone;
 
 @end
 
@@ -91,6 +90,8 @@
             self.startDate = [NSDate date];
         }
         
+        
+        
     }
     return self;
 }
@@ -121,12 +122,14 @@
     
     JxCalendarOverview *layout = (JxCalendarOverview *)self.collectionViewLayout;
     layout.renderWeekDayLabels = self.renderWeekDayLabels;
+    
+    
+    
+    
 }
 - (void)viewDidLayoutSubviews{
-    [super viewDidLayoutSubviews];
     
     if (!self.initialScrollDone) {
-        self.initialScrollDone = YES;
         
         NSIndexPath *indexPath = [self getIndexPathForDate:self.startDate];
         
@@ -150,9 +153,8 @@
             [self.collectionView setContentOffset:CGPointMake(0, headerAttr.frame.origin.y)
                                          animated:NO];
         }
-
-        
     }
+    [super viewDidLayoutSubviews];
 }
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
@@ -326,22 +328,12 @@
         }
     } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
         
-        
     }];
     
     
 }
 
-- (JxCalendarAppearance)getAppearance{
-    if ([self.navigationController.viewControllers.lastObject isKindOfClass:[JxCalendarDay class]]) {
-        return JxCalendarAppearanceDay;
-    }else if ([self.navigationController.viewControllers.lastObject isKindOfClass:[JxCalendarWeek class]]) {
-        return JxCalendarAppearanceWeek;
-    }else if ([self.navigationController.viewControllers.lastObject isEqual:self]) {
-        return [self getOverviewAppearance];
-    }
-    return JxCalendarAppearanceNone;
-}
+
 
 - (JxCalendarAppearance)getOverviewAppearance{
     return [self getOverviewAppearanceFromStyle:self.style];
@@ -413,6 +405,8 @@
                 y = 0;
             }
             [self.collectionView setContentOffset:CGPointMake(0, y) animated:animated];
+            
+            [self updateRefreshViews];
         }];
         
     }else{
@@ -881,6 +875,8 @@
     
     self.style = newStyle;
     
+    [self startUpdateRefreshViews];
+    
     [self.collectionView reloadData];
     
     __block __typeof(callback)blockCallback = callback;
@@ -904,6 +900,8 @@
                 [self.delegate calendarDidTransitionTo:newAppearance];
             }
         }
+        
+        [self updateRefreshViews];
         
         if (blockCallback) {
             
@@ -1034,21 +1032,42 @@
         
         NSInteger month = indexPath.section+1;
         
-        header.titleLabel.text = [NSString stringWithFormat:@"%@", [[[JxCalendarBasics defaultFormatter] monthSymbols] objectAtIndex:month-1]];
+        NSFont *titleFont;
+        NSFont *subFont;
+        
+        
         
         switch (self.style) {
             case JxCalendarOverviewStyleYearGrid:
+                header.titleLabel.textAlignment = NSTextAlignmentCenter;
                 if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad){
-                    header.titleLabel.font = [header.titleLabel.font fontWithSize:18];
+                    titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
                 }else{
-                    header.titleLabel.font = [header.titleLabel.font fontWithSize:14];
+                    titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
                 }
                 break;
             case JxCalendarOverviewStyleMonthGrid:
-                header.titleLabel.font = [header.titleLabel.font fontWithSize:16];
+                header.titleLabel.textAlignment = NSTextAlignmentLeft;
+                titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:28];
+                subFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
                 break;
         }
-        //header.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.3];
+        
+        
+        NSMutableAttributedString *title = [[NSMutableAttributedString alloc] initWithString:[[[JxCalendarBasics defaultFormatter] monthSymbols] objectAtIndex:month-1]
+                                                                                  attributes:@{NSFontAttributeName: titleFont,
+                                                                                               NSForegroundColorAttributeName: [UIColor redColor]}];
+        
+        if (self.style == JxCalendarOverviewStyleMonthGrid) {
+            [title appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@" %ld", [self startComponents].year]
+                                                                          attributes:@{NSFontAttributeName: subFont,
+                                                                                       NSForegroundColorAttributeName: [UIColor lightGrayColor]
+                                                                                       
+                                                                                       }]];
+        }
+        
+        header.titleLabel.attributedText = title;
+
         return header;
     }
     return nil;
@@ -1289,6 +1308,7 @@
         [self resetRangeForCell:cell];
     }
 }
+
 - (void)resetRangeForCell:(JxCalendarCell *)cell{
 
     cell.rangeDot.alpha = 0.0f;
@@ -1541,49 +1561,49 @@
             }
         }
     }
-    
 }
 
 #pragma mark <UIScrollViewDelegate>
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
     [self hideToolTip];
+    
+    [super scrollViewDidScroll:scrollView];
 }
+
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     if (decelerate) {
         
         if (self.pullToSwitchYears) {
+            [self startUpdateRefreshViews];
             BOOL switchToDifferentYear = NO;
-            
             BOOL startFromTop = YES;
             
             if (scrollView.contentOffset.y + scrollView.contentInset.top < -kPullToSwitchContextOffset) {
-                
                 [self switchToNewYear:[self startComponents].year-1];
                 switchToDifferentYear = YES;
                 startFromTop = NO;
             }else if (scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentInset.bottom > scrollView.contentSize.height+kPullToSwitchContextOffset){
-                
                 [self switchToNewYear:[self startComponents].year+1];
                 switchToDifferentYear = YES;
             }
             
             if (switchToDifferentYear) {
                 [self.collectionView reloadData];
-                
                 [self.collectionView performBatchUpdates:^{
-                    
                     [self.collectionView.collectionViewLayout invalidateLayout];
-                    
                 } completion:^(BOOL finished) {
                     if (startFromTop) {
                         [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 10, 10) animated:NO];
                     }else{
                         [self.collectionView scrollRectToVisible:CGRectMake(0, self.collectionView.contentSize.height-10, 10, 10) animated:NO];
                     }
+                    [self updateRefreshViews];
                 }];
             }
         }
     }
+    [super scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
 }
 
 @end

@@ -21,6 +21,8 @@
 @property (strong, nonatomic) JxCalendarOverview *overview;
 
 @property (nonatomic, readwrite) BOOL startOpened;
+
+
 @end
 
 @implementation ViewController
@@ -57,7 +59,7 @@
     
     _overview = [[JxCalendarOverview alloc] initWithDataSource:_dataSource
                                                       andStyle:JxCalendarOverviewStyleMonthGrid
-                                                       andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-80)
+                                                       andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-64)
                                                   andStartDate:[NSDate date]
                                             andStartAppearance:JxCalendarAppearanceMonth
                                              andSelectionStyle:JxCalendarSelectionStyleDefault];
@@ -65,6 +67,7 @@
     _overview.delegate = self;
     _overview.renderWeekDayLabels = YES;
     _overview.lengthOfDayInHours = 24;
+    _overview.pullToSwitchYears = NO;
     
     
     self.navRoot = [[UINavigationController alloc] initWithRootViewController:_overview];
@@ -74,8 +77,16 @@
     
 //    self.navRoot.view.frame = CGRectMake(20, 20, self.view.frame.size.width-40, self.view.frame.size.height-40);
 //    [self.view addSubview:self.navRoot.view];
+    
+    //[NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(startRefreshDemo_Header) userInfo:nil repeats:NO];
+    //[NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(startRefreshDemo_Footer) userInfo:nil repeats:NO];
 }
-
+- (void)startRefreshDemo_Header{
+    [self calendar:_overview didRefreshByHeader:nil whileOnAppearance:_overview.getAppearance];
+}
+- (void)startRefreshDemo_Footer{
+    [self calendar:_overview didRefreshByFooter:nil whileOnAppearance:_overview.getAppearance];
+}
 #pragma mark <JxCalendarDelegate>
 - (BOOL)calendarShouldStartRanging:(JxCalendarOverview *)calendar{
     return YES;
@@ -172,4 +183,35 @@
     return -1;
 }
 
+#pragma mark Refresh
+- (void)calendar:(JxCalendarOverview *)calendar didLeftRefreshOffsetForHeader:(UIView *)header whileOnAppearance:(JxCalendarAppearance)appearance{
+    NSLog(@"isOutOfRefreshOffsetForHeader");
+    header.backgroundColor = [UIColor cyanColor];
+}
+- (void)calendar:(JxCalendarOverview *)calendar didLeftRefreshOffsetForFooter:(UIView *)footer whileOnAppearance:(JxCalendarAppearance)appearance{
+    NSLog(@"isOutOfRefreshOffsetForFooter");
+    footer.backgroundColor = [UIColor purpleColor];
+}
+- (void)calendar:(JxCalendarOverview *)calendar didReachRefreshOffsetForHeader:(UIView *)header whileOnAppearance:(JxCalendarAppearance)appearance{
+    NSLog(@"didReachRefreshOffsetForHeader");
+    header.backgroundColor = [UIColor redColor];
+}
+- (void)calendar:(JxCalendarOverview *)calendar didReachRefreshOffsetForFooter:(UIView *)footer whileOnAppearance:(JxCalendarAppearance)appearance{
+    NSLog(@"didReachRefreshOffsetForFooter");
+    footer.backgroundColor = [UIColor redColor];
+}
+- (void)calendar:(JxCalendarOverview *)calendar didRefreshByHeader:(UIView *)header whileOnAppearance:(JxCalendarAppearance)appearance{
+    DLog(@"refresh by header start here");
+    
+    [calendar startRefreshForHeader];
+    
+    [NSTimer scheduledTimerWithTimeInterval:5 target:calendar selector:@selector(finishRefreshForHeader) userInfo:nil repeats:NO];
+}
+- (void)calendar:(JxCalendarOverview *)calendar didRefreshByFooter:(UIView *)footer whileOnAppearance:(JxCalendarAppearance)appearance{
+    DLog(@"refresh by footer start here");
+    
+    [calendar startRefreshForFooter];
+    
+    [NSTimer scheduledTimerWithTimeInterval:5 target:calendar selector:@selector(finishRefreshForFooter) userInfo:nil repeats:NO];
+}
 @end

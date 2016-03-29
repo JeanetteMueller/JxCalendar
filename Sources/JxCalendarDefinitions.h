@@ -12,7 +12,7 @@
 #define JxCalendarDefinitions_h
 
 #define kPullToSwitchContextOffset                  80
-
+#define kPullToSwitchContextAnimationDuration       0.3f
 #define kJxCalendarYearLayoutCells                  @"JxCalendarYearLayoutCells"
 #define kJxCalendarYearLayoutHeader                 @"JxCalendarYearLayoutHeader"
 
@@ -28,14 +28,14 @@
 #define kJxCalendarDayLayoutWholeDay                @"JxCalendarDayLayoutWholeDay"
 #define kJxCalendarDayLayoutHeader                  @"JxCalendarDayLayoutHeader"
 
-#define kCalendarLayoutDaySectionHeightMultiplier    2
+#define kCalendarLayoutDaySectionHeightMultiplier    1
 #define kCalendarLayoutDayHeaderHeight              49
 #define kCalendarLayoutDayHeaderHalfHeight          24
 #define kCalendarLayoutDayHeaderTextWidth           65
 
 #define kCalendarLayoutWholeDayHeight               30
 
-#define kJxCalendarBackgroundColor                  [UIColor colorWithRed:0.93 green:0.93 blue:0.93 alpha:1.0]
+#define kJxCalendarBackgroundColor                  [UIColor colorWithRed:0.975 green:0.975 blue:0.975 alpha:1.0]
 
 #define kJxCalendarDayBackgroundColor               [UIColor whiteColor]
 #define kJxCalendarDayBorderColor                   kJxCalendarDayBackgroundColor
@@ -46,7 +46,7 @@
 
 #define kJxCalendarSelectedDayBackgroundColor       kJxCalendarDayBackgroundColor
 #define kJxCalendarSelectedWeekendBackgroundColor   kJxCalendarWeekendBackgroundColor
-#define kJxCalendarSelectedDayBorderColor           [UIColor redColor]
+#define kJxCalendarSelectedDayBorderColor           kJxCalendarSelectedDayBackgroundColor
 #define kJxCalendarSelectedDayTextColor             [UIColor redColor]
 
 #define kJxCalendarRangeDotBackgroundColor          [UIColor colorWithRed:1.0 green:0.9321 blue:0.7866 alpha:1.0]
