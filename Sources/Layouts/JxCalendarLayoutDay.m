@@ -115,13 +115,9 @@
                 itemAttributes.frame = [self frameForDurationEvent:(JxCalendarEventDuration *)e atIndexPath:indexPath];
                 itemAttributes.zIndex = 10;
                 cellLayoutInfo[indexPath] = itemAttributes;
+            }else{
+                NSLog(@"aaahm something's wrong!!!");
             }
-
-            newLayoutInfo[kJxCalendarDayLayoutCells] = cellLayoutInfo;
-            newLayoutInfo[kJxCalendarDayLayoutWholeDay] = wholeDayLayoutInfo;
-            newLayoutInfo[kJxCalendarDayLayoutHeader] = headerLayoutInfo;
-            
-            self.layoutInfo = newLayoutInfo;
         }
     }
     
@@ -182,7 +178,14 @@
 #pragma mark - Cells Layout
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath{
-    return self.layoutInfo[kJxCalendarDayLayoutCells][indexPath];
+
+    if (self.layoutInfo[kJxCalendarDayLayoutCells][indexPath]) {
+        return self.layoutInfo[kJxCalendarDayLayoutCells][indexPath];
+    }
+    if (self.layoutInfo[kJxCalendarDayLayoutWholeDay][indexPath]) {
+        return self.layoutInfo[kJxCalendarDayLayoutWholeDay][indexPath];
+    }
+    return nil;
 }
 
 - (NSArray <JxCalendarEvent*> *)eventsForWholeDay{
@@ -201,7 +204,9 @@
    
     NSMutableArray *items = [NSMutableArray array];
     
-    for (JxCalendarEvent *e in [self.source.dataSource eventsAt:_day]) {
+    NSArray <JxCalendarEvent*> *events = [self.source.dataSource eventsAt:_day];
+    
+    for (JxCalendarEvent *e in events) {
         if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
             JxCalendarEventDuration *event = (JxCalendarEventDuration *)e;
             

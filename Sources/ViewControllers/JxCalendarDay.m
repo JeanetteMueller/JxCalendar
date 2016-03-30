@@ -150,16 +150,17 @@
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
-    
     self.collectionView.pagingEnabled = NO;
     
     [self.collectionView.collectionViewLayout invalidateLayout];
     
-    JxCalendarLayoutDay *layout = [[JxCalendarLayoutDay alloc] initWithSize:self.collectionView.bounds.size andDay:_now];
+    JxCalendarLayoutDay *layout = [[JxCalendarLayoutDay alloc] initWithSize:self.collectionView.bounds.size andDay:self.startDate];
     layout.source = self;
     
     [self.collectionView setCollectionViewLayout:layout animated:NO];
 
+    [self viewDidLayoutSubviews];
+    
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
@@ -279,11 +280,13 @@
     
     if (path) {
         
-        UICollectionViewLayoutAttributes *attr = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:path];
-        
         JxCalendarLayoutDay *layout = (JxCalendarLayoutDay *)self.collectionView.collectionViewLayout;
+        if (layout) {
+            UICollectionViewLayoutAttributes *attr = [layout layoutAttributesForItemAtIndexPath:path];
+            
+            [self.collectionView scrollRectToVisible:CGRectMake(attr.frame.origin.x, attr.frame.origin.y - [layout wholeDayAreaHeight]-kCalendarLayoutDayHeaderHalfHeight, attr.frame.size.width, attr.frame.size.height) animated:YES];
+        }
         
-        [self.collectionView scrollRectToVisible:CGRectMake(attr.frame.origin.x, attr.frame.origin.y - [layout wholeDayAreaHeight]-kCalendarLayoutDayHeaderHalfHeight, attr.frame.size.width, attr.frame.size.height) animated:YES];
     }
     
     
@@ -300,12 +303,15 @@
             
             NSIndexPath *headPath = [NSIndexPath indexPathForItem:0 inSection:path.section+7-[JxCalendarBasics normalizedWeekDay:dateComponents.weekday]];
             
-            UICollectionViewLayoutAttributes *headAttr = [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:headPath];
-            
-            UICollectionViewLayoutAttributes *attr = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:path];
-            
-            [self.collectionView scrollRectToVisible:CGRectMake(headAttr.frame.origin.x, attr.frame.origin.y, attr.frame.size.width, 50) animated:YES];
-            
+            JxCalendarLayoutDay *layout = (JxCalendarLayoutDay *)self.collectionView.collectionViewLayout;
+            if (layout) {
+                
+                UICollectionViewLayoutAttributes *headAttr = [layout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:headPath];
+                
+                UICollectionViewLayoutAttributes *attr = [layout layoutAttributesForItemAtIndexPath:path];
+                
+                [self.collectionView scrollRectToVisible:CGRectMake(headAttr.frame.origin.x, attr.frame.origin.y, attr.frame.size.width, 50) animated:YES];
+            }
         }
     }
     
