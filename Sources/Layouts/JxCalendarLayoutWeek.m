@@ -28,14 +28,12 @@
         
         CGFloat borders = 0;
         
-        self.headerReferenceSize = CGSizeMake(size.width, 64.0f);
-        
-        self.minimumLineSpacing = borders;
+        self.minimumLineSpacing = 1.0f;
         self.minimumInteritemSpacing = borders;
         
     
         CGFloat maxWidth = floor(size.width /7)-self.minimumInteritemSpacing;
-        //self.itemSize = CGSizeMake(maxWidth, 100);
+        self.itemSize = CGSizeMake(maxWidth-1, 64);
         self.headerReferenceSize = CGSizeMake(maxWidth, 64.0f);
         
         
@@ -142,8 +140,7 @@
     self.layoutInfo = newLayoutInfo;
 }
 
-- (nullable NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect
-{
+- (nullable NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect{
     NSMutableArray *allAttributes = [NSMutableArray arrayWithCapacity:self.layoutInfo.count];
     
     [self.layoutInfo enumerateKeysAndObjectsUsingBlock:^(NSString *elementIdentifier,
@@ -161,12 +158,13 @@
     return allAttributes;
 }
 
-- (CGSize)collectionViewContentSize
-{
-    
+- (CGSize)collectionViewContentSize{
 
     NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
-    CGSize contentSize = CGSizeMake(numOfSections * (self.headerReferenceSize.width+self.minimumInteritemSpacing),
+    
+    double pages = ceil(numOfSections / 7);
+    
+    CGSize contentSize = CGSizeMake(pages * self.collectionView.frame.size.width,
                                     self.headerReferenceSize.height + self.minimumLineSpacing + (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing)) + 24.5* (60*kCalendarLayoutDaySectionHeightMultiplier));
 
     return contentSize;
@@ -175,8 +173,7 @@
 
 #pragma mark - Cells Layout
 
-- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath{
     UICollectionViewLayoutAttributes *attr = self.layoutInfo[kJxCalendarWeekLayoutCells][indexPath];
     
     if (!attr) {
@@ -188,11 +185,17 @@
 
 - (CGRect)frameForDayEvent:(JxCalendarEventDay *)event atIndexPath:(NSIndexPath *)indexPath{
 
+    CGFloat x, y, width, height;
     
-    CGRect newRect = CGRectMake(indexPath.section * (self.headerReferenceSize.width+self.minimumInteritemSpacing),
-                                self.collectionView.contentOffset.y+ self.headerReferenceSize.height + self.minimumLineSpacing,
-                                self.headerReferenceSize.width,
-                                kCalendarLayoutWholeDayHeight);
+    x = (self.collectionView.frame.size.width * floor(indexPath.section / 7)) + ((indexPath.section % 7) * (self.headerReferenceSize.width+self.minimumInteritemSpacing));
+    y = self.collectionView.contentOffset.y+ self.headerReferenceSize.height + self.minimumLineSpacing;
+    width = self.itemSize.width;
+    height = kCalendarLayoutWholeDayHeight;
+    
+    CGRect newRect = CGRectMake(x,
+                                y,
+                                width,
+                                height);
     
     int count = 0;
     while (![self checkIfRectIsAvailable:newRect forType:kJxCalendarWeekLayoutWholeDay]){
@@ -208,9 +211,10 @@
 - (CGRect)frameForDurationEvent:(JxCalendarEventDuration *)event atIndexPath:(NSIndexPath *)indexPath{
     
     NSDateComponents *startComponents = [[self.source.dataSource calendar] components:NSCalendarUnitHour|NSCalendarUnitMinute fromDate:event.start];
+    CGFloat x = (self.collectionView.frame.size.width * floor(indexPath.section / 7)) + ((indexPath.section % 7) * (self.headerReferenceSize.width+self.minimumInteritemSpacing));
     
-    CGRect newRect = CGRectMake(indexPath.section * (self.headerReferenceSize.width+self.minimumInteritemSpacing),
-                                self.headerReferenceSize.height + self.minimumLineSpacing + (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing)) + (startComponents.hour * (60*kCalendarLayoutDaySectionHeightMultiplier) + startComponents.minute*kCalendarLayoutDaySectionHeightMultiplier),
+    CGRect newRect = CGRectMake(x,
+                                self.headerReferenceSize.height + self.minimumLineSpacing + (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing)) + self.minimumLineSpacing + (startComponents.hour * (60*kCalendarLayoutDaySectionHeightMultiplier) + startComponents.minute*kCalendarLayoutDaySectionHeightMultiplier),
                                 20,
                                 (event.duration/60)*kCalendarLayoutDaySectionHeightMultiplier - (2*self.minimumInteritemSpacing));
     
@@ -224,7 +228,6 @@
     }
     
     return newRect;
-
 }
 - (BOOL)checkIfRectIsAvailable:(CGRect)rect forType:(NSString *)type{
     
@@ -234,24 +237,23 @@
             if (CGRectIntersectsRect(attributes.frame, rect)) {
                 return NO;
             }
-            
         }
     }
     
-    
     return YES;
 }
+
 #pragma mark - Headers Layout
 
-- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-{
+- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     return self.layoutInfo[kJxCalendarWeekLayoutHeader][indexPath];
 }
 
-- (CGRect)frameForHeaderAtSection:(NSInteger)section
-{
+- (CGRect)frameForHeaderAtSection:(NSInteger)section{
+    
+    CGFloat x = (self.collectionView.frame.size.width * floor(section / 7)) + ((section % 7) * (self.headerReferenceSize.width+self.minimumInteritemSpacing));
 
-    return CGRectMake(section * (self.headerReferenceSize.width + self.minimumInteritemSpacing),
+    return CGRectMake(x, //section * (self.headerReferenceSize.width + self.minimumInteritemSpacing),
                       self.collectionView.contentOffset.y,
                       self.headerReferenceSize.width,
                       self.headerReferenceSize.height);
@@ -260,7 +262,7 @@
 
 #pragma mark sticky Headers
 - (CGFloat)pageWidth {
-    return (self.headerReferenceSize.width + self.minimumInteritemSpacing) * 7;
+    return self.collectionView.frame.size.width;
 }
 
 - (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity

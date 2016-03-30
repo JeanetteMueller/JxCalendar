@@ -405,6 +405,12 @@
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         JxCalendarDayHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarDayHeader" forIndexPath:indexPath];
         header.titleLabel.text = [NSString stringWithFormat:@"%ld Uhr", (long)indexPath.section % 24];
+        header.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
+        
+        UIColor *color = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
+        
+        header.titleLabel.textColor = color;
+        header.line.backgroundColor = color;
         header.backgroundColor = [UIColor clearColor];
         return header;
     }

@@ -14,8 +14,6 @@
 #import "JxCalendarEvent.h"
 #import "JxCalendarEventDay.h"
 #import "JxCalendarEventDuration.h"
-#import "JxCalendarDayHeader.h"
-#import "JxCalendarLayoutDay.h"
 #import "JxCalendarDay.h"
 #import "UIViewController+CalendarBackButtonHandler.h"
 
@@ -156,25 +154,21 @@
     }
     UIColor *color = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
     
-    
-    
     for (int r = 0; r < 25; r++) {
         
-        CGFloat baseTopDistance = layout.headerReferenceSize.height + (3*(kCalendarLayoutWholeDayHeight+layout.minimumLineSpacing)) + r * (60*kCalendarLayoutDaySectionHeightMultiplier);
+        CGFloat baseTopDistance = layout.headerReferenceSize.height + (3*(kCalendarLayoutWholeDayHeight+layout.minimumLineSpacing)) + layout.minimumLineSpacing + r * (60*kCalendarLayoutDaySectionHeightMultiplier);
         
         UILabel *time = [self.collectionView viewWithTag:9900+r];
         if (!time) {
             time = [[UILabel alloc] init];
             time.tag = 9900+r;
-            time.backgroundColor = [UIColor whiteColor];
+            time.backgroundColor = [UIColor clearColor];
             time.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
             time.textColor = color;
             time.textAlignment = NSTextAlignmentCenter;
             time.text = [NSString stringWithFormat:@"%d Uhr", r];
             
             [self.collectionView addSubview:time];
-            
-            [self.collectionView sendSubviewToBack:time];
         }
         
         UIView *row = [self.collectionView viewWithTag:9800+r];
@@ -184,17 +178,17 @@
             row.backgroundColor = color;
             
             [self.collectionView addSubview:row];
-            [self.collectionView sendSubviewToBack:row];
         }
-        
+        [self.collectionView sendSubviewToBack:time];
+        [self.collectionView sendSubviewToBack:row];
         time.frame = CGRectMake(self.collectionView.contentOffset.x + 5,
                                 baseTopDistance-10,
                                 45,
                                 20);
         
-        row.frame = CGRectMake(self.collectionView.contentOffset.x,
+        row.frame = CGRectMake(time.frame.origin.x+time.frame.size.width,
                                baseTopDistance,
-                               self.collectionView.frame.size.width,
+                               self.collectionView.frame.size.width - (5+ time.frame.size.width),
                                1);
         
         
@@ -346,15 +340,18 @@
     }
     
     
-    [cell.layer setBorderWidth:1.5f];
+    [cell.layer setBorderWidth:1.0f];
     [cell.layer setCornerRadius:5];
     
     
-    [cell.textLabel setTransform:CGAffineTransformMakeRotation(0)];
+    [cell.textLabel setTransform:CGAffineTransformIdentity];
     
     if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
         cell.textLabel.transform = CGAffineTransformMakeRotation(M_PI_2);
         cell.textLabel.frame = CGRectMake(0, 2, cell.frame.size.width, cell.frame.size.height-4);
+        
+    }else{
+        cell.textLabel.frame = CGRectMake(2, 0, cell.frame.size.width-4, cell.frame.size.height);
     }
 
     
@@ -424,9 +421,8 @@
     
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         JxCalendarWeekHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarWeekHeader" forIndexPath:indexPath];
-        
+        header.backgroundColor = [UIColor whiteColor];
         [header.button addTarget:self action:@selector(openDayView:) forControlEvents:UIControlEventTouchUpInside];
-        
         header.clipsToBounds = YES;
         
         NSDate *thisDate = [self getDateForSection:indexPath.section];
@@ -465,7 +461,7 @@
             header.backgroundColor = self.collectionView.backgroundColor;
             header.layer.borderColor = self.collectionView.backgroundColor.CGColor;
         }
-        //header.backgroundColor = [UIColor purpleColor];
+        
         return header;
     }
     return nil;
