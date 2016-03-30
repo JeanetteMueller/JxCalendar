@@ -56,6 +56,7 @@
         abort();
     }
     
+    self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     self.collectionView.backgroundColor = [UIColor whiteColor];
     
     self.collectionView.directionalLockEnabled = YES;
@@ -417,9 +418,8 @@
             [self presentViewController:day animated:YES completion:nil];
         }
     }
-    
-    
 }
+
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
@@ -457,7 +457,6 @@
                 }
                 header.titleLabel.textColor = kJxCalendarSelectedDayTextColor;
             }
-            
             header.eventMarker.hidden = !([self.dataSource eventsAt:thisDate].count > 0);
             
         }else{
@@ -466,14 +465,12 @@
             header.backgroundColor = self.collectionView.backgroundColor;
             header.layer.borderColor = self.collectionView.backgroundColor.CGColor;
         }
-        
-        
-        
-        
+        //header.backgroundColor = [UIColor purpleColor];
         return header;
     }
     return nil;
 }
+
 - (NSInteger)getSectionForDate:(NSDate *)date{
     NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:[self startComponents].month inCalendar:[self calendar] andYear:[self startComponents].year];
     NSDateComponents *firstComponents = [[self calendar] components:(
@@ -500,8 +497,8 @@
                                                           fromDate:date];
     
     return dateComponents.day + weekDay-1-1;
-    
 }
+
 - (NSDate *)getDateForSection:(NSInteger)section{
     
     NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:[self startComponents].month inCalendar:[self calendar] andYear:[self startComponents].year];
@@ -556,25 +553,33 @@
     return nil;
 
 }
-//- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-//    
-//    for (int r = 0; r < 25; r++) {
-//        UIView *label = [self.collectionView viewWithTag:9900+r];
-//        UIView *row = [self.collectionView viewWithTag:9800+r];
-//        
-//        CGRect labelRect = label.frame;
-//        
-//        labelRect.origin.x = scrollView.contentOffset.x + 5;
-//        
-//        label.frame = labelRect;
-//        
-//        
-//        CGRect rowRect = row.frame;
-//        
-//        rowRect.origin.x = scrollView.contentOffset.x ;
-//        
-//        row.frame = rowRect;
-//    }
-//    
-//}
+
+#pragma mark Scrolling
+- (void) scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    //This is the index of the "page" that we will be landing at
+    NSUInteger nearestIndex = (NSUInteger)(targetContentOffset->x / scrollView.bounds.size.width + 0.5f);
+    
+    //Just to make sure we don't scroll past your content
+    nearestIndex = MAX( MIN( nearestIndex, scrollView.contentSize.width/scrollView.frame.size.width  ), 0 );
+    
+    //This is the actual x position in the scroll view
+    CGFloat xOffset = nearestIndex * scrollView.bounds.size.width;
+    
+    //I've found that scroll views will "stick" unless this is done
+    xOffset = xOffset==0?1:xOffset;
+    
+    //Tell the scroll view to land on our page
+    *targetContentOffset = CGPointMake(xOffset, targetContentOffset->y);
+}
+
+- (void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    if( !decelerate )
+    {
+        NSUInteger currentIndex = (NSUInteger)(scrollView.contentOffset.x / scrollView.bounds.size.width);
+        
+        [scrollView setContentOffset:CGPointMake(scrollView.bounds.size.width * currentIndex, 0) animated:YES];
+    }
+}
 @end

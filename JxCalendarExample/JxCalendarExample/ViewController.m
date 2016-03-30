@@ -185,19 +185,19 @@
 
 #pragma mark Refresh
 - (void)calendar:(JxCalendarOverview *)calendar didLeftRefreshOffsetForHeader:(UIView *)header whileOnAppearance:(JxCalendarAppearance)appearance{
-    NSLog(@"isOutOfRefreshOffsetForHeader");
+    DLog(@"isOutOfRefreshOffsetForHeader");
     header.backgroundColor = [UIColor cyanColor];
 }
 - (void)calendar:(JxCalendarOverview *)calendar didLeftRefreshOffsetForFooter:(UIView *)footer whileOnAppearance:(JxCalendarAppearance)appearance{
-    NSLog(@"isOutOfRefreshOffsetForFooter");
+    DLog(@"isOutOfRefreshOffsetForFooter");
     footer.backgroundColor = [UIColor purpleColor];
 }
 - (void)calendar:(JxCalendarOverview *)calendar didReachRefreshOffsetForHeader:(UIView *)header whileOnAppearance:(JxCalendarAppearance)appearance{
-    NSLog(@"didReachRefreshOffsetForHeader");
+    DLog(@"didReachRefreshOffsetForHeader");
     header.backgroundColor = [UIColor redColor];
 }
 - (void)calendar:(JxCalendarOverview *)calendar didReachRefreshOffsetForFooter:(UIView *)footer whileOnAppearance:(JxCalendarAppearance)appearance{
-    NSLog(@"didReachRefreshOffsetForFooter");
+    DLog(@"didReachRefreshOffsetForFooter");
     footer.backgroundColor = [UIColor redColor];
 }
 - (void)calendar:(JxCalendarOverview *)calendar didRefreshByHeader:(UIView *)header whileOnAppearance:(JxCalendarAppearance)appearance{
