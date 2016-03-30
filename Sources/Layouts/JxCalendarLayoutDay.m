@@ -157,6 +157,13 @@
         [self prepareLayout];
         
     }
+    
+    for (UICollectionViewLayoutAttributes *attributes in [self.layoutInfo[kJxCalendarDayLayoutWholeDay] allValues]) {
+        
+        if (attributes.frame.origin.x + attributes.frame.size.width > maxWidth) {
+            maxWidth = attributes.frame.origin.x + attributes.frame.size.width;
+        }
+    }
     for (UICollectionViewLayoutAttributes *attributes in [self.layoutInfo[kJxCalendarDayLayoutCells] allValues]) {
         
         if (attributes.frame.origin.x + attributes.frame.size.width > maxWidth) {
