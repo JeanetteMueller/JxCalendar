@@ -88,9 +88,9 @@
     
     if (self.navigationController) {
         
-        if ([self.delegate respondsToSelector:@selector(calendarTitleOnDate:whileOnAppearance:)]) {
+        if ([self.delegate respondsToSelector:@selector(calendar:titleOnDate:whileOnAppearance:)]) {
         
-            NSString *newTitle = [self.delegate calendarTitleOnDate:self.startDate whileOnAppearance:JxCalendarAppearanceWeek];
+            NSString *newTitle = [self.delegate calendar:[self getCalendarOverview] titleOnDate:self.startDate whileOnAppearance:JxCalendarAppearanceWeek];
             
             if (newTitle) {
                 self.navigationItem.title = newTitle;
@@ -113,8 +113,8 @@
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
-    if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
-        [self.delegate calendarDidTransitionTo:JxCalendarAppearanceWeek];
+    if ([self.delegate respondsToSelector:@selector(calendar:didTransitionTo:)]) {
+        [self.delegate calendar:[self getCalendarOverview] didTransitionTo:JxCalendarAppearanceWeek];
     }
 }
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
@@ -198,13 +198,11 @@
 }
 - (BOOL)navigationShouldPopOnBackButton{
     
-    if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
+    if ([self.delegate respondsToSelector:@selector(calendar:willTransitionFrom:to:)]) {
         
-        JxCalendarOverview *overview = [self.navigationController.viewControllers objectAtIndex:self.navigationController.viewControllers.count-2];
+        JxCalendarOverview *overview = [self getCalendarOverview];
         
-        
-        
-        [self.delegate calendarWillTransitionFrom:JxCalendarAppearanceWeek to:[overview getOverviewAppearance]];
+        [self.delegate calendar:overview willTransitionFrom:JxCalendarAppearanceWeek to:[overview getOverviewAppearance]];
     }
     return YES;
 }
@@ -370,8 +368,6 @@
         if (event) {
             if ([self.delegate respondsToSelector:@selector(calendar:didSelectEvent:whileOnAppearance:)]) {
                 [self.delegate calendar:[self getCalendarOverview] didSelectEvent:event whileOnAppearance:JxCalendarAppearanceWeek];
-            }else if([self.delegate respondsToSelector:@selector(calendarDidSelectEvent:whileOnAppearance:)]){
-                [self.delegate calendarDidSelectEvent:event whileOnAppearance:JxCalendarAppearanceWeek];
             }
             
             [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
@@ -388,21 +384,17 @@
         if ([self.dataSource isDaySelected:date]) {
             if ([self.delegate respondsToSelector:@selector(calendar:didDeselectDate:whileOnAppearance:)]) {
                 [self.delegate calendar:[self getCalendarOverview] didDeselectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
-            }else if ([self.delegate respondsToSelector:@selector(calendarDidDeselectDate:whileOnAppearance:)]) {
-                [self.delegate calendarDidDeselectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
             }
         }else{
             if ([self.delegate respondsToSelector:@selector(calendar:didSelectDate:whileOnAppearance:)]) {
                 [self.delegate calendar:[self getCalendarOverview] didSelectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
-            }else if ([self.delegate respondsToSelector:@selector(calendarDidSelectDate:whileOnAppearance:)]) {
-                [self.delegate calendarDidSelectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
             }
         }
         
         [self.collectionView reloadData];
         
-        if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
-            [self.delegate calendarWillTransitionFrom:JxCalendarAppearanceWeek to:JxCalendarAppearanceDay];
+        if ([self.delegate respondsToSelector:@selector(calendar:willTransitionFrom:to:)]) {
+            [self.delegate calendar:[self getCalendarOverview] willTransitionFrom:JxCalendarAppearanceWeek to:JxCalendarAppearanceDay];
         }
         
         JxCalendarDay *day = [[JxCalendarDay alloc] initWithDataSource:self.dataSource andSize:self.collectionView.bounds.size andStartDate:date];

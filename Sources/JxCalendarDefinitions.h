@@ -65,6 +65,8 @@
 #define kJxCalendarDayTypeOptionWorkDay             @"Arbeitstag >"
 #define kJxCalendarDayTypeOptionFreeChoice          @"Freie Wahl >"
 #define kJxCalendarDayTypeOptionFreeChoiceMinMax    @"von/bis"
+#define kJxCalendarDayTypeOptionFreeChoiceMin       @"bis"
+#define kJxCalendarDayTypeOptionFreeChoiceMax       @"von"
 
 typedef NS_ENUM(NSInteger, JxCalendarAppearance) {
     JxCalendarAppearanceNone,

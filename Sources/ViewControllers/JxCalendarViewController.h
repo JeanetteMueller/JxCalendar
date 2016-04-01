@@ -27,7 +27,14 @@
 - (NSDateComponents *)componentsFromDate:(NSDate *)date;
 
 - (JxCalendarOverview *)getCalendarOverview;
-- (JxCalendarAppearance)getAppearance;
 - (void)startUpdateRefreshViews;
 - (void)updateRefreshViews;
+
+- (JxCalendarAppearance)getAppearance;
+- (void)startRefreshForHeader;
+- (void)startRefreshForFooter;
+
+- (void)finishRefreshForHeader;
+- (void)finishRefreshForFooter;
+
 @end

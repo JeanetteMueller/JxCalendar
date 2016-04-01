@@ -128,8 +128,8 @@
         self.zeigerPositionTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(updateZeigerPosition) userInfo:nil repeats:YES];
     }
     
-    if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
-        [self.delegate calendarDidTransitionTo:JxCalendarAppearanceDay];
+    if ([self.delegate respondsToSelector:@selector(calendar:didTransitionTo:)]) {
+        [self.delegate calendar:[self getCalendarOverview] didTransitionTo:JxCalendarAppearanceDay];
     }
 }
 
@@ -143,8 +143,8 @@
 
 - (BOOL)navigationShouldPopOnBackButton{
     
-    if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
-        [self.delegate calendarWillTransitionFrom:JxCalendarAppearanceDay to:JxCalendarAppearanceWeek];
+    if ([self.delegate respondsToSelector:@selector(calendar:willTransitionFrom:to:)]) {
+        [self.delegate calendar:[self getCalendarOverview] willTransitionFrom:JxCalendarAppearanceDay to:JxCalendarAppearanceWeek];
     }
     return YES;
 }
@@ -167,9 +167,9 @@
 - (void)setCurrentDate:(NSDate *)currentDate{
     self.startDate = currentDate;
     
-    if ([self.delegate respondsToSelector:@selector(calendarTitleOnDate:whileOnAppearance:)]) {
+    if ([self.delegate respondsToSelector:@selector(calendar:titleOnDate:whileOnAppearance:)]) {
         
-        NSString *newTitle = [self.delegate calendarTitleOnDate:self.startDate whileOnAppearance:JxCalendarAppearanceDay];
+        NSString *newTitle = [self.delegate calendar:[self getCalendarOverview] titleOnDate:self.startDate whileOnAppearance:JxCalendarAppearanceDay];
         if (newTitle) {
             self.navigationItem.title = newTitle;
         }
@@ -433,8 +433,6 @@
             
             if ([self.delegate respondsToSelector:@selector(calendar:didSelectEvent:whileOnAppearance:)]) {
                 [self.delegate calendar:[self getCalendarOverview] didSelectEvent:event whileOnAppearance:JxCalendarAppearanceDay];
-            }else if ([self.delegate respondsToSelector:@selector(calendarDidSelectEvent:whileOnAppearance:)]) {
-                [self.delegate calendarDidSelectEvent:event whileOnAppearance:JxCalendarAppearanceDay];
             }
             
             

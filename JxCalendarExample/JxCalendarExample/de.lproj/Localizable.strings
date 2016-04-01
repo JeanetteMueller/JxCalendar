@@ -1,0 +1,16 @@
+/* 
+  Localizable.strings
+  JxCalendarExample
+
+  Created by Jeanette Müller on 31.03.16.
+  Copyright © 2016 Jeanette Müller. All rights reserved.
+*/
+"Ganzer Tag >" = "Ganzer Tag >";
+"Halber Tag >" = "Halber Tag >";
+"Vormittag >" = "Vormittag >";
+"Nachmittag >" = "Nachmittag >";
+"Arbeitstag >" = "Arbeitstag >";
+"Freie Wahl >" = "Zeit >";
+"von/bis" = "von/bis";
+"bis" = "bis";
+"von" = "von";

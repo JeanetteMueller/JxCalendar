@@ -229,8 +229,8 @@ static NSString * const reuseIdentifier = @"Cell";
 #pragma mark <UIScrollViewDelegate>
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    if ([self.delegate respondsToSelector:@selector(calendarDidScroll:whileOnAppearance:)]) {
-        [self.delegate calendar:self didScroll:scrollView.contentOffset whileOnAppearance:[self getAppearance]];
+    if ([self.delegate respondsToSelector:@selector(calendar:didScroll:whileOnAppearance:)]) {
+        [self.delegate calendar:[self getCalendarOverview] didScroll:scrollView.contentOffset whileOnAppearance:[self getAppearance]];
     }
     
     

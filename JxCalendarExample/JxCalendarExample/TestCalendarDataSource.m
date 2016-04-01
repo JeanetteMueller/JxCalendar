@@ -225,6 +225,7 @@
     
     return JxCalendarDayTypeFreeChoice;
 }
+
 - (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date{
     
     return YES;

@@ -250,8 +250,6 @@ typedef enum {
     
     if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
         [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
-    }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]) {
-        [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
     }
     
     
@@ -296,7 +294,7 @@ typedef enum {
     UIImageView *arrowView = [self.view viewWithTag:JxCalendarToolTipTagArrow];
     
     CGFloat freeChoiceExtraHeight = 0;
-    if (rangeElement.dayType == JxCalendarDayTypeFreeChoice || rangeElement.dayType == JxCalendarDayTypeFreeChoiceMin || rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
+    if (rangeElement.dayType == JxCalendarDayTypeFreeChoice || rangeElement.dayType == JxCalendarDayTypeFreeChoiceMin || rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax) {
         
         freeChoiceExtraHeight = kJxCalendarToolTipFreeChoiceExtraHeight;
         
@@ -315,13 +313,14 @@ typedef enum {
         toolTipRect.origin.x = self.collectionView.frame.size.width - toolTipRect.size.width - kJxCalendarToolTipMinDistanceToBorder;
     }
 
-    
+    BOOL arrowUnderRect = NO;
     
     if (toolTipRect.origin.y  < kJxCalendarToolTipMinDistanceToBorder) {
         // tooltip unter rect
         toolTipRect.origin.y = rect.origin.y+rect.size.height;
         arrowView.frame = CGRectMake(rect.origin.x + (rect.size.width-arrowView.frame.size.width)/2, rect.origin.y+rect.size.height-arrowView.frame.size.height,
                                      arrowView.frame.size.width, arrowView.frame.size.height);
+        arrowUnderRect = YES;
     }else{
         // tooltip over rect
         arrowView.frame = CGRectMake(rect.origin.x + (rect.size.width-arrowView.frame.size.width)/2, rect.origin.y,
@@ -334,7 +333,7 @@ typedef enum {
     CGContextSetLineJoin(context, kCGLineJoinRound);
     CGMutablePathRef pathRef = CGPathCreateMutable();
     
-    if (toolTipRect.origin.y  < kJxCalendarToolTipMinDistanceToBorder) {
+    if (arrowUnderRect) {
         // tooltip unter rect
         CGPathMoveToPoint(pathRef, NULL, 0, 10);
         CGPathAddLineToPoint(pathRef, NULL, 7, 0);
@@ -358,29 +357,29 @@ typedef enum {
 
     switch (rangeElement.dayType) {
         case JxCalendarDayTypeUnknown:
-            [dayTypeButton setTitle:kJxCalendarDayTypeOptionUnknown forState:UIControlStateNormal];
+            [dayTypeButton setTitle:NSLocalizedString(kJxCalendarDayTypeOptionUnknown, nil) forState:UIControlStateNormal];
             break;
         case JxCalendarDayTypeWholeDay:
-            [dayTypeButton setTitle:kJxCalendarDayTypeOptionWholeDay forState:UIControlStateNormal];
+            [dayTypeButton setTitle:NSLocalizedString(kJxCalendarDayTypeOptionWholeDay, nil) forState:UIControlStateNormal];
             break;
         case JxCalendarDayTypeWorkDay:
-            [dayTypeButton setTitle:kJxCalendarDayTypeOptionWorkDay forState:UIControlStateNormal];
+            [dayTypeButton setTitle:NSLocalizedString(kJxCalendarDayTypeOptionWorkDay, nil) forState:UIControlStateNormal];
             break;
         case JxCalendarDayTypeHalfDay:
-            [dayTypeButton setTitle:kJxCalendarDayTypeOptionHalfDay forState:UIControlStateNormal];
+            [dayTypeButton setTitle:NSLocalizedString(kJxCalendarDayTypeOptionHalfDay, nil) forState:UIControlStateNormal];
             break;
         case JxCalendarDayTypeHalfDayMorning:
-            [dayTypeButton setTitle:kJxCalendarDayTypeOptionHalfDayMorning forState:UIControlStateNormal];
+            [dayTypeButton setTitle:NSLocalizedString(kJxCalendarDayTypeOptionHalfDayMorning, nil) forState:UIControlStateNormal];
             break;
         case JxCalendarDayTypeHalfDayAfternoon:
-            [dayTypeButton setTitle:kJxCalendarDayTypeOptionHalfDayAfternoon forState:UIControlStateNormal];
+            [dayTypeButton setTitle:NSLocalizedString(kJxCalendarDayTypeOptionHalfDayAfternoon, nil) forState:UIControlStateNormal];
             break;
         case JxCalendarDayTypeFreeChoice:
-            [dayTypeButton setTitle:kJxCalendarDayTypeOptionFreeChoice forState:UIControlStateNormal];
+            [dayTypeButton setTitle:NSLocalizedString(kJxCalendarDayTypeOptionFreeChoice, nil) forState:UIControlStateNormal];
             break;
         case JxCalendarDayTypeFreeChoiceMin:
         case JxCalendarDayTypeFreeChoiceMax:
-            [dayTypeButton setTitle:kJxCalendarDayTypeOptionFreeChoiceMinMax forState:UIControlStateNormal];
+            [dayTypeButton setTitle:NSLocalizedString(kJxCalendarDayTypeOptionFreeChoiceMinMax, nil) forState:UIControlStateNormal];
             break;
     }
     
@@ -390,44 +389,53 @@ typedef enum {
     
     if (rangeElement.dayType == JxCalendarDayTypeFreeChoice) {
         
-        NSTimeInterval duration = [rangeElement.end timeIntervalSinceDate:rangeElement.start];
-        NSUInteger seconds = ABS((int)duration);
-        NSUInteger minutes = seconds/60;
-        NSUInteger hours = minutes/60;
-        
-        hour = [NSString stringWithFormat:@"%lu", (unsigned long)hours];
-        min = [NSString stringWithFormat:@"%2lu", (unsigned long)minutes % 60];
-        
-        hour = [hour stringByReplacingOccurrencesOfString:@" " withString:@"0"];
-        min = [min stringByReplacingOccurrencesOfString:@" " withString:@"0"];
-        
-        [freeChoiceButton setTitle:[NSString stringWithFormat:@"%@:%@", hour, min] forState:UIControlStateNormal];
+        if (self.displayRangeTimeAdDuration) {
+            NSTimeInterval duration = [rangeElement.end timeIntervalSinceDate:rangeElement.start];
+            NSUInteger seconds = ABS((int)duration);
+            NSUInteger minutes = seconds/60;
+            NSUInteger hours = minutes/60;
+            
+            hour = [NSString stringWithFormat:@"%lu", (unsigned long)hours];
+            min = [NSString stringWithFormat:@"%2lu", (unsigned long)minutes % 60];
+            
+            hour = [hour stringByReplacingOccurrencesOfString:@" " withString:@"0"];
+            min = [min stringByReplacingOccurrencesOfString:@" " withString:@"0"];
+            
+            [freeChoiceButton setTitle:[NSString stringWithFormat:@"%@:%@ h", hour, min] forState:UIControlStateNormal];
+
+        }else{
+            NSString *startHour = [NSString stringWithFormat:@"%2ld", (long)startComponents.hour];
+            NSString *startMin = [NSString stringWithFormat:@"%2ld", (long)startComponents.minute];
+            
+            NSString *endHour = [NSString stringWithFormat:@"%2ld", (long)endComponents.hour];
+            NSString *endMin = [NSString stringWithFormat:@"%2ld", (long)endComponents.minute];
+            
+            startHour = [startHour stringByReplacingOccurrencesOfString:@" " withString:@"0"];
+            startMin = [startMin stringByReplacingOccurrencesOfString:@" " withString:@"0"];
+            
+            endHour = [endHour stringByReplacingOccurrencesOfString:@" " withString:@"0"];
+            endMin = [endMin stringByReplacingOccurrencesOfString:@" " withString:@"0"];
+            
+            [freeChoiceButton setTitle:[NSString stringWithFormat:@"%@:%@ - %@:%@", startHour, startMin, endHour, endMin] forState:UIControlStateNormal];
+        }
         
     }else if (rangeElement.dayType == JxCalendarDayTypeFreeChoiceMin) {
         
-        hour = [NSString stringWithFormat:@"%2d", startComponents.hour];
-        min = [NSString stringWithFormat:@"%2d", startComponents.minute];
+        hour = [NSString stringWithFormat:@"%2ld", (long)endComponents.hour];
+        min = [NSString stringWithFormat:@"%2ld", (long)endComponents.minute];
         
-        
-        hour = [NSString stringWithFormat:@"%2d", endComponents.hour];
-        min = [NSString stringWithFormat:@"%2d", endComponents.minute];
         hour = [hour stringByReplacingOccurrencesOfString:@" " withString:@"0"];
         min = [min stringByReplacingOccurrencesOfString:@" " withString:@"0"];
-        [freeChoiceButton setTitle:[NSString stringWithFormat:@"bis %@:%@", hour, min] forState:UIControlStateNormal];
+        [freeChoiceButton setTitle:[NSString stringWithFormat:@"%@ %@:%@", NSLocalizedString(kJxCalendarDayTypeOptionFreeChoiceMin, nil), hour, min] forState:UIControlStateNormal];
     }else if(rangeElement.dayType == JxCalendarDayTypeFreeChoiceMax){
-        hour = [NSString stringWithFormat:@"%2d", startComponents.hour];
-        min = [NSString stringWithFormat:@"%2d", startComponents.minute];
+        hour = [NSString stringWithFormat:@"%2ld", (long)startComponents.hour];
+        min = [NSString stringWithFormat:@"%2ld", (long)startComponents.minute];
         hour = [hour stringByReplacingOccurrencesOfString:@" " withString:@"0"];
         min = [min stringByReplacingOccurrencesOfString:@" " withString:@"0"];
-        [freeChoiceButton setTitle:[NSString stringWithFormat:@"von %@:%@", hour, min] forState:UIControlStateNormal];
+        [freeChoiceButton setTitle:[NSString stringWithFormat:@"%@ %@:%@", NSLocalizedString(kJxCalendarDayTypeOptionFreeChoiceMax, nil), hour, min] forState:UIControlStateNormal];
     }
     
-    if ((
-            [self.delegate respondsToSelector:@selector(calendarShouldStartRanging:)] && [self.delegate calendarShouldStartRanging:[self getCalendarOverview]]
-        ) || (
-            [self.delegate respondsToSelector:@selector(calendarShouldStartRanging)] && [self.delegate calendarShouldStartRanging]
-        )
-        ) {
+    if ([self.delegate respondsToSelector:@selector(calendarShouldStartRanging:)] && [self.delegate calendarShouldStartRanging:[self getCalendarOverview]]) {
         dayTypeButton.enabled = YES;
         freeChoiceButton.enabled = YES;
     }else{
@@ -613,14 +621,14 @@ typedef enum {
             if ((mask & JxCalendarDayTypeMaskFreeChoiceMax) == JxCalendarDayTypeMaskFreeChoiceMax){
                 [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMax)];
                 
-            }else{
+            }else if ((mask & JxCalendarDayTypeMaskFreeChoiceMin) == JxCalendarDayTypeMaskFreeChoiceMin){
                 [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMin)];
             }
         }else{
             if ((mask & JxCalendarDayTypeMaskFreeChoiceMin) == JxCalendarDayTypeMaskFreeChoiceMin){
                 [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMin)];
                 
-            }else{
+            }else if ((mask & JxCalendarDayTypeMaskFreeChoiceMax) == JxCalendarDayTypeMaskFreeChoiceMax){
                 [availableOptions addObject:@(JxCalendarDayTypeFreeChoiceMax)];
             }
         }
@@ -647,58 +655,58 @@ typedef enum {
         [dayTypeButton setTitle:[self getTitleForDayType:doType] forState:UIControlStateNormal];
         
         JxCalendarRangeElement *element;
-        if (doType == JxCalendarDayTypeFreeChoiceMin) {
-            
-            NSIndexPath *path = [self getIndexPathForDate:self.toolTipDate];
-            
-            NSDate *start, *end;
-            
-            //anfang bis
-            components.hour = 0;
-            components.minute = 0;
-            components.second = 0;
-            start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
-            components.hour = self.lengthOfDayInHours/2;
-            components.minute = 0;
-            components.second = 0;
-            end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
-            
-            element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
-                                                        andDayType:doType
-                                                     withStartDate:start
-                                                        andEndDate:end];
-        }else if (doType == JxCalendarDayTypeFreeChoiceMax) {
-            
-            NSIndexPath *path = [self getIndexPathForDate:self.toolTipDate];
-            
-            NSDate *start, *end;
-            
-            //von
-            components.hour = self.lengthOfDayInHours/2;
-            components.minute = 0;
-            components.second = 0;
-            start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
-            components.hour = self.lengthOfDayInHours-1;
-            components.minute = 59;
-            components.second = 59;
-            end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
-            
-            element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
-                                                        andDayType:doType
-                                                     withStartDate:start
-                                                        andEndDate:end];
-        }else{
-            element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
-                                                        andDayType:doType
-                                                        inCalendar:self.dataSource.calendar
-                                               andMaximumDayLength:self.lengthOfDayInHours];
-        }
         
+        if ([self.dataSource respondsToSelector:@selector(preparedRangeElementForDate:andDayType:andMaximumDayLength:)]) {
+            element = [self.dataSource preparedRangeElementForDate:self.toolTipDate andDayType:doType andMaximumDayLength:self.lengthOfDayInHours];
+            
+        }
+        if (!element) {
+            if (doType == JxCalendarDayTypeFreeChoiceMin) {
+                
+                NSDate *start, *end;
+                
+                //anfang bis
+                components.hour = 0;
+                components.minute = 0;
+                components.second = 0;
+                start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+                components.hour = self.lengthOfDayInHours/2;
+                components.minute = 0;
+                components.second = 0;
+                end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+                
+                element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
+                                                            andDayType:doType
+                                                         withStartDate:start
+                                                            andEndDate:end];
+            }else if (doType == JxCalendarDayTypeFreeChoiceMax) {
+                
+                NSDate *start, *end;
+                
+                //von
+                components.hour = self.lengthOfDayInHours/2;
+                components.minute = 0;
+                components.second = 0;
+                start = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+                components.hour = self.lengthOfDayInHours-1;
+                components.minute = 59;
+                components.second = 59;
+                end = [self.dataSource.calendar dateByAddingComponents:components toDate:self.toolTipDate options:NSCalendarMatchStrictly];
+                
+                element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
+                                                            andDayType:doType
+                                                         withStartDate:start
+                                                            andEndDate:end];
+            }else{
+                element = [[JxCalendarRangeElement alloc] initWithDate:self.toolTipDate
+                                                            andDayType:doType
+                                                            inCalendar:self.dataSource.calendar
+                                                   andMaximumDayLength:self.lengthOfDayInHours];
+            }
+        }
         
         if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
             [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
-        }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]) {
-            [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
         }
         
         UIView *toolTipView = [self.view viewWithTag:JxCalendarToolTipTagView];
@@ -718,22 +726,22 @@ typedef enum {
 - (NSString *)getTitleForDayType:(JxCalendarDayType)type{
     switch (type) {
         case JxCalendarDayTypeWholeDay:
-            return kJxCalendarDayTypeOptionWholeDay;
+            return NSLocalizedString(kJxCalendarDayTypeOptionWholeDay, nil);
         case JxCalendarDayTypeHalfDay:
-            return kJxCalendarDayTypeOptionHalfDay;
+            return NSLocalizedString(kJxCalendarDayTypeOptionHalfDay, nil);
         case JxCalendarDayTypeHalfDayMorning:
-            return kJxCalendarDayTypeOptionHalfDayMorning;
+            return NSLocalizedString(kJxCalendarDayTypeOptionHalfDayMorning, nil);
         case JxCalendarDayTypeHalfDayAfternoon:
-            return kJxCalendarDayTypeOptionHalfDayAfternoon;
+            return NSLocalizedString(kJxCalendarDayTypeOptionHalfDayAfternoon, nil);
         case JxCalendarDayTypeWorkDay:
-            return kJxCalendarDayTypeOptionWorkDay;
+            return NSLocalizedString(kJxCalendarDayTypeOptionWorkDay, nil);
         case JxCalendarDayTypeFreeChoice:
-            return kJxCalendarDayTypeOptionFreeChoice;
+            return NSLocalizedString(kJxCalendarDayTypeOptionFreeChoice, nil);
         case JxCalendarDayTypeFreeChoiceMin:
         case JxCalendarDayTypeFreeChoiceMax:
-            return kJxCalendarDayTypeOptionFreeChoiceMinMax;
+            return NSLocalizedString(kJxCalendarDayTypeOptionFreeChoiceMinMax, nil);
         case JxCalendarDayTypeUnknown:
-            return kJxCalendarDayTypeOptionUnknown;
+            return NSLocalizedString(kJxCalendarDayTypeOptionUnknown, nil);
     }
 }
 - (IBAction)freeChoiceChange:(id)sender{
@@ -816,7 +824,7 @@ typedef enum {
 }
 - (nullable NSAttributedString *)pickerView:(UIPickerView *)pickerView attributedTitleForRow:(NSInteger)row forComponent:(NSInteger)component{
     
-    NSString *rowString = [NSString stringWithFormat:@"%2d", row];
+    NSString *rowString = [NSString stringWithFormat:@"%2ld", (long)row];
     rowString = [rowString stringByReplacingOccurrencesOfString:@" " withString:@"0"];
     
     
@@ -829,10 +837,10 @@ typedef enum {
                 
                 JxCalendarDayTypeMask mask = [self.dataSource availableDayTypesForDate:self.toolTipDate];
                 if ((mask & JxCalendarDayTypeMaskFreeChoiceMax) == JxCalendarDayTypeMaskFreeChoiceMax) {
-                    [types addObject:[[NSAttributedString alloc] initWithString:@"von" attributes:@{}]];
+                    [types addObject:[[NSAttributedString alloc] initWithString:NSLocalizedString(kJxCalendarDayTypeOptionFreeChoiceMax, nil) attributes:@{}]];
                 }
                 if ((mask & JxCalendarDayTypeMaskFreeChoiceMin) == JxCalendarDayTypeMaskFreeChoiceMin) {
-                    [types addObject:[[NSAttributedString alloc] initWithString:@"bis" attributes:@{}]];
+                    [types addObject:[[NSAttributedString alloc] initWithString:NSLocalizedString(kJxCalendarDayTypeOptionFreeChoiceMin, nil) attributes:@{}]];
                 }
                 
                 return types[row];
@@ -847,14 +855,6 @@ typedef enum {
             default:
                 return [[NSAttributedString alloc] initWithString:rowString attributes:@{}];
         }
-    }
-    
-    switch (component) {
-        case 2:
-            return [[NSAttributedString alloc] initWithString:@" – " attributes:@{}];
-        default:
-            return [[NSAttributedString alloc] initWithString:rowString attributes:@{}];
-            break;
     }
     return nil;
 }
@@ -963,8 +963,6 @@ typedef enum {
     
     if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
         [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
-    }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]) {
-        [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
     }
     
     

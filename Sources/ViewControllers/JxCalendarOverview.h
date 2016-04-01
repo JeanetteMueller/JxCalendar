@@ -30,6 +30,11 @@
 /* default = NO */
 @property (nonatomic, readwrite) BOOL proportionalRangeTime;
 
+/* display FreeChoice RangeElements as duration */
+/* default is hh:mm - hh:mm */
+/* duration means hh:mm h */
+@property (nonatomic, readwrite) BOOL displayRangeTimeAdDuration;
+
 
 - (id)initWithDataSource:(id<JxCalendarDataSource>)dataSource
                 andStyle:(JxCalendarOverviewStyle)style
@@ -42,7 +47,7 @@
 - (void)switchToAppearance:(JxCalendarAppearance)newAppearance;
 - (void)switchToAppearance:(JxCalendarAppearance)newAppearance withDate:(NSDate *)newDate;
 
-- (JxCalendarAppearance)getAppearance;
+
 
 - (NSIndexPath *)getIndexPathForDate:(NSDate *)date;
 - (void)updateRangeForCell:(JxCalendarCell *)cell atIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated;
@@ -52,6 +57,7 @@
 - (BOOL)nextCellIsInRangeWithIndexPath:(NSIndexPath *)indexPath;
 - (BOOL)lastCellIsInRangeWithIndexPath:(NSIndexPath *)indexPath;
 
+- (JxCalendarAppearance)getAppearance;
 - (void)startRefreshForHeader;
 - (void)startRefreshForFooter;
 

@@ -123,9 +123,9 @@
     JxCalendarOverview *layout = (JxCalendarOverview *)self.collectionViewLayout;
     layout.renderWeekDayLabels = self.renderWeekDayLabels;
     
-    
-    
-    
+}
+- (void)calendarTapped:(id)sender{
+    [self hideToolTip];
 }
 - (void)viewDidLayoutSubviews{
     
@@ -243,9 +243,7 @@
         }
         
         if (self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
-            if (([self.delegate respondsToSelector:@selector(calendarSelectionStyleSwitchable:)] && [self.delegate calendarSelectionStyleSwitchable:[self getCalendarOverview]])
-                ||
-                ([self.delegate respondsToSelector:@selector(calendarSelectionStyleSwitchable)] && [self.delegate calendarSelectionStyleSwitchable])) {
+            if ([self.delegate respondsToSelector:@selector(calendarSelectionStyleSwitchable:)] && [self.delegate calendarSelectionStyleSwitchable:[self getCalendarOverview]]) {
                 
                 UIBarButtonItem *extraButton;
                 
@@ -298,8 +296,8 @@
     [super viewDidAppear:animated];
     
     
-    if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
-        [self.delegate calendarDidTransitionTo:[self getOverviewAppearance]];
+    if ([self.delegate respondsToSelector:@selector(calendar:didTransitionTo:)]) {
+        [self.delegate calendar:self didTransitionTo:[self getOverviewAppearance]];
     }
     
 }
@@ -368,9 +366,9 @@
     
     if (self.navigationController) {
         
-        if ([self.delegate respondsToSelector:@selector(calendarTitleOnDate:whileOnAppearance:)]) {
+        if ([self.delegate respondsToSelector:@selector(calendar:titleOnDate:whileOnAppearance:)]) {
             
-            NSString *newTitle = [self.delegate calendarTitleOnDate:self.startDate whileOnAppearance:[self getOverviewAppearance]];
+            NSString *newTitle = [self.delegate calendar:self titleOnDate:self.startDate whileOnAppearance:[self getOverviewAppearance]];
             
             if (newTitle) {
                 self.navigationItem.title = newTitle;
@@ -470,8 +468,8 @@
         oldAppearance = [self getOverviewAppearance];
     }
     
-    if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
-        [self.delegate calendarWillTransitionFrom:oldAppearance to:newAppearance];
+    if ([self.delegate respondsToSelector:@selector(calendar:willTransitionFrom:to:)]) {
+        [self.delegate calendar:self willTransitionFrom:oldAppearance to:newAppearance];
     }
     
     
@@ -531,14 +529,28 @@
         }
     }
 }
+- (JxCalendarAppearance)getAppearance{
+    return [super getAppearance];
+}
+- (void)startRefreshForHeader{
+    [super startRefreshForHeader];
+}
+- (void)startRefreshForFooter{
+    [super startRefreshForFooter];
+}
+- (void)finishRefreshForHeader{
+    [super finishRefreshForHeader];
+}
+- (void)finishRefreshForFooter{
+    [super finishRefreshForFooter];
+}
 
 #pragma mark Gesture
 
 - (void)longPressAction:(UILongPressGestureRecognizer *)sender{
     
-    if ((![self.delegate respondsToSelector:@selector(calendarShouldStartRanging:)] && ![self.delegate respondsToSelector:@selector(calendarShouldStartRanging)]) ||
-        ([self.delegate respondsToSelector:@selector(calendarShouldStartRanging:)] && ![self.delegate calendarShouldStartRanging:[self getCalendarOverview]]) ||
-        ([self.delegate respondsToSelector:@selector(calendarShouldStartRanging)] && ![self.delegate calendarShouldStartRanging])
+    if ((![self.delegate respondsToSelector:@selector(calendarShouldStartRanging:)]) ||
+        ([self.delegate respondsToSelector:@selector(calendarShouldStartRanging:)] && ![self.delegate calendarShouldStartRanging:[self getCalendarOverview]])
         ) {
         return;
     }
@@ -554,8 +566,6 @@
             
             if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging:)]) {
                 [self.delegate calendarDidStartRanging:[self getCalendarOverview]];
-            }else if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging)]) {
-                [self.delegate calendarDidStartRanging];
             }
             
             NSIndexPath *path = [self.collectionView indexPathForItemAtPoint:point];
@@ -628,8 +638,6 @@
             
             if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging:)]) {
                 [self.delegate calendarDidEndRanging:[self getCalendarOverview]];
-            }else if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging)]) {
-                [self.delegate calendarDidEndRanging];
             }
             
             if (_longHoldStartIndexPath && _longHoldEndIndexPath && (_longHoldStartIndexPath.section > _longHoldEndIndexPath.section ||
@@ -644,19 +652,17 @@
 
 }
 - (void)moveContent{
+    
     CGFloat triggerOffset = 100;
     
     CGFloat move = 0;
-    CGPoint point;
     
     if (self.direction - self.collectionView.contentOffset.y < triggerOffset) {
         move = (self.direction - self.collectionView.contentOffset.y) - triggerOffset;
-        point = CGPointMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y + move);
     }
     
     if (self.direction - self.collectionView.contentOffset.y > self.collectionView.frame.size.height-triggerOffset) {
         move = (self.direction - self.collectionView.contentOffset.y)- (self.collectionView.frame.size.height-triggerOffset);
-        point = CGPointMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y + move);
     }
     
     if (move != 0.0f) {
@@ -664,7 +670,12 @@
                               delay:0
                             options:UIViewAnimationOptionCurveLinear
                          animations:^{
-                             self.collectionView.contentOffset = point;
+                             
+                             if (self.direction - self.collectionView.contentOffset.y < triggerOffset) {
+                                 self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y + move);
+                             }else if (self.direction - self.collectionView.contentOffset.y > self.collectionView.frame.size.height-triggerOffset) {
+                                 self.collectionView.contentOffset = CGPointMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y + move);
+                             }
                          } completion:^(BOOL finished) {
                              self.direction = self.direction + move;
                          }];
@@ -758,8 +769,6 @@
                 if ([self.dataSource isPartOfRange:date] && ![newPathes containsObject:path]) {
                     if ([self.delegate respondsToSelector:@selector(calendar:didDeRangeDate:whileOnAppearance:)]) {
                         [self.delegate calendar:[self getCalendarOverview] didDeRangeDate:date whileOnAppearance:[self getAppearance]];
-                    }else if ([self.delegate respondsToSelector:@selector(calendarDidDeRangeDate:whileOnAppearance:)]){
-                        [self.delegate calendarDidDeRangeDate:date whileOnAppearance:[self getAppearance]];
                     }
                     
                 }else{
@@ -770,15 +779,23 @@
                             newDayType = [self.dataSource defaultDayTypeForDate:date];
                         }
                         
-                        JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:date
-                                                                                            andDayType:newDayType
-                                                                                            inCalendar:self.dataSource.calendar
-                                                                                   andMaximumDayLength:self.lengthOfDayInHours];
+                        
+                        JxCalendarRangeElement *element;
+                        
+                        if ([self.dataSource respondsToSelector:@selector(preparedRangeElementForDate:andDayType:andMaximumDayLength:)]) {
+                            element = [self.dataSource preparedRangeElementForDate:date
+                                                                        andDayType:newDayType
+                                                               andMaximumDayLength:self.lengthOfDayInHours];
+                        }
+                        if(!element){
+                            element = [[JxCalendarRangeElement alloc] initWithDate:date
+                                                                        andDayType:newDayType
+                                                                        inCalendar:self.dataSource.calendar
+                                                               andMaximumDayLength:self.lengthOfDayInHours];
+                        }
                         
                         if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
                             [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
-                        }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]){
-                            [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
                         }
                     }
                 }
@@ -830,13 +847,20 @@
             if (![availableOptions containsObject:@(rangeElement.dayType)]) {
                 NSIndexPath *path = [self getIndexPathForDate:rangeElement.date];
                 
-                JxCalendarRangeElement *element = [[JxCalendarRangeElement alloc] initWithDate:rangeElement.date
+                JxCalendarRangeElement *element;
+                
+                if ([self.dataSource respondsToSelector:@selector(preparedRangeElementForDate:andDayType:andMaximumDayLength:)]) {
+                    element = [self.dataSource preparedRangeElementForDate:rangeElement.date
+                                                                andDayType:newDayType
+                                                       andMaximumDayLength:self.lengthOfDayInHours];
+                }
+                if(!element){
+                    element = [[JxCalendarRangeElement alloc] initWithDate:rangeElement.date
                                                                                     andDayType:newDayType withStartDate:rangeElement.start andEndDate:rangeElement.end];
+                }
                 
                 if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
                     [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
-                }else if ([self.delegate respondsToSelector:@selector(calendarDidRange:whileOnAppearance:)]){
-                    [self.delegate calendarDidRange:element whileOnAppearance:[self getAppearance]];
                 }
                 
                 
@@ -896,8 +920,8 @@
         if (finished) {
             [self updateSelectionStyle];
             
-            if ([self.delegate respondsToSelector:@selector(calendarDidTransitionTo:)]) {
-                [self.delegate calendarDidTransitionTo:newAppearance];
+            if ([self.delegate respondsToSelector:@selector(calendar:didTransitionTo:)]) {
+                [self.delegate calendar:self didTransitionTo:newAppearance];
             }
         }
         
@@ -925,8 +949,8 @@
         
         [viewControllers removeLastObject];
         
-        if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
-            [self.delegate calendarWillTransitionFrom:[self getOverviewAppearance] to:JxCalendarAppearanceWeek];
+        if ([self.delegate respondsToSelector:@selector(calendar:willTransitionFrom:to:)]) {
+            [self.delegate calendar:self willTransitionFrom:[self getOverviewAppearance] to:JxCalendarAppearanceWeek];
         }
         
         [viewControllers addObject:week];
@@ -1028,12 +1052,13 @@
     
     if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         JxCalendarHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarHeader" forIndexPath:indexPath];
+        [header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(calendarTapped:)]];
         header.clipsToBounds = YES;
         
         NSInteger month = indexPath.section+1;
         
-        NSFont *titleFont;
-        NSFont *subFont;
+        UIFont *titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:28];
+        UIFont *subFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
         
         
         
@@ -1048,8 +1073,6 @@
                 break;
             case JxCalendarOverviewStyleMonthGrid:
                 header.titleLabel.textAlignment = NSTextAlignmentLeft;
-                titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:28];
-                subFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
                 break;
         }
         
@@ -1061,9 +1084,7 @@
         if (self.style == JxCalendarOverviewStyleMonthGrid) {
             [title appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@" %ld", [self startComponents].year]
                                                                           attributes:@{NSFontAttributeName: subFont,
-                                                                                       NSForegroundColorAttributeName: [UIColor lightGrayColor]
-                                                                                       
-                                                                                       }]];
+                                                                                       NSForegroundColorAttributeName: [UIColor lightGrayColor]}]];
         }
         
         header.titleLabel.attributedText = title;
@@ -1170,6 +1191,17 @@
                         partOfDay = .5f;
                     }else if(partOfDay < 1.f){
                         startPosition = ((1-partOfDay)/2);
+                        
+                        if (!self.proportionalRangeTime && partOfDay != 1.0f) {
+                            
+                            partOfDay = .5;
+                            NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour fromDate:rangeElement.start];
+                            if (components.hour < self.lengthOfDayInHours/2) {
+                                startPosition = .0f;
+                            }else{
+                                startPosition = .5f;
+                            }
+                        }
                     }
 
                 }else{
@@ -1180,21 +1212,6 @@
                 JxCalendarRangeStyleInCell rangeStyle = JxCalendarRangeStyleInCellHorizontal;
                 if ([self.dataSource respondsToSelector:@selector(rangeStyleForDate:)]) {
                     rangeStyle = [self.dataSource rangeStyleForDate:thisDate];
-                }
-                
-                if (partOfDay < 1.f) {
-                    if (!self.proportionalRangeTime && rangeElement.dayType != JxCalendarDayTypeFreeChoiceMax && rangeElement.dayType != JxCalendarDayTypeFreeChoiceMin) {
-                        partOfDay = .5;
-                        NSDateComponents *components = [self.dataSource.calendar components:NSCalendarUnitHour fromDate:rangeElement.start];
-                        if (components.hour < self.lengthOfDayInHours/2) {
-                            startPosition = .0f;
-                        }else{
-                            startPosition = .5f;
-                        }
-                    }
-                }else{
-                    partOfDay = 1.f;
-                    startPosition = .0f;
                 }
                     
                 UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
@@ -1397,7 +1414,6 @@
         }
         
         if ([self.dataSource respondsToSelector:@selector(isDaySelected:)] && [self.dataSource isDaySelected:thisDate]) {
-            cell.layer.borderColor = kJxCalendarSelectedDayBorderColor.CGColor;
             if ([JxCalendarBasics normalizedWeekDay:dateComponents.weekday] > 5) {
                 cell.backgroundColor = kJxCalendarSelectedWeekendBackgroundColor;
             }else{
@@ -1405,17 +1421,23 @@
             }
             cell.label.textColor = kJxCalendarSelectedDayTextColor;
         }
-        if ([[UIColor colorWithCGColor:cell.layer.borderColor] isEqual:cell.backgroundColor]) {
-            cell.layer.borderWidth = .0f;
-        }else{
-            cell.layer.borderWidth = 1.0f;
-        }
         
         
         if ([self.dataSource numberOfEventsAt:thisDate] > 0) {
             cell.eventMarker.hidden = NO;
         }else{
             cell.eventMarker.hidden = YES;
+        }
+        
+        NSDateComponents *now = [self componentsFromDate:[NSDate new]];
+        if (dateComponents.day == now.day && dateComponents.month == now.month && dateComponents.year == now.year) {
+            cell.contentView.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.05];
+            cell.contentView.layer.borderColor = [[UIColor redColor] colorWithAlphaComponent:0.2].CGColor;
+            cell.contentView.layer.borderWidth = 1.0f;
+            cell.contentView.layer.cornerRadius = cell.frame.size.height/2;
+        }else{
+            cell.contentView.layer.borderWidth = 0.0f;
+            cell.contentView.layer.cornerRadius = 0;
         }
         
     }else{
@@ -1451,26 +1473,37 @@
                     if ([self.dataSource isDayRangeable:date]) {
                         if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging:)]) {
                             [self.delegate calendarDidStartRanging:[self getCalendarOverview]];
-                        }else if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging)]) {
-                            [self.delegate calendarDidStartRanging];
                         }
+                        
+                        if (_longHoldStartIndexPath && _longHoldEndIndexPath && _longHoldStartIndexPath != _longHoldEndIndexPath) {
+                            _longHoldStartIndexPath = nil;
+                            _longHoldEndIndexPath = nil;
+                        }
+                        
+//                        _longHoldEndIndexPath = indexPath;
+//                        _longHoldStartIndexPath = indexPath;
                         
                         if (!_longHoldStartIndexPath) {
                             _longHoldStartIndexPath = indexPath;
-                        }else if (_longHoldStartIndexPath && !_longHoldEndIndexPath) {
+                            _longHoldEndIndexPath = nil;
+                        }else if (_longHoldStartIndexPath && (!_longHoldEndIndexPath || _longHoldStartIndexPath == _longHoldEndIndexPath) ) {
                             _longHoldEndIndexPath = indexPath;
                         }else{
-                            if ([self.dataSource isPartOfRange:date]) {
-                                _longHoldEndIndexPath = indexPath;
-                            }else if (_longHoldStartIndexPath && _longHoldEndIndexPath){
-                                if( indexPath.section > _longHoldEndIndexPath.section ||
-                                   (indexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < indexPath.row)) {
-                                    
-                                    _longHoldEndIndexPath = indexPath;
-                                }else{
-                                    _longHoldStartIndexPath = indexPath;
-                                }
-                            }
+                            _longHoldStartIndexPath = indexPath;
+                            _longHoldEndIndexPath = nil;
+                            
+                            
+//                            if ([self.dataSource isPartOfRange:date]) {
+//                                _longHoldEndIndexPath = indexPath;
+//                            }else if (_longHoldStartIndexPath && _longHoldEndIndexPath){
+//                                if( indexPath.section > _longHoldEndIndexPath.section ||
+//                                   (indexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < indexPath.row)) {
+//                                    
+//                                    _longHoldEndIndexPath = indexPath;
+//                                }else{
+//                                    _longHoldStartIndexPath = indexPath;
+//                                }
+//                            }
                         }
                         
                         
@@ -1479,16 +1512,14 @@
                         
                         if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging:)]) {
                             [self.delegate calendarDidEndRanging:[self getCalendarOverview]];
-                        }else if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging)]) {
-                            [self.delegate calendarDidEndRanging];
                         }
                         
-                        if (_longHoldStartIndexPath && _longHoldEndIndexPath && ( _longHoldStartIndexPath.section > _longHoldEndIndexPath.section ||
-                            (_longHoldStartIndexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < _longHoldStartIndexPath.row))) {
-                            NSIndexPath *tempStart = _longHoldStartIndexPath;
-                            _longHoldStartIndexPath = _longHoldEndIndexPath;
-                            _longHoldEndIndexPath = tempStart;
-                        }
+//                        if (_longHoldStartIndexPath && _longHoldEndIndexPath && ( _longHoldStartIndexPath.section > _longHoldEndIndexPath.section ||
+//                            (_longHoldStartIndexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < _longHoldStartIndexPath.row))) {
+//                            NSIndexPath *tempStart = _longHoldStartIndexPath;
+//                            _longHoldStartIndexPath = _longHoldEndIndexPath;
+//                            _longHoldEndIndexPath = tempStart;
+//                        }
                     }
                 }
             }
@@ -1534,22 +1565,18 @@
             if ([self.dataSource isDaySelected:date]) {
                 if ([self.delegate respondsToSelector:@selector(calendar:didDeselectDate:whileOnAppearance:)]) {
                     [self.delegate calendar:[self getCalendarOverview] didDeselectDate:date whileOnAppearance:[self getOverviewAppearance]];
-                }else if ([self.delegate respondsToSelector:@selector(calendarDidDeselectDate:whileOnAppearance:)]) {
-                    [self.delegate calendarDidDeselectDate:date whileOnAppearance:[self getOverviewAppearance]];
                 }
             }else{
                 if ([self.delegate respondsToSelector:@selector(calendar:didSelectDate:whileOnAppearance:)]) {
                     [self.delegate calendar:[self getCalendarOverview] didSelectDate:date whileOnAppearance:[self getOverviewAppearance]];
-                }else if ([self.delegate respondsToSelector:@selector(calendarDidSelectDate:whileOnAppearance:)]) {
-                    [self.delegate calendarDidSelectDate:date whileOnAppearance:[self getOverviewAppearance]];
                 }
             }
             
             
             [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
             
-            if ([self.delegate respondsToSelector:@selector(calendarWillTransitionFrom:to:)]) {
-                [self.delegate calendarWillTransitionFrom:[self getOverviewAppearance] to:JxCalendarAppearanceWeek];
+            if ([self.delegate respondsToSelector:@selector(calendar:willTransitionFrom:to:)]) {
+                [self.delegate calendar:self willTransitionFrom:[self getOverviewAppearance] to:JxCalendarAppearanceWeek];
             }
             JxCalendarWeek *vc = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.view.frame.size andStartDate:date];
             vc.delegate = self.delegate;
@@ -1560,6 +1587,8 @@
                 [self presentViewController:vc animated:YES completion:nil];
             }
         }
+    }else{
+        [self hideToolTip];
     }
 }
 

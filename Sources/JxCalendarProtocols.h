@@ -45,7 +45,12 @@
 - (BOOL)isPartOfRange:(NSDate *)date;
 - (JxCalendarRangeElement *)rangeElementForDate:(NSDate *)date;
 - (JxCalendarDayTypeMask)availableDayTypesForDate:(NSDate *)date;
+
+- (JxCalendarRangeElement *)preparedRangeElementForDate:(NSDate *)date andDayType:(JxCalendarDayType)dayType andMaximumDayLength:(NSInteger)maxDayHours;
+
 - (JxCalendarDayType)defaultDayTypeForDate:(NSDate *)date; // default: JxCalendarDayTypeWholeDay
+
+
 - (BOOL)isRangeToolTipAvailableForDate:(NSDate *)date;
 - (JxCalendarRangeStyleInCell)rangeStyleForDate:(NSDate *)date; // default: JxCalendarRangeStyleInCellHorizontal
 
@@ -59,9 +64,9 @@
 
 @optional
 #pragma mark Appearance
-- (NSString *)calendarTitleOnDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
-- (void)calendarWillTransitionFrom:(JxCalendarAppearance)fromAppearance to:(JxCalendarAppearance)toAppearance;
-- (void)calendarDidTransitionTo:(JxCalendarAppearance)toAppearance;
+- (NSString *)calendar:(JxCalendarOverview *)calendar titleOnDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
+- (void)calendar:(JxCalendarOverview *)calendar willTransitionFrom:(JxCalendarAppearance)fromAppearance to:(JxCalendarAppearance)toAppearance;
+- (void)calendar:(JxCalendarOverview *)calendar didTransitionTo:(JxCalendarAppearance)toAppearance;
 
 - (void)calendar:(JxCalendarOverview *)calendar didScroll:(CGPoint)offset whileOnAppearance:(JxCalendarAppearance)appearance;
 - (void)calendar:(JxCalendarOverview *)calendar didReachRefreshOffsetForHeader:(UIView *)header whileOnAppearance:(JxCalendarAppearance)appearance;
@@ -70,28 +75,6 @@
 - (void)calendar:(JxCalendarOverview *)calendar didRefreshByFooter:(UIView *)footer whileOnAppearance:(JxCalendarAppearance)appearance;
 - (void)calendar:(JxCalendarOverview *)calendar didLeftRefreshOffsetForHeader:(UIView *)header whileOnAppearance:(JxCalendarAppearance)appearance;
 - (void)calendar:(JxCalendarOverview *)calendar didLeftRefreshOffsetForFooter:(UIView *)footer whileOnAppearance:(JxCalendarAppearance)appearance;
-
-#pragma mark Selections
-- (BOOL)calendarSelectionStyleSwitchable;
-
-#pragma mark Select
-- (void)calendarShouldClearSelections;
-- (void)calendarDidSelectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
-- (void)calendarDidDeselectDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
-- (void)calendarDidSelectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance;
-- (void)calendarDidDeselectEvent:(JxCalendarEvent *)event whileOnAppearance:(JxCalendarAppearance)appearance;
-
-#pragma mark Range
-- (BOOL)calendarShouldStartRanging;
-- (void)calendarDidStartRanging;
-- (void)calendarDidRange:(JxCalendarRangeElement *)rangeElement whileOnAppearance:(JxCalendarAppearance)appearance;
-- (void)calendarDidEndRanging;
-- (void)calendarDidDeRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance;
-- (void)calendarShouldClearRange;
-
-
-
-/* BETTER VERSION */
 
 #pragma mark Selections
 - (BOOL)calendarSelectionStyleSwitchable:(JxCalendarOverview *)calendar;

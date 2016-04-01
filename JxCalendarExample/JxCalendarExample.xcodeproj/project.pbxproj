@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		260D6F7E1C18575100904A44 /* TestCalendarDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 260D6F7D1C18575100904A44 /* TestCalendarDataSource.m */; };
+		2615D2F91CAD304F00B9A0ED /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2615D2FB1CAD304F00B9A0ED /* Localizable.strings */; };
 		26B67C801C18566B000FC387 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B67C7F1C18566B000FC387 /* main.m */; };
 		26B67C831C18566B000FC387 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B67C821C18566B000FC387 /* AppDelegate.m */; };
 		26B67C861C18566B000FC387 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B67C851C18566B000FC387 /* ViewController.m */; };
@@ -36,6 +37,7 @@
 /* Begin PBXFileReference section */
 		260D6F7C1C18575100904A44 /* TestCalendarDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCalendarDataSource.h; sourceTree = "<group>"; };
 		260D6F7D1C18575100904A44 /* TestCalendarDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCalendarDataSource.m; sourceTree = "<group>"; };
+		2615D2FA1CAD304F00B9A0ED /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		266811BB1C43FB6900A96565 /* JxCalendar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = JxCalendar.framework; path = "/Users/themaverick/Library/Developer/Xcode/DerivedData/Gugus/Products/Debug-iphoneos/JxCalendar.framework"; sourceTree = "<absolute>"; };
 		2673E84D1C18594F0070D2C5 /* JxCalendar.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JxCalendar.framework; path = "/Users/themaverick/Dropbox/Programmierung/ios/Library/Developer/Xcode/DerivedData/Gugus/Products/Debug-iphoneos/JxCalendar.framework"; sourceTree = "<absolute>"; };
 		269829C21C85EFD2006C523F /* JxCalendar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = JxCalendar.framework; path = "/Users/themaverick/Library/Developer/Xcode/DerivedData/Example-hglpytnbcuduqibtjyuutbctoxzb/Build/Products/Debug-iphoneos/JxCalendar.framework"; sourceTree = "<absolute>"; };
@@ -49,6 +51,7 @@
 		26B67C8A1C18566B000FC387 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		26B67C8D1C18566B000FC387 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		26B67C8F1C18566B000FC387 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		26F395931CAD30BE0002800E /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				26B67C7F1C18566B000FC387 /* main.m */,
+				2615D2FB1CAD304F00B9A0ED /* Localizable.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -151,6 +155,7 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
 			);
 			mainGroup = 26B67C721C18566B000FC387;
 			productRefGroup = 26B67C7C1C18566B000FC387 /* Products */;
@@ -168,6 +173,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				26B67C8E1C18566B000FC387 /* LaunchScreen.storyboard in Resources */,
+				2615D2F91CAD304F00B9A0ED /* Localizable.strings in Resources */,
 				26B67C8B1C18566B000FC387 /* Assets.xcassets in Resources */,
 				26B67C891C18566B000FC387 /* Main.storyboard in Resources */,
 			);
@@ -190,6 +196,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		2615D2FB1CAD304F00B9A0ED /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2615D2FA1CAD304F00B9A0ED /* en */,
+				26F395931CAD30BE0002800E /* de */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		26B67C871C18566B000FC387 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

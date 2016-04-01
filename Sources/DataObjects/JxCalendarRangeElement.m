@@ -29,7 +29,7 @@
                                                    fromDate:self.date];
         
         switch (dayType) {
-            case JxCalendarDayTypeFreeChoiceMax:{
+            case JxCalendarDayTypeFreeChoiceMin:{
                 components.hour = 0;
                 components.minute = 0;
                 components.second = 0;
@@ -39,6 +39,19 @@
                 components.hour = maxDayHours/2;
                 components.minute = 0;
                 components.second = 0;
+                
+                self.end = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
+            }break;
+            case JxCalendarDayTypeFreeChoiceMax:{
+                components.hour = maxDayHours/2;
+                components.minute = 0;
+                components.second = 0;
+                
+                self.start = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
+                
+                components.hour = maxDayHours-1;
+                components.minute = 59;
+                components.second = 59;
                 
                 self.end = [calendar dateByAddingComponents:components toDate:self.date options:NSCalendarMatchStrictly];
             }break;
