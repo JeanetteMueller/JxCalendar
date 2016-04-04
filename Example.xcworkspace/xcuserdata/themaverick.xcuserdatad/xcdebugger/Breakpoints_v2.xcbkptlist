@@ -17,6 +17,38 @@
             endingLineNumber = "338"
             landmarkName = "-updateToolTipAnimated:"
             landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[JxCalendarOverview(ToolTip) updateToolTipAnimated:]"
+                  moduleName = "JxCalendar"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/themaverick/Dropbox/Programmierung/ios/Projekte/Abacus/ios/Libraries/JxCalendar/Sources/ViewControllers/JxCalendarOverview+ToolTip.m"
+                  timestampString = "481454113.400795"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "338"
+                  endingLineNumber = "338"
+                  offsetFromSymbolStart = "2972">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[JxCalendarOverview(ToolTip) updateToolTipAnimated:]"
+                  moduleName = "JxCalendar"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/themaverick/Dropbox/Programmierung/ios/Projekte/Abacus/ios/Libraries/JxCalendar/Sources/ViewControllers/JxCalendarOverview+ToolTip.m"
+                  timestampString = "481454113.400981"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "338"
+                  endingLineNumber = "338"
+                  offsetFromSymbolStart = "3048">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -64,6 +96,22 @@
             startingLineNumber = "321"
             endingLineNumber = "321"
             landmarkName = "-updateToolTipAnimated:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/ViewControllers/JxCalendarOverview.m"
+            timestampString = "481454097.138241"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "965"
+            endingLineNumber = "965"
+            landmarkName = "-numberOfSectionsInCollectionView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

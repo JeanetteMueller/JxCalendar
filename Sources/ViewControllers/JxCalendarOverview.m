@@ -1422,7 +1422,6 @@
             cell.label.textColor = kJxCalendarSelectedDayTextColor;
         }
         
-        
         if ([self.dataSource numberOfEventsAt:thisDate] > 0) {
             cell.eventMarker.hidden = NO;
         }else{
@@ -1436,6 +1435,7 @@
             cell.contentView.layer.borderWidth = 1.0f;
             cell.contentView.layer.cornerRadius = cell.frame.size.height/2;
         }else{
+            cell.contentView.backgroundColor = [UIColor clearColor];
             cell.contentView.layer.borderWidth = 0.0f;
             cell.contentView.layer.cornerRadius = 0;
         }
@@ -1446,9 +1446,18 @@
         cell.eventMarker.hidden = YES;
         cell.layer.borderColor = self.collectionView.backgroundColor.CGColor;
         cell.layer.borderWidth = .0f;
+        
+        cell.contentView.backgroundColor = [UIColor clearColor];
+        cell.contentView.layer.borderWidth = 0.0f;
+        cell.contentView.layer.cornerRadius = 0;
     }
 }
-
+- (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+}
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+}
 #pragma mark <UICollectionViewDelegate>
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{

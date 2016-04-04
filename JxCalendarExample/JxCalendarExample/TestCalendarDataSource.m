@@ -212,14 +212,17 @@
     return nil;
 }
 - (JxCalendarDayTypeMask)availableDayTypesForDate:(NSDate *)date{
-    if ([self isEndOfRange:date]){
-        return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMin);
-    }
-    if ([self isStartOfRange:date]) {
-        return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMax);
+    if (self.rangedDates.count > 1 && ([self isStartOfRange:date] || [self isEndOfRange:date])) {
+        if ([self isStartOfRange:date]) {
+            return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMax|JxCalendarDayTypeMaskHalfDayAfternoon);
+        }
+        if ([self isEndOfRange:date]){
+            return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMin|JxCalendarDayTypeMaskHalfDayMorning);
+        }
+        
     }
     
-    return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskFreeChoiceMin|JxCalendarDayTypeMaskFreeChoiceMax);
+    return (JxCalendarDayTypeMaskFreeChoice|JxCalendarDayTypeMaskWholeDay);
 }
 - (JxCalendarDayType)defaultDayTypeForDate:(NSDate *)date{
     
