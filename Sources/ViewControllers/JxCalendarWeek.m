@@ -202,7 +202,7 @@
         
         JxCalendarOverview *overview = [self getCalendarOverview];
         
-        [self.delegate calendar:overview willTransitionFrom:JxCalendarAppearanceWeek to:[overview getOverviewAppearance]];
+        [self.delegate calendar:overview willTransitionFrom:JxCalendarAppearanceWeek to:overview.overviewAppearance];
     }
     return YES;
 }

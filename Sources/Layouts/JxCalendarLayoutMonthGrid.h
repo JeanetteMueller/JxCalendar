@@ -10,4 +10,6 @@
 
 @interface JxCalendarLayoutMonthGrid : JxCalendarLayoutOverview
 
+- (CGSize)sizeOfOneMonth;
+
 @end

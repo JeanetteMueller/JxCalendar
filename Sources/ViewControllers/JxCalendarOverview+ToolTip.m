@@ -249,7 +249,7 @@ typedef enum {
                                                                         andEndDate:end];
     
     if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
-        [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
+        [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:self.appearance];
     }
     
     
@@ -713,7 +713,7 @@ typedef enum {
         }
         
         if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
-            [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
+            [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:self.appearance];
         }
         
         UIView *toolTipView = [self.view viewWithTag:JxCalendarToolTipTagView];
@@ -982,7 +982,7 @@ typedef enum {
                                                                         andEndDate:end];
     
     if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
-        [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
+        [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:self.appearance];
     }
     
     

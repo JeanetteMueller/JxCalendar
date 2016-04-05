@@ -61,13 +61,13 @@
                                                       andStyle:JxCalendarOverviewStyleMonthGrid
                                                        andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-64)
                                                   andStartDate:[NSDate date]
-                                            andStartAppearance:JxCalendarAppearanceMonth
-                                             andSelectionStyle:JxCalendarSelectionStyleDefault];
+                                            andStartAppearance:JxCalendarAppearanceYear
+                                             andSelectionStyle:JxCalendarSelectionStyleDefault
+                                             andScrollingStyle:JxCalendarScrollingStyleEndlessScrolling];
     
     _overview.delegate = self;
     _overview.renderWeekDayLabels = YES;
     _overview.lengthOfDayInHours = 24;
-    _overview.pullToSwitchYears = NO;
     
     
     self.navRoot = [[UINavigationController alloc] initWithRootViewController:_overview];
@@ -82,10 +82,10 @@
     //[NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(startRefreshDemo_Footer) userInfo:nil repeats:NO];
 }
 - (void)startRefreshDemo_Header{
-    [self calendar:_overview didRefreshByHeader:nil whileOnAppearance:_overview.getAppearance];
+    [self calendar:_overview didRefreshByHeader:nil whileOnAppearance:_overview.appearance];
 }
 - (void)startRefreshDemo_Footer{
-    [self calendar:_overview didRefreshByFooter:nil whileOnAppearance:_overview.getAppearance];
+    [self calendar:_overview didRefreshByFooter:nil whileOnAppearance:_overview.appearance];
 }
 #pragma mark <JxCalendarDelegate>
 - (BOOL)calendarShouldStartRanging:(JxCalendarOverview *)calendar{
@@ -161,15 +161,21 @@
         [self.dataSource.rangedDates addObject:rangeElement];
     }
     
+    DLog(@"self.dataSource.rangedDates %@", self.dataSource.rangedDates);
+    
 }
 - (void)calendar:(JxCalendarOverview *)calendar didDeRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
     
-    for (JxCalendarRangeElement *rangeElement in self.dataSource.rangedDates) {
+    DLog(@"date %@", date);
+    
+    for (NSInteger i = self.dataSource.rangedDates.count-1; i >=0; i--) {
+        JxCalendarRangeElement *rangeElement = [self.dataSource.rangedDates objectAtIndex:i];
         if ([rangeElement.date isEqual:date]) {
             [self.dataSource.rangedDates removeObject:rangeElement];
-            return;
+            
         }
     }
+    DLog(@"self.dataSource.rangedDates %@", self.dataSource.rangedDates);
 }
 - (NSInteger)indexOfDateInRange:(NSDate *)date{
     NSInteger index = 0;

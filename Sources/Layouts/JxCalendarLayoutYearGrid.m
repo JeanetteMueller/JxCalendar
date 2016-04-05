@@ -31,7 +31,6 @@
         
         CGFloat borders = .0f;
         
-        
         self.sectionInset = UIEdgeInsetsMake(3, 3, 0, 3);
         
         self.headerReferenceSize = CGSizeMake(size.width/3 - self.sectionInset.left-self.sectionInset.right,
@@ -39,23 +38,18 @@
         
         self.minimumInteritemSpacing = borders;
         self.minimumLineSpacing = borders;
-        CGFloat itemwidth = floor((self.headerReferenceSize.width - (itemsPerRow-1)*self.minimumInteritemSpacing)  / itemsPerRow);
+        CGFloat itemwidth = (self.headerReferenceSize.width - (itemsPerRow-1)*self.minimumInteritemSpacing)  / itemsPerRow;
         
         self.itemSize = CGSizeMake(itemwidth,
                                    itemwidth);
         
-        
         self.scrollDirection = UICollectionViewScrollDirectionVertical;
-        
-        
         self.footerReferenceSize = CGSizeZero;
-        
     }
     return self;
 }
 
-- (instancetype)init
-{
+- (instancetype)init{
     self = [super init];
     if (self) {
         self.scrollDirection = UICollectionViewScrollDirectionVertical;
@@ -70,142 +64,78 @@
 
 #pragma mark - Layout
 
-- (void)prepareLayout
-{
-    [super prepareLayout];
+- (CGSize)sizeOfOneMonth{
     
-    NSMutableDictionary *newLayoutInfo = [NSMutableDictionary dictionary];
-    NSMutableDictionary *cellLayoutInfo = [NSMutableDictionary dictionary];
-    NSMutableDictionary *headerLayoutInfo = [NSMutableDictionary dictionary];
-    
-    NSInteger sectionCount = [self.collectionView numberOfSections];
-    NSIndexPath *indexPath;
-    CGRect previousRect = CGRectZero;
-    NSIndexPath *previousIndexPath;
-    
-    for (NSInteger section = 0; section < sectionCount; section++) {
-        
-        NSInteger itemCount = [self.collectionView numberOfItemsInSection:section];
-        indexPath = [NSIndexPath indexPathForItem:0 inSection:section];
-        UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:indexPath];
-        itemAttributes.frame = [self frameForHeaderAtSection:indexPath.section previousRect:previousRect previousIndexPath:previousIndexPath];
-        headerLayoutInfo[indexPath] = itemAttributes;
-        
-        for (NSInteger item = 0; item < itemCount; item++) {
-            indexPath = [NSIndexPath indexPathForItem:item inSection:section];
-            
-            UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-            itemAttributes.frame = [self frameForItemAtIndexPath:indexPath previousRect:previousRect previousIndexPath:previousIndexPath];
-            previousRect = itemAttributes.frame;
-            cellLayoutInfo[indexPath] = itemAttributes;
-            previousIndexPath = indexPath;
-        }
-    }
-    
-    newLayoutInfo[kJxCalendarYearLayoutCells] = cellLayoutInfo;
-    newLayoutInfo[kJxCalendarYearLayoutHeader] = headerLayoutInfo;
-    
-    self.layoutInfo = newLayoutInfo;
+    return CGSizeMake(self.headerReferenceSize.width,
+                      self.headerReferenceSize.height + self.minimumLineSpacing + ((self.itemSize.height+self.minimumLineSpacing)*6 ) + self.minimumLineSpacing);
 }
 
-- (nullable NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect
-{
-    NSMutableArray *allAttributes = [NSMutableArray arrayWithCapacity:self.layoutInfo.count];
+- (nullable NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect{
+    NSMutableArray *allAttributes = [NSMutableArray array];
+
+    CGFloat origin = rect.origin.y;
+    NSInteger section = floor(origin / ([self sizeOfOneMonth].height + self.sectionInset.top + self.sectionInset.bottom));
+
+    section = section*3;
     
-    [self.layoutInfo enumerateKeysAndObjectsUsingBlock:^(NSString *elementIdentifier,
-                                                         NSDictionary *elementsInfo,
-                                                         BOOL *stop) {
-        [elementsInfo enumerateKeysAndObjectsUsingBlock:^(NSIndexPath *indexPath,
-                                                          UICollectionViewLayoutAttributes *attributes,
-                                                          BOOL *innerStop) {
-            if (CGRectIntersectsRect(rect, attributes.frame)) {
-                [allAttributes addObject:attributes];
+    for (NSInteger s = section-3; s <= section+29; s++) {
+        if (s >= 0 && s < [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView]) {
+            [allAttributes addObject:[self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:[NSIndexPath indexPathForItem:0 inSection:s]]];
+            
+            NSInteger itemCount = [self.collectionView numberOfItemsInSection:s];
+            
+            for (NSInteger item = 0; item < itemCount; item++) {
+                
+                NSIndexPath *path = [NSIndexPath indexPathForItem:item inSection:s];
+                
+                UICollectionViewLayoutAttributes *itemAttributes = [self layoutAttributesForItemAtIndexPath:path];
+                [allAttributes addObject:itemAttributes];
+                
             }
-        }];
-    }];
+        }
+    }
     
     return allAttributes;
 }
 
-- (CGSize)collectionViewContentSize
-{
+- (CGSize)collectionViewContentSize{
 
     NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
     NSIndexPath *lastHeaderIndexPath = [NSIndexPath indexPathForRow:0 inSection:numOfSections-1];
     UICollectionViewLayoutAttributes *lastLayoutAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:lastHeaderIndexPath];
+    
     CGSize contentSize = CGSizeMake(CGRectGetMaxX(lastLayoutAttributes.frame),
-                                    CGRectGetMaxY(lastLayoutAttributes.frame) + ((self.itemSize.height+self.minimumLineSpacing) * 6 ) + self.sectionInset.bottom);
+                                    lastLayoutAttributes.frame.origin.y + [self sizeOfOneMonth].height);
     
     if (contentSize.height < self.collectionView.frame.size.height) {
         contentSize.height = self.collectionView.frame.size.height+1;
     }
     return contentSize;
-
 }
 
 #pragma mark - Cells Layout
 
-- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    return self.layoutInfo[kJxCalendarYearLayoutCells][indexPath];
-}
-
-
-- (CGRect)frameForItemAtIndexPath:(NSIndexPath *)indexPath previousRect:(CGRect)previousRect previousIndexPath:(NSIndexPath*)previousIndexPath
-{
-
-    if (CGRectEqualToRect(CGRectZero, previousRect)) {
-        return CGRectMake(self.sectionInset.left,
-                          self.headerReferenceSize.height + self.minimumLineSpacing + self.sectionInset.top,
-                          self.itemSize.width,
-                          self.itemSize.height);
-    }
-    else {
-        CGRect theoricalRect = previousRect;
-        theoricalRect.origin.x = theoricalRect.origin.x + self.minimumInteritemSpacing + self.itemSize.width;
-        if ((indexPath.section - previousIndexPath.section) > 0) {
-            theoricalRect.origin.x = self.sectionInset.left + (indexPath.section % 3 * (self.headerReferenceSize.width + self.sectionInset.left + self.sectionInset.right));
-            theoricalRect.origin.y = floor(indexPath.section / 3) * ((self.itemSize.height+self.minimumLineSpacing) * 6 + self.headerReferenceSize.height + self.minimumInteritemSpacing + self.sectionInset.bottom) + self.headerReferenceSize.height+self.minimumInteritemSpacing + self.sectionInset.top;
-            
-        }else if ((theoricalRect.origin.x + self.itemSize.width) > ((indexPath.section % 3 * (self.headerReferenceSize.width + self.sectionInset.left + self.sectionInset.right)) + self.headerReferenceSize.width+self.sectionInset.left+self.minimumInteritemSpacing)) {
-            
-            theoricalRect.origin.x = self.sectionInset.left + (indexPath.section % 3 * (self.headerReferenceSize.width + self.sectionInset.left + self.sectionInset.right));
-            theoricalRect.origin.y = theoricalRect.origin.y + self.minimumLineSpacing + self.itemSize.height ;
-        }
-        return theoricalRect;
-    }
-
-    return CGRectZero;
+- (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath{
+    UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
+    
+    itemAttributes.frame = CGRectMake(((indexPath.section %3)* ([self sizeOfOneMonth].width+self.sectionInset.left+self.sectionInset.right)) + self.sectionInset.left + ((indexPath.item % 7) * self.itemSize.width),
+                                      
+                                      (floor(indexPath.section/3)*([self sizeOfOneMonth].height+self.sectionInset.top + self.sectionInset.bottom)+self.sectionInset.top) + self.headerReferenceSize.height + self.minimumLineSpacing + (floor(indexPath.item/7)*(self.itemSize.height+self.minimumLineSpacing)),
+                                      
+                                      self.itemSize.width,
+                                      self.itemSize.height);
+    
+    return itemAttributes;
 }
 
 #pragma mark - Headers Layout
 
-- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-{
-    return self.layoutInfo[kJxCalendarYearLayoutHeader][indexPath];
-}
+- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
 
-- (CGRect)frameForHeaderAtSection:(NSInteger)section previousRect:(CGRect)previousRect previousIndexPath:(NSIndexPath*)previousIndexPath
-{
-    if (self.scrollDirection == UICollectionViewScrollDirectionVertical) {
-        if (CGRectEqualToRect(CGRectZero, previousRect)) {
-            return CGRectMake(self.sectionInset.left, self.sectionInset.top, self.headerReferenceSize.width, self.headerReferenceSize.height);
-        }
-        else {
-            CGRect theoricalRect = previousRect;
-            theoricalRect.origin.x = self.sectionInset.left+ (section % 3 * (self.headerReferenceSize.width + self.sectionInset.left +self.sectionInset.right));
-            
-            theoricalRect.origin.y = floor(section / 3) * ((self.itemSize.height+self.minimumLineSpacing) * 6 + self.headerReferenceSize.height + self.minimumInteritemSpacing + self.sectionInset.bottom)+ self.sectionInset.top ;//
-            //theoricalRect.origin.y = (theoricalRect.origin.y + self.itemSize.height + self.minimumLineSpacing);
-            
-            
-            theoricalRect.size.width = self.headerReferenceSize.width;
-            theoricalRect.size.height = self.headerReferenceSize.height;
-            return theoricalRect;
-        }
-    }
+    UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:indexPath];
+    itemAttributes.frame = CGRectMake((indexPath.section %3) * ([self sizeOfOneMonth].width+self.sectionInset.left+self.sectionInset.right) + self.sectionInset.left, floor(indexPath.section /3)*([self sizeOfOneMonth].height + self.sectionInset.top + self.sectionInset.bottom)+self.sectionInset.top, self.headerReferenceSize.width, self.headerReferenceSize.height);
     
-    return CGRectZero;
+    return itemAttributes;
 }
 
 @end

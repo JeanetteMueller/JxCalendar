@@ -105,6 +105,7 @@
     }
     return self;
 }
+
 - (id)initWithDate:(NSDate *)date andDayType:(JxCalendarDayType)dayType withStartDate:(NSDate *)start andEndDate:(NSDate *)end{
     self = [super init];
     if (self) {
@@ -122,9 +123,11 @@
     }
     return self;
 }
+
 - (NSTimeInterval)duration{
     return [self.end timeIntervalSinceDate:self.start];
 }
+
 - (BOOL)isFromValueWhileFreeChoiceMaxWithCalendar:(NSCalendar *)calendar{
     if (self.dayType == JxCalendarDayTypeFreeChoiceMax) {
         NSDateComponents *startComponents = [calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.start];
@@ -135,4 +138,9 @@
     }
     return NO;
 }
+
+- (NSString *)description{
+    return [NSString stringWithFormat:@"RangeElement %@", _date];
+}
+
 @end

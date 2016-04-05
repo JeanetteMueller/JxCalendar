@@ -253,6 +253,14 @@
     v.backgroundColor = [UIColor purpleColor];
     return v;
 }
+- (void)calendar:(JxCalendarOverview *)calendar willDisplayMonth:(NSInteger)month inYear:(NSInteger)year{
+    
+    //NSLog(@"willDisplayMonth %ld of year %ld", month, year);
+}
+- (void)calendar:(JxCalendarOverview *)calendar didHideMonth:(NSInteger)month inYear:(NSInteger)year{
+    
+    //NSLog(@"didHideMonth %ld of year %ld", month, year);
+}
 #pragma mark Helper
 - (void)sortRangedObjects{
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:YES];

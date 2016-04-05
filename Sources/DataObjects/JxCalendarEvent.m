@@ -47,8 +47,8 @@
     return self;
 }
 
-
 - (NSString *)description{
     return [NSString stringWithFormat:@"Event %@ (%@)", _title, _identifier];
 }
+
 @end

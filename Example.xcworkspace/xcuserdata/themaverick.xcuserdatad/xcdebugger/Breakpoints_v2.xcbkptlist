@@ -26,7 +26,7 @@
                   moduleName = "JxCalendar"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/themaverick/Dropbox/Programmierung/ios/Projekte/Abacus/ios/Libraries/JxCalendar/Sources/ViewControllers/JxCalendarOverview+ToolTip.m"
-                  timestampString = "481454113.400795"
+                  timestampString = "481555281.317511"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "338"
@@ -41,7 +41,7 @@
                   moduleName = "JxCalendar"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/themaverick/Dropbox/Programmierung/ios/Projekte/Abacus/ios/Libraries/JxCalendar/Sources/ViewControllers/JxCalendarOverview+ToolTip.m"
-                  timestampString = "481454113.400981"
+                  timestampString = "481555281.317638"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "338"
@@ -105,13 +105,29 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Sources/ViewControllers/JxCalendarOverview.m"
-            timestampString = "481454097.138241"
+            filePath = "JxCalendarExample/JxCalendarExample/ViewController.m"
+            timestampString = "481554372.326043"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "965"
-            endingLineNumber = "965"
-            landmarkName = "-numberOfSectionsInCollectionView:"
+            startingLineNumber = "178"
+            endingLineNumber = "178"
+            landmarkName = "-calendar:didDeRangeDate:whileOnAppearance:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Sources/ViewControllers/JxCalendarOverview.m"
+            timestampString = "481555644.574712"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "885"
+            endingLineNumber = "885"
+            landmarkName = "-updateLongHoldSelectedCells"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

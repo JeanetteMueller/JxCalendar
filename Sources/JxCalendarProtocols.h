@@ -57,6 +57,8 @@
 - (UIView *)viewForPullToRefreshHeaderWhileOnAppearance:(JxCalendarAppearance)appearance;
 - (UIView *)viewForPullToRefreshFooterWhileOnAppearance:(JxCalendarAppearance)appearance;
 
+- (void)calendar:(JxCalendarOverview *)calendar willDisplayMonth:(NSInteger)month inYear:(NSInteger)year;
+- (void)calendar:(JxCalendarOverview *)calendar didHideMonth:(NSInteger)month inYear:(NSInteger)year;
 @end
 
 
