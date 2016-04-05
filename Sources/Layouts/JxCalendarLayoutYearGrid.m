@@ -38,7 +38,7 @@
         
         self.minimumInteritemSpacing = borders;
         self.minimumLineSpacing = borders;
-        CGFloat itemwidth = (self.headerReferenceSize.width - (itemsPerRow-1)*self.minimumInteritemSpacing)  / itemsPerRow;
+        CGFloat itemwidth = floor((self.headerReferenceSize.width - (itemsPerRow-1)*self.minimumInteritemSpacing)  / itemsPerRow);
         
         self.itemSize = CGSizeMake(itemwidth,
                                    itemwidth);
@@ -118,9 +118,15 @@
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath{
     UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
     
-    itemAttributes.frame = CGRectMake(((indexPath.section %3)* ([self sizeOfOneMonth].width+self.sectionInset.left+self.sectionInset.right)) + self.sectionInset.left + ((indexPath.item % 7) * self.itemSize.width),
+    CGFloat unschaerfe = (self.headerReferenceSize.width - (self.itemSize.width*7 + self.minimumInteritemSpacing*6)) /2;
+    
+    CGFloat abstandVonLinksSection = (indexPath.section %3) * ([self sizeOfOneMonth].width+self.sectionInset.left+self.sectionInset.right);
+    
+    CGFloat abstandVonObenSection = floor(indexPath.section/3) * ([self sizeOfOneMonth].height+self.sectionInset.top + self.sectionInset.bottom);
+    
+    itemAttributes.frame = CGRectMake(abstandVonLinksSection + self.sectionInset.left + ((indexPath.item % 7) * self.itemSize.width) + unschaerfe,
                                       
-                                      (floor(indexPath.section/3)*([self sizeOfOneMonth].height+self.sectionInset.top + self.sectionInset.bottom)+self.sectionInset.top) + self.headerReferenceSize.height + self.minimumLineSpacing + (floor(indexPath.item/7)*(self.itemSize.height+self.minimumLineSpacing)),
+                                      abstandVonObenSection + self.sectionInset.top + self.headerReferenceSize.height + self.minimumLineSpacing + (floor(indexPath.item/7)*(self.itemSize.height+self.minimumLineSpacing)),
                                       
                                       self.itemSize.width,
                                       self.itemSize.height);
@@ -133,7 +139,10 @@
 - (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
 
     UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:indexPath];
-    itemAttributes.frame = CGRectMake((indexPath.section %3) * ([self sizeOfOneMonth].width+self.sectionInset.left+self.sectionInset.right) + self.sectionInset.left, floor(indexPath.section /3)*([self sizeOfOneMonth].height + self.sectionInset.top + self.sectionInset.bottom)+self.sectionInset.top, self.headerReferenceSize.width, self.headerReferenceSize.height);
+    itemAttributes.frame = CGRectMake((indexPath.section %3) * ([self sizeOfOneMonth].width+self.sectionInset.left+self.sectionInset.right) + self.sectionInset.left,
+                                      floor(indexPath.section /3)*([self sizeOfOneMonth].height + self.sectionInset.top + self.sectionInset.bottom)+self.sectionInset.top,
+                                      self.headerReferenceSize.width,
+                                      self.headerReferenceSize.height);
     
     return itemAttributes;
 }
