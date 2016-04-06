@@ -53,10 +53,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations
     self.clearsSelectionOnViewWillAppear = NO;
     
-    // Register cell classes
     [self.collectionView setDirectionalLockEnabled:YES];
     
     NSString* const frameworkBundleID = @"de.themaverick.JxCalendar";
@@ -94,7 +92,7 @@
 }
 
 - (void)viewDidLayoutSubviews {
-    // If we haven't done the initial scroll, do it once.
+    
     if (!self.initialScrollDone) {
         
         NSDate *now = [NSDate date];
@@ -196,9 +194,7 @@
     [self loadNow];
     
     if (_nowComponents.year == _currentComponents.year && _nowComponents.month == _currentComponents.month && _nowComponents.day == _currentComponents.day) {
-        //aktueller tag ist heute
-        
-        //plaziere zeitzeiger
+
         if (!_zeiger) {
             self.zeiger = [[UIView alloc] init];
             _zeiger.backgroundColor = [UIColor redColor];

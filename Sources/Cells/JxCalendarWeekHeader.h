@@ -9,7 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface JxCalendarWeekHeader : UICollectionReusableView
+
 @property (strong, nonatomic) IBOutlet UILabel *titleLabel;
 @property (strong, nonatomic) IBOutlet UIButton *button;
 @property (strong, nonatomic) IBOutlet UIView *eventMarker;
+
 @end

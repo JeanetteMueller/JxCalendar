@@ -15,7 +15,7 @@
 
 @interface JxCalendarLayoutWeek ()
 
-@property (nonatomic, strong) NSDictionary *layoutInfo;
+@property (strong, nonatomic) NSDictionary *layoutInfo;
 @end
 
 @implementation JxCalendarLayoutWeek
@@ -31,19 +31,15 @@
         self.minimumLineSpacing = 1.0f;
         self.minimumInteritemSpacing = borders;
         
-    
         CGFloat maxWidth = floor(size.width /7)-self.minimumInteritemSpacing;
         self.itemSize = CGSizeMake(maxWidth-1, 64);
         self.headerReferenceSize = CGSizeMake(maxWidth, 64.0f);
-        
-        
-        
         self.sectionInset = UIEdgeInsetsZero;
     }
     return self;
 }
-- (instancetype)init
-{
+
+- (instancetype)init{
     self = [super init];
     if (self) {
         self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -54,14 +50,15 @@
 }
 
 #pragma mark - Layout
+
 - (void)invalidateLayout{
     
     self.layoutInfo = nil;
     
     [super invalidateLayout];
 }
-- (void)prepareLayout
-{
+
+- (void)prepareLayout{
     [super prepareLayout];
     
     NSMutableDictionary *newLayoutInfo = [NSMutableDictionary dictionary];
@@ -85,9 +82,6 @@
         itemAttributes.frame = [self frameForHeaderAtSection:indexPath.section];
         itemAttributes.zIndex = 20;
         headerLayoutInfo[indexPath] = itemAttributes;
-        
-        
-        
         
         for (NSInteger item = 0; item < itemCount; item++) {
             indexPath = [NSIndexPath indexPathForItem:item inSection:section];
@@ -119,18 +113,12 @@
                 }
             }
             
-            
-            
-            
             newLayoutInfo[kJxCalendarWeekLayoutCells] = cellLayoutInfo;
             newLayoutInfo[kJxCalendarWeekLayoutWholeDay] = wholeDayLayoutInfo;
             newLayoutInfo[kJxCalendarWeekLayoutHeader] = headerLayoutInfo;
             
             self.layoutInfo = newLayoutInfo;
         }
-        
-        
-        
     }
     
     newLayoutInfo[kJxCalendarWeekLayoutCells] = cellLayoutInfo;
@@ -208,6 +196,7 @@
     }
     return CGRectZero;
 }
+
 - (CGRect)frameForDurationEvent:(JxCalendarEventDuration *)event atIndexPath:(NSIndexPath *)indexPath{
     
     NSDateComponents *startComponents = [[self.source.dataSource calendar] components:NSCalendarUnitHour|NSCalendarUnitMinute fromDate:event.start];
@@ -229,6 +218,7 @@
     
     return newRect;
 }
+
 - (BOOL)checkIfRectIsAvailable:(CGRect)rect forType:(NSString *)type{
     
     if (self.layoutInfo) {
@@ -253,7 +243,7 @@
     
     CGFloat x = (self.collectionView.frame.size.width * floor(section / 7)) + ((section % 7) * (self.headerReferenceSize.width+self.minimumInteritemSpacing));
 
-    return CGRectMake(x, //section * (self.headerReferenceSize.width + self.minimumInteritemSpacing),
+    return CGRectMake(x,
                       self.collectionView.contentOffset.y,
                       self.headerReferenceSize.width,
                       self.headerReferenceSize.height);
@@ -261,12 +251,12 @@
 }
 
 #pragma mark sticky Headers
+
 - (CGFloat)pageWidth {
     return self.collectionView.frame.size.width;
 }
 
-- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity
-{
+- (CGPoint)targetContentOffsetForProposedContentOffset:(CGPoint)proposedContentOffset withScrollingVelocity:(CGPoint)velocity{
     CGFloat rawPageValue = self.collectionView.contentOffset.x / self.pageWidth;
     CGFloat currentPage = (velocity.x > 0.0) ? floor(rawPageValue) : ceil(rawPageValue);
     CGFloat nextPage = (velocity.x > 0.0) ? ceil(rawPageValue) : floor(rawPageValue);
@@ -281,12 +271,9 @@
     
     return proposedContentOffset;
 }
+
 - (CGFloat)flickVelocity {
     return 0.3;
 }
 
-
-//- (BOOL) shouldInvalidateLayoutForBoundsChange:(CGRect)newBound {
-//    return YES;
-//}
 @end

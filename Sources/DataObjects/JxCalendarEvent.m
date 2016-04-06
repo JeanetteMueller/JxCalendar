@@ -35,11 +35,7 @@
         CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
         self.borderColor = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
         
-        //self.borderColor = [UIColor blueColor];
         self.backgroundColor = [self.borderColor colorWithAlphaComponent:0.8f];
-        
-        
-        
         self.fontColorSelected = [UIColor whiteColor];
         self.borderColorSelected = [UIColor redColor];
         self.backgroundColorSelected = [self.borderColorSelected colorWithAlphaComponent:0.8f];

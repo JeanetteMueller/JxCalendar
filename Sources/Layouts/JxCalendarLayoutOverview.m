@@ -37,32 +37,28 @@
 
 - (nullable NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect{
     
-    CGFloat origin = rect.origin.y;
+    CGPoint origin = rect.origin;
     
-    if ([self.layouts objectForKey:[NSString stringWithFormat:@"%f", origin]]) {
-        //NSLog(@"layoutAttributesForElementsInRect");
-        return [self.layouts objectForKey:[NSString stringWithFormat:@"%f", origin]];
+    if ([self.layouts objectForKey:[NSString stringWithFormat:@"%fx%f", origin.x, origin.y]]) {
+        return [self.layouts objectForKey:[NSString stringWithFormat:@"%fx%f", origin.x, origin.y]];
     }
     return nil;
 }
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath{
     
     if ([self.cachedItemAttributes objectForKey:indexPath]) {
-        //NSLog(@"layoutAttributesForItemAtIndexPath: %ld - %ld", indexPath.section, indexPath.item);
         return [self.cachedItemAttributes objectForKey:indexPath];
     }
     return nil;
 }
 - (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     if ([self.cachedHeadlineAttributes objectForKey:indexPath]) {
-        //NSLog(@"layoutAttributesForSupplementaryViewOfKind: %@ %ld - %ld", kind, indexPath.section, indexPath.item);
         return [self.cachedHeadlineAttributes objectForKey:indexPath];
     }
     return nil;
 }
 - (UICollectionViewLayoutAttributes *)layoutAttributesForDecorationViewOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath{
     if ([self.cachedDecoAttributes objectForKey:indexPath]) {
-        //NSLog(@"layoutAttributesForDecorationViewOfKind: %@ %ld - %ld", elementKind, indexPath.section, indexPath.item);
         return [self.cachedDecoAttributes objectForKey:indexPath];
     }
     return nil;

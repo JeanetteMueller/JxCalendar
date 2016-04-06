@@ -9,7 +9,7 @@
 #import "JxCalendarRangeElement.h"
 @interface JxCalendarRangeElement ()
 
-@property (nonatomic, readwrite) JxCalendarDayType dayType;
+@property (assign, nonatomic, readwrite) JxCalendarDayType dayType;
 
 @property (strong, nonatomic, readwrite) NSDate *date;
 @property (strong, nonatomic, readwrite) NSDate *start;
@@ -111,12 +111,6 @@
     if (self) {
         self.date = date;
         self.dayType = dayType;
-//        if((start && !end) || (!start && end) ){
-//            self.dayType = JxCalendarDayTypeFreeChoiceMax;
-//        }else{
-//            self.dayType = JxCalendarDayTypeFreeChoice;
-//        }
-        
         self.start = start;
         self.end = end;
 

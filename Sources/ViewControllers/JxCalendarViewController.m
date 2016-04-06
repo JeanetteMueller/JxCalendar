@@ -17,11 +17,11 @@
 
 @interface JxCalendarViewController ()
 
-@property (nonatomic, strong) UIView *pullToRefreshHeader;
-@property (nonatomic, strong) UIView *pullToRefreshFooter;
-@property (nonatomic) UIEdgeInsets originalInsets;
-@property (nonatomic, readwrite) BOOL isInRangeForRefreshHeader;
-@property (nonatomic, readwrite) BOOL isInRangeForRefreshFooter;
+@property (strong, nonatomic) UIView *pullToRefreshHeader;
+@property (strong, nonatomic) UIView *pullToRefreshFooter;
+@property (assign, nonatomic) UIEdgeInsets originalInsets;
+@property (assign, nonatomic, readwrite) BOOL isInRangeForRefreshHeader;
+@property (assign, nonatomic, readwrite) BOOL isInRangeForRefreshFooter;
 
 @end
 
@@ -48,13 +48,9 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations
     self.clearsSelectionOnViewWillAppear = NO;
     
-    // Register cell classes
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
-    
-    // Do any additional setup after loading the view.
     
     if ([self.dataSource respondsToSelector:@selector(viewForPullToRefreshHeaderWhileOnAppearance:)]) {
         _pullToRefreshHeader = [self.dataSource viewForPullToRefreshHeaderWhileOnAppearance:[self getAppearance]];

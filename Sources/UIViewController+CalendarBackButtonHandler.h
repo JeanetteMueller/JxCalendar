@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @protocol CalendarBackButtonHandlerProtocol <NSObject>
+
 @optional
-// Override this method in UIViewController derived class to handle 'Back' button click
--(BOOL)navigationShouldPopOnBackButton;
+- (BOOL)navigationShouldPopOnBackButton;
+
 @end
 
 @interface UIViewController (CalendarBackButtonHandler) <CalendarBackButtonHandlerProtocol>

@@ -24,18 +24,18 @@
 
 @interface JxCalendarOverview () <UIGestureRecognizerDelegate>
 
-@property (nonatomic, readwrite) CGSize startSize;
-@property (nonatomic, readwrite) JxCalendarSelectionStyle selectionStyle;
-@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGesture;
-@property (nonatomic, strong) NSIndexPath *longHoldStartIndexPath;
-@property (nonatomic, strong) NSIndexPath *longHoldEndIndexPath;
+@property (assign, nonatomic, readwrite) CGSize startSize;
+@property (assign, nonatomic, readwrite) JxCalendarSelectionStyle selectionStyle;
+@property (strong, nonatomic) UILongPressGestureRecognizer *longPressGesture;
+@property (strong, nonatomic) NSIndexPath *longHoldStartIndexPath;
+@property (strong, nonatomic) NSIndexPath *longHoldEndIndexPath;
 
-@property (nonatomic, strong) NSTimer *moveTimer;
-@property (nonatomic, readwrite) CGFloat direction;
+@property (strong, nonatomic) NSTimer *moveTimer;
+@property (assign, nonatomic, readwrite) CGFloat direction;
 
-@property (nonatomic, strong) NSMutableArray *visibleSections;
+@property (strong, nonatomic) NSMutableArray *visibleSections;
 
-@property (nonatomic, readwrite) JxCalendarScrollingStyle scrollingStyle;
+@property (assign, nonatomic, readwrite) JxCalendarScrollingStyle scrollingStyle;
 @end
 
 @implementation JxCalendarOverview
@@ -1604,9 +1604,6 @@
                             _longHoldEndIndexPath = nil;
                         }
                         
-//                        _longHoldEndIndexPath = indexPath;
-//                        _longHoldStartIndexPath = indexPath;
-                        
                         if (!_longHoldStartIndexPath) {
                             _longHoldStartIndexPath = indexPath;
                             _longHoldEndIndexPath = nil;
@@ -1615,35 +1612,13 @@
                         }else{
                             _longHoldStartIndexPath = indexPath;
                             _longHoldEndIndexPath = nil;
-                            
-                            
-//                            if ([self.dataSource isPartOfRange:date]) {
-//                                _longHoldEndIndexPath = indexPath;
-//                            }else if (_longHoldStartIndexPath && _longHoldEndIndexPath){
-//                                if( indexPath.section > _longHoldEndIndexPath.section ||
-//                                   (indexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < indexPath.row)) {
-//                                    
-//                                    _longHoldEndIndexPath = indexPath;
-//                                }else{
-//                                    _longHoldStartIndexPath = indexPath;
-//                                }
-//                            }
                         }
-                        
-                        
                         
                         [self updateLongHoldSelectedCells];
                         
                         if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging:)]) {
                             [self.delegate calendarDidEndRanging:[self getCalendarOverview]];
                         }
-                        
-//                        if (_longHoldStartIndexPath && _longHoldEndIndexPath && ( _longHoldStartIndexPath.section > _longHoldEndIndexPath.section ||
-//                            (_longHoldStartIndexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < _longHoldStartIndexPath.row))) {
-//                            NSIndexPath *tempStart = _longHoldStartIndexPath;
-//                            _longHoldStartIndexPath = _longHoldEndIndexPath;
-//                            _longHoldEndIndexPath = tempStart;
-//                        }
                     }
                 }
             }

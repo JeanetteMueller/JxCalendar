@@ -18,26 +18,26 @@
 @interface JxCalendarOverview : JxCalendarViewController <JxCalendarScrollTo>
 
 /* style how to use scrolling and if there is a pullto event on the edges or not */
-@property (nonatomic, readonly) JxCalendarScrollingStyle scrollingStyle;
+@property (assign, nonatomic, readonly) JxCalendarScrollingStyle scrollingStyle;
 
 /* maximum time in range per day */
 /* this may be usefull if a workday maximum should be 8 hours and a half day 4 hours */
 /* default = 24 */
-@property (nonatomic, readwrite) NSInteger lengthOfDayInHours;
+@property (assign, nonatomic, readwrite) NSInteger lengthOfDayInHours;
 
 /* display proportional ranged time on cell */
 /* default = NO */
-@property (nonatomic, readwrite) BOOL proportionalRangeTime;
+@property (assign, nonatomic, readwrite) BOOL proportionalRangeTime;
 
 /* display FreeChoice RangeElements as duration */
 /* default is hh:mm - hh:mm */
 /* duration means hh:mm h */
-@property (nonatomic, readwrite) BOOL displayRangeTimeAdDuration;
+@property (assign, nonatomic, readwrite) BOOL displayRangeTimeAdDuration;
 
 
 /* Internal Use only */
-@property (nonatomic, readonly) JxCalendarAppearance overviewAppearance;
-@property (nonatomic, readonly) JxCalendarAppearance appearance;
+@property (assign, nonatomic, readonly) JxCalendarAppearance overviewAppearance;
+@property (assign, nonatomic, readonly) JxCalendarAppearance appearance;
 
 
 /* Init */
@@ -56,7 +56,7 @@
 - (NSIndexPath *)getIndexPathForDate:(NSDate *)date;
 - (void)updateRangeForCell:(JxCalendarCell *)cell atIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated;
 
-//For internal use only;
+/* For internal use only */
 - (BOOL)nextCellIsInRangeWithIndexPath:(NSIndexPath *)indexPath;
 - (BOOL)lastCellIsInRangeWithIndexPath:(NSIndexPath *)indexPath;
 

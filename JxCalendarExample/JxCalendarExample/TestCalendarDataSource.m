@@ -240,7 +240,7 @@
 //    if ([JxCalendarBasics normalizedWeekDay:components.weekday] == 1) {
 //        return NO;
 //    }
-    return NO;
+//    return NO;
 }
 
 - (UIView *)viewForPullToRefreshHeaderWhileOnAppearance:(JxCalendarAppearance)appearance{

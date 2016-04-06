@@ -11,12 +11,9 @@
 #import "JxCalendarProtocols.h"
 #import "JxCalendarViewController.h"
 
-
-
 @interface JxCalendarLayoutYearGrid ()
-@property (nonatomic, readwrite) CGSize startSize;
 
-
+@property (assign, nonatomic, readwrite) CGSize startSize;
 
 @end
 
@@ -75,14 +72,14 @@
         return attr;
     }
     
-    CGFloat origin = rect.origin.y;
+    CGPoint origin = rect.origin;
 
-    CGRect area = CGRectMake(rect.origin.x, rect.origin.y-(rect.size.height/2), rect.size.width, rect.size.height*rect.size.height);
+    CGRect area = CGRectMake(origin.x, origin.y-(rect.size.height/2), rect.size.width, rect.size.height*rect.size.height);
     
     
     NSMutableArray *allAttributes = [NSMutableArray array];
 
-    NSInteger section = floor(origin / ([self sizeOfOneMonth].height + self.sectionInset.top + self.sectionInset.bottom));
+    NSInteger section = floor(origin.y / ([self sizeOfOneMonth].height + self.sectionInset.top + self.sectionInset.bottom));
 
     section = section*3;
     
@@ -124,7 +121,7 @@
         }
     }
     
-    [self.layouts setObject:allAttributes forKey:[NSString stringWithFormat:@"%f", origin]];
+    [self.layouts setObject:allAttributes forKey:[NSString stringWithFormat:@"%fx%f", origin.x, origin.y]];
     
     return allAttributes;
 }
@@ -134,7 +131,7 @@
     if (self.contentSize.width > 0 && self.contentSize.height > 0) {
         return self.contentSize;
     }
-    //NSLog(@"collectionViewContentSize");
+    
     NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
     NSIndexPath *lastHeaderIndexPath = [NSIndexPath indexPathForRow:0 inSection:numOfSections-1];
     UICollectionViewLayoutAttributes *lastLayoutAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:lastHeaderIndexPath];
@@ -185,7 +182,6 @@
         return itemAttributes;
     }
     
-    //NSLog(@"layoutAttributesForSupplementaryViewOfKind: %@ %ld - %ld", kind, indexPath.section, indexPath.item);
     itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:indexPath];
     itemAttributes.frame = CGRectMake((indexPath.section %3) * ([self sizeOfOneMonth].width+self.sectionInset.left+self.sectionInset.right) + self.sectionInset.left,
                                       floor(indexPath.section /3)*([self sizeOfOneMonth].height + self.sectionInset.top + self.sectionInset.bottom)+self.sectionInset.top,

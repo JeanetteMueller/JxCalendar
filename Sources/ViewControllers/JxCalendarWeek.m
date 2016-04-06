@@ -17,7 +17,6 @@
 #import "JxCalendarDay.h"
 #import "UIViewController+CalendarBackButtonHandler.h"
 
-
 @interface JxCalendarWeek ()
 
 @end
@@ -56,33 +55,19 @@
     
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     self.collectionView.backgroundColor = [UIColor whiteColor];
-    
     self.collectionView.directionalLockEnabled = YES;
-    
-    
-    // Uncomment the following line to preserve selection between presentations
-    // self.clearsSelectionOnViewWillAppear = NO;
     
     NSString* const frameworkBundleID = @"de.themaverick.JxCalendar";
     NSBundle* bundle = [NSBundle bundleWithIdentifier:frameworkBundleID];
     
-    // Register cell classes
-//    [self.collectionView registerClass:[JxCalendarCell class] forCellWithReuseIdentifier:@"JxCalendarCell"];
-//    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarCell" bundle:bundle] forCellWithReuseIdentifier:@"JxCalendarCell"];
-    
     [self.collectionView registerClass:[JxCalendarWeekEventCell class] forCellWithReuseIdentifier:@"JxCalendarWeekEventCell"];
     [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarWeekEventCell" bundle:bundle] forCellWithReuseIdentifier:@"JxCalendarWeekEventCell"];
-    
     
     [self.collectionView registerClass:[JxCalendarWeekHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarWeekHeader"];
     [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarWeekHeader" bundle:bundle] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarWeekHeader"];
     
-
-    // Do any additional setup after loading the view.
-    
-    
-    
 }
+
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
@@ -104,12 +89,10 @@
             
             self.navigationItem.title = [NSString stringWithFormat:@"%@ %ld", monthName, startComponents.year];
         }
-        
     }
-    
     self.collectionView.scrollIndicatorInsets = UIEdgeInsetsMake([(JxCalendarLayoutWeek *)self.collectionView.collectionViewLayout headerReferenceSize].height, 0, 0, 0);
-    
 }
+
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     
@@ -117,6 +100,7 @@
         [self.delegate calendar:[self getCalendarOverview] didTransitionTo:JxCalendarAppearanceWeek];
     }
 }
+
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
     
     self.collectionView.pagingEnabled = NO;
@@ -132,6 +116,7 @@
     
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
+
 - (void)viewDidLayoutSubviews{
     JxCalendarLayoutWeek *layout = (JxCalendarLayoutWeek *)self.collectionView.collectionViewLayout;
     
@@ -196,6 +181,7 @@
     }
     [super viewDidLayoutSubviews];
 }
+
 - (BOOL)navigationShouldPopOnBackButton{
     
     if ([self.delegate respondsToSelector:@selector(calendar:willTransitionFrom:to:)]) {
@@ -206,22 +192,15 @@
     }
     return YES;
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 - (NSCalendar *)calendar{
     return [self.dataSource calendar];
 }
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 - (NSInteger)sectionForDay:(NSInteger)day{
     
@@ -232,7 +211,9 @@
     
     return [JxCalendarBasics normalizedWeekDay:firstComponents.weekday]-1 + day - 1;
 }
+
 #pragma mark <JxCalendarScrollTo>
+
 - (void)scrollToEvent:(JxCalendarEvent *)event{
     NSDateComponents *dateComponents = [[self calendar] components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear |NSCalendarUnitWeekday) fromDate:event.start];
     
@@ -253,11 +234,10 @@
         }
     }
 }
+
 - (void)scrollToDate:(NSDate *)date{
 
     JxCalendarLayoutWeek *layout = (JxCalendarLayoutWeek *)self.collectionView.collectionViewLayout;
-    
-    
     
     NSDateComponents *dateComponents = [[self calendar] components:( NSCalendarUnitHour|NSCalendarUnitWeekday) fromDate:date];
     
@@ -281,6 +261,7 @@
         }
     }
 }
+
 #pragma mark <UICollectionViewDataSource>
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -300,7 +281,6 @@
     
     return lastComponents.day + [JxCalendarBasics normalizedWeekDay:firstComponents.weekday]-1 + (7-[JxCalendarBasics normalizedWeekDay:lastComponents.weekday]);
 }
-
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
@@ -351,10 +331,9 @@
     }else{
         cell.textLabel.frame = CGRectMake(2, 0, cell.frame.size.width-4, cell.frame.size.height);
     }
-
-    
     return cell;
 }
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     if (self.delegate) {
@@ -375,6 +354,7 @@
         
     }
 }
+
 - (IBAction)openDayView:(UIButton *)sender{
     
     NSDate *date = [self getDateForSection:sender.tag-1000];
@@ -539,30 +519,23 @@
         return [[self calendar] dateFromComponents:comp];
     }
     return nil;
-
 }
 
 #pragma mark Scrolling
-- (void) scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
-{
-    //This is the index of the "page" that we will be landing at
+
+- (void) scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
     NSUInteger nearestIndex = (NSUInteger)(targetContentOffset->x / scrollView.bounds.size.width + 0.5f);
     
-    //Just to make sure we don't scroll past your content
     nearestIndex = MAX( MIN( nearestIndex, scrollView.contentSize.width/scrollView.frame.size.width  ), 0 );
     
-    //This is the actual x position in the scroll view
     CGFloat xOffset = nearestIndex * scrollView.bounds.size.width;
     
-    //I've found that scroll views will "stick" unless this is done
     xOffset = xOffset==0?1:xOffset;
     
-    //Tell the scroll view to land on our page
     *targetContentOffset = CGPointMake(xOffset, targetContentOffset->y);
 }
 
-- (void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
-{
+- (void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     if( !decelerate )
     {
         NSUInteger currentIndex = (NSUInteger)(scrollView.contentOffset.x / scrollView.bounds.size.width);

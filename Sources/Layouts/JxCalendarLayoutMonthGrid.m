@@ -13,8 +13,8 @@
 
 
 @interface JxCalendarLayoutMonthGrid ()
-@property (nonatomic, strong) NSDictionary *layoutInfo;
-@property (nonatomic, readwrite) CGFloat decorationHeight;
+@property (strong, nonatomic) NSDictionary *layoutInfo;
+@property (assign, nonatomic, readwrite) CGFloat decorationHeight;
 @end
 
 @implementation JxCalendarLayoutMonthGrid
@@ -78,8 +78,8 @@
     
     NSMutableArray *allAttributes = [NSMutableArray array];
     
-    CGFloat origin = rect.origin.y;
-    NSInteger section = floor(origin / [self sizeOfOneMonth].height);
+    CGPoint origin = rect.origin;
+    NSInteger section = floor(origin.y / [self sizeOfOneMonth].height);
     NSInteger range = 3;
     
     for (NSInteger s = section-range; s <= section+range; s++) {
@@ -105,7 +105,7 @@
             }
         }
     }
-    [self.layouts setObject:allAttributes forKey:[NSString stringWithFormat:@"%f", origin]];
+    [self.layouts setObject:allAttributes forKey:[NSString stringWithFormat:@"%fx%f", origin.x, origin.y]];
     
     return allAttributes;
 }

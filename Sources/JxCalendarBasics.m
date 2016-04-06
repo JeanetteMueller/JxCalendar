@@ -77,7 +77,7 @@
     
     dispatch_once(&pred, ^{
         formater = [[NSDateFormatter alloc] init];
-        [formater setLocale:[NSLocale currentLocale]];//  [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+        [formater setLocale:[NSLocale currentLocale]];
         [formater setDateStyle:NSDateFormatterFullStyle];
     });
     

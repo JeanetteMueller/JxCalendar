@@ -20,7 +20,7 @@
 @property (strong, nonatomic) UINavigationController *navRoot;
 @property (strong, nonatomic) JxCalendarOverview *overview;
 
-@property (nonatomic, readwrite) BOOL startOpened;
+@property (assign, nonatomic, readwrite) BOOL startOpened;
 
 
 @end
@@ -160,13 +160,8 @@
     }else{
         [self.dataSource.rangedDates addObject:rangeElement];
     }
-    
-    DLog(@"self.dataSource.rangedDates %@", self.dataSource.rangedDates);
-    
 }
 - (void)calendar:(JxCalendarOverview *)calendar didDeRangeDate:(NSDate *)date whileOnAppearance:(JxCalendarAppearance)appearance{
-    
-    DLog(@"date %@", date);
     
     for (NSInteger i = self.dataSource.rangedDates.count-1; i >=0; i--) {
         JxCalendarRangeElement *rangeElement = [self.dataSource.rangedDates objectAtIndex:i];
@@ -175,7 +170,6 @@
             
         }
     }
-    DLog(@"self.dataSource.rangedDates %@", self.dataSource.rangedDates);
 }
 - (NSInteger)indexOfDateInRange:(NSDate *)date{
     NSInteger index = 0;
