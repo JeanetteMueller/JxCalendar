@@ -71,6 +71,11 @@
 }
 
 - (nullable NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect{
+    NSArray *attr = [super layoutAttributesForElementsInRect:rect];
+    if (attr) {
+        return attr;
+    }
+    
     NSMutableArray *allAttributes = [NSMutableArray array];
     
     CGFloat origin = rect.origin.y;
@@ -100,24 +105,36 @@
             }
         }
     }
-
+    [self.layouts setObject:allAttributes forKey:[NSString stringWithFormat:@"%f", origin]];
+    
     return allAttributes;
 }
 
 - (CGSize)collectionViewContentSize{
     
+    if (self.contentSize.width > 0 && self.contentSize.height > 0) {
+        return self.contentSize;
+    }
+    
     NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
     NSIndexPath *lastHeaderIndexPath = [NSIndexPath indexPathForRow:0 inSection:numOfSections-1];
     UICollectionViewLayoutAttributes *lastLayoutAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:lastHeaderIndexPath];
     
-    return CGSizeMake(CGRectGetMaxX(lastLayoutAttributes.frame), lastLayoutAttributes.frame.origin.y + [self sizeOfOneMonth].height);
+    self.contentSize =  CGSizeMake(CGRectGetMaxX(lastLayoutAttributes.frame), lastLayoutAttributes.frame.origin.y + [self sizeOfOneMonth].height);
+    
+    return self.contentSize;
 }
 
 #pragma mark - Cells Layout
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath{
     
-    UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
+    UICollectionViewLayoutAttributes *itemAttributes = [super layoutAttributesForItemAtIndexPath:indexPath];
+    if (itemAttributes) {
+        return itemAttributes;
+    }
+    
+    itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
     CGFloat extraPaddingTopForWeekDayLabels = 0.0f;
     
     if (self.renderWeekDayLabels) {
@@ -129,19 +146,25 @@
                               self.itemSize.width,
                               self.itemSize.height);
 
+    [self.cachedItemAttributes setObject:itemAttributes forKey:indexPath];
     return itemAttributes;
 }
 
 #pragma mark - Decoration Layout
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForDecorationViewOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath{
+    UICollectionViewLayoutAttributes *deco = [super layoutAttributesForDecorationViewOfKind:elementKind atIndexPath:indexPath];
+    if (deco) {
+        return deco;
+    }
     
-    UICollectionViewLayoutAttributes *deco = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:kJxCalendarWeekDayDecoration withIndexPath:indexPath];
+    deco = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:kJxCalendarWeekDayDecoration withIndexPath:indexPath];
     
     UICollectionViewLayoutAttributes *itemAttributes = [self layoutAttributesForItemAtIndexPath:indexPath];
     
     deco.frame = [self frameForDecorationAtIndexPath:indexPath itemRect:itemAttributes.frame];
     
+    [self.cachedDecoAttributes setObject:deco forKey:indexPath];
     return deco;
 }
 
@@ -157,7 +180,12 @@
 #pragma mark - Headers Layout
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
-    UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kind withIndexPath:indexPath];
+    UICollectionViewLayoutAttributes *itemAttributes = [super layoutAttributesForSupplementaryViewOfKind:kind atIndexPath:indexPath];
+    if (itemAttributes) {
+        return itemAttributes;
+    }
+    
+    itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kind withIndexPath:indexPath];
     
     CGFloat extraPaddingTopForWeekDayLabels = 0.0f;
     
@@ -170,6 +198,7 @@
                                       self.headerReferenceSize.width,
                                       self.headerReferenceSize.height);
     
+    [self.cachedHeadlineAttributes setObject:itemAttributes forKey:indexPath];
     return itemAttributes;
 }
 

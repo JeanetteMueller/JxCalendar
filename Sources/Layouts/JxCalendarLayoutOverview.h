@@ -14,6 +14,12 @@
 @property (strong, nonatomic) JxCalendarViewController *overview;
 @property (nonatomic, readwrite) BOOL renderWeekDayLabels;
 
+@property (nonatomic, readwrite) CGSize contentSize;
+@property (nonatomic, strong) NSCache *layouts;
+@property (nonatomic, strong) NSCache *cachedItemAttributes;
+@property (nonatomic, strong) NSCache *cachedDecoAttributes;
+@property (nonatomic, strong) NSCache *cachedHeadlineAttributes;
+
 - (id)initWithViewController:(JxCalendarViewController *)vc andSize:(CGSize)size;
 
 - (CGSize)sizeForItemAtIndexPath:(NSIndexPath *)indexPath;
