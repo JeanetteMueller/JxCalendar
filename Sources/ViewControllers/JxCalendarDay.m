@@ -88,6 +88,11 @@
     
     [self.collectionView setScrollIndicatorInsets:UIEdgeInsetsMake(3*(kCalendarLayoutWholeDayHeight+[(JxCalendarLayoutDay *)self.collectionView.collectionViewLayout minimumLineSpacing]), 0, 0, 0)];
     
+    if ([self.dataSource respondsToSelector:@selector(calendar:willDisplayMonth:inYear:)]) {
+        NSDateComponents *startComponents = [self startComponents];
+        [self.dataSource calendar:[self getCalendarOverview] willDisplayMonth:startComponents.month inYear:startComponents.year];
+    }
+    
     [self updateZeigerPosition];
 }
 
@@ -135,6 +140,12 @@
     
     [self.zeigerPositionTimer invalidate];
     self.zeigerPositionTimer = nil;
+    
+    if ([self.dataSource respondsToSelector:@selector(calendar:didHideMonth:inYear:)]) {
+        NSDateComponents *startComponents = [self startComponents];
+        [self.dataSource calendar:[self getCalendarOverview] didHideMonth:startComponents.month inYear:startComponents.year];
+    }
+    
     
     [super viewWillDisappear:animated];
 }

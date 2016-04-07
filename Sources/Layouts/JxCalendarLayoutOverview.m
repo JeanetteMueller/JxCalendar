@@ -34,6 +34,9 @@
 - (CGSize)sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
     return self.itemSize;
 }
+- (CGSize)sizeOfOneMonth{
+    return CGSizeZero;
+}
 
 - (nullable NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect{
     

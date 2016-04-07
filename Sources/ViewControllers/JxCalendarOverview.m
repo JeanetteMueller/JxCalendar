@@ -978,6 +978,30 @@
     }
 }
 
+- (void)updateContentForStartDate:(NSDate *)start till:(NSDate *)end{
+    
+    NSDateComponents *comps = [[NSDateComponents alloc] init];
+    comps.day = 1;
+    
+    if (!end) {
+        end = [self.dataSource.calendar dateByAddingComponents:comps toDate:start options:0];
+    }
+    
+    NSDate *thisdate = start;
+    while ( thisdate.timeIntervalSince1970 <= end.timeIntervalSince1970) {
+        
+        NSIndexPath *path = [self getIndexPathForDate:thisdate];
+        
+        JxCalendarCell *cell = (JxCalendarCell *)[self.collectionView cellForItemAtIndexPath:path];
+        
+        if (cell) {
+            [self updateCell:cell atIndexPath:path];
+        }
+        
+        thisdate = [self.dataSource.calendar dateByAddingComponents:comps toDate:thisdate options:0];
+    }
+}
+
 #pragma mark <UICollectionViewDataSource>
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -1119,7 +1143,7 @@
                                                                                   attributes:@{NSFontAttributeName: titleFont,
                                                                                                NSForegroundColorAttributeName: [UIColor redColor]}];
         
-        if (self.style == JxCalendarOverviewStyleMonthGrid || YES) {
+        if (self.style == JxCalendarOverviewStyleMonthGrid || YES) {
             
             [title appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@" %.0f", ([self getStartYear] + floor((month-1)/12.0f))]
                                                                           attributes:@{NSFontAttributeName: subFont,
@@ -1705,7 +1729,7 @@
     }
 }
 - (void)updateTitle{
-    JxCalendarLayoutMonthGrid *layout = self.collectionView.collectionViewLayout;
+    JxCalendarLayoutOverview *layout = (JxCalendarLayoutOverview *)self.collectionView.collectionViewLayout;
     
     CGSize sizeOfMonth = [layout sizeOfOneMonth];
     

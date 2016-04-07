@@ -71,6 +71,8 @@
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
+    NSDateComponents *startComponents = [self startComponents];
+    
     if (self.navigationController) {
         
         if ([self.delegate respondsToSelector:@selector(calendar:titleOnDate:whileOnAppearance:)]) {
@@ -81,7 +83,7 @@
                 self.navigationItem.title = newTitle;
             }
         }else{
-            NSDateComponents *startComponents = [self startComponents];
+            
             
             NSArray *symbols = [[JxCalendarBasics defaultFormatter] monthSymbols];
             
@@ -90,6 +92,11 @@
             self.navigationItem.title = [NSString stringWithFormat:@"%@ %ld", monthName, startComponents.year];
         }
     }
+    
+    if ([self.dataSource respondsToSelector:@selector(calendar:willDisplayMonth:inYear:)]) {
+        [self.dataSource calendar:[self getCalendarOverview] willDisplayMonth:startComponents.month inYear:startComponents.year];
+    }
+    
     self.collectionView.scrollIndicatorInsets = UIEdgeInsetsMake([(JxCalendarLayoutWeek *)self.collectionView.collectionViewLayout headerReferenceSize].height, 0, 0, 0);
 }
 
@@ -181,7 +188,15 @@
     }
     [super viewDidLayoutSubviews];
 }
-
+- (void)viewWillDisappear:(BOOL)animated{
+    
+    if ([self.dataSource respondsToSelector:@selector(calendar:didHideMonth:inYear:)]) {
+        NSDateComponents *startComponents = [self startComponents];
+        [self.dataSource calendar:[self getCalendarOverview] didHideMonth:startComponents.month inYear:startComponents.year];
+    }
+    
+    [super viewWillDisappear:animated];
+}
 - (BOOL)navigationShouldPopOnBackButton{
     
     if ([self.delegate respondsToSelector:@selector(calendar:willTransitionFrom:to:)]) {

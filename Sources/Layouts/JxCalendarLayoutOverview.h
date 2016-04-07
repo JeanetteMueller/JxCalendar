@@ -24,4 +24,5 @@
 
 - (CGSize)sizeForItemAtIndexPath:(NSIndexPath *)indexPath;
 
+- (CGSize)sizeOfOneMonth;
 @end
