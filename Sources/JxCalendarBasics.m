@@ -13,7 +13,7 @@
 + (NSDateComponents *)baseComponentsWithCalendar:(NSCalendar *)calendar andYear:(NSInteger)year{
     
     NSDateComponents *components = [calendar components:( NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitWeekday)
-                                                      fromDate:[NSDate date]];
+                                                      fromDate:[NSDate new]];
     
     
     [components setYear:year];
@@ -22,6 +22,7 @@
     [components setHour:0];
     [components setMinute:0];
     [components setSecond:0];
+    [components setNanosecond:0];
     return components;
 }
 + (NSDate *)firstDayOfMonth:(NSInteger)month inCalendar:(NSCalendar *)calendar andYear:(NSInteger)year{
@@ -76,7 +77,7 @@
     
     dispatch_once(&pred, ^{
         formater = [[NSDateFormatter alloc] init];
-        [formater setLocale:[NSLocale currentLocale]];//  [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"]];
+        [formater setLocale:[NSLocale currentLocale]];
         [formater setDateStyle:NSDateFormatterFullStyle];
     });
     

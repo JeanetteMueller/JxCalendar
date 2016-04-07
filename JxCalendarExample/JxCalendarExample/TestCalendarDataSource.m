@@ -240,7 +240,7 @@
 //    if ([JxCalendarBasics normalizedWeekDay:components.weekday] == 1) {
 //        return NO;
 //    }
-    return NO;
+//    return NO;
 }
 
 - (UIView *)viewForPullToRefreshHeaderWhileOnAppearance:(JxCalendarAppearance)appearance{
@@ -252,6 +252,14 @@
     UIView *v = [[UIView alloc] init];
     v.backgroundColor = [UIColor purpleColor];
     return v;
+}
+- (void)calendar:(JxCalendarOverview *)calendar willDisplayMonth:(NSInteger)month inYear:(NSInteger)year{
+    
+    //NSLog(@"willDisplayMonth %ld of year %ld", month, year);
+}
+- (void)calendar:(JxCalendarOverview *)calendar didHideMonth:(NSInteger)month inYear:(NSInteger)year{
+    
+    //NSLog(@"didHideMonth %ld of year %ld", month, year);
 }
 #pragma mark Helper
 - (void)sortRangedObjects{

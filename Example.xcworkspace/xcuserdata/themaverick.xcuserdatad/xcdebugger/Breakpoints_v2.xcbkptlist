@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Sources/ViewControllers/JxCalendarOverview+ToolTip.m"
-            timestampString = "481118978.530241"
+            timestampString = "481645287.681876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "338"
-            endingLineNumber = "338"
+            startingLineNumber = "277"
+            endingLineNumber = "277"
             landmarkName = "-updateToolTipAnimated:"
             landmarkType = "5">
             <Locations>
@@ -26,11 +26,11 @@
                   moduleName = "JxCalendar"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/themaverick/Dropbox/Programmierung/ios/Projekte/Abacus/ios/Libraries/JxCalendar/Sources/ViewControllers/JxCalendarOverview+ToolTip.m"
-                  timestampString = "481454113.400795"
+                  timestampString = "481645288.708591"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "338"
-                  endingLineNumber = "338"
+                  startingLineNumber = "277"
+                  endingLineNumber = "277"
                   offsetFromSymbolStart = "2972">
                </Location>
                <Location
@@ -41,11 +41,11 @@
                   moduleName = "JxCalendar"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/themaverick/Dropbox/Programmierung/ios/Projekte/Abacus/ios/Libraries/JxCalendar/Sources/ViewControllers/JxCalendarOverview+ToolTip.m"
-                  timestampString = "481454113.400981"
+                  timestampString = "481645288.708747"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "338"
-                  endingLineNumber = "338"
+                  startingLineNumber = "277"
+                  endingLineNumber = "277"
                   offsetFromSymbolStart = "3048">
                </Location>
             </Locations>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Sources/ViewControllers/JxCalendarOverview+ToolTip.m"
-            timestampString = "481118978.530241"
+            timestampString = "481645287.681876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "343"
-            endingLineNumber = "343"
+            startingLineNumber = "282"
+            endingLineNumber = "282"
             landmarkName = "-updateToolTipAnimated:"
             landmarkType = "5">
          </BreakpointContent>
@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Sources/ViewControllers/JxCalendarOverview+ToolTip.m"
-            timestampString = "481118978.530241"
+            timestampString = "481645287.681876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "326"
-            endingLineNumber = "326"
+            startingLineNumber = "265"
+            endingLineNumber = "265"
             landmarkName = "-updateToolTipAnimated:"
             landmarkType = "5">
          </BreakpointContent>
@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Sources/ViewControllers/JxCalendarOverview+ToolTip.m"
-            timestampString = "481118922.318234"
+            timestampString = "481645287.681876"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "321"
-            endingLineNumber = "321"
+            startingLineNumber = "260"
+            endingLineNumber = "260"
             landmarkName = "-updateToolTipAnimated:"
             landmarkType = "5">
          </BreakpointContent>
@@ -106,12 +106,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Sources/ViewControllers/JxCalendarOverview.m"
-            timestampString = "481454097.138241"
+            timestampString = "481555644.574712"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "965"
-            endingLineNumber = "965"
-            landmarkName = "-numberOfSectionsInCollectionView:"
+            startingLineNumber = "885"
+            endingLineNumber = "885"
+            landmarkName = "-updateLongHoldSelectedCells"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

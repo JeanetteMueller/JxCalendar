@@ -12,7 +12,7 @@
 
 @interface JxCalendarOverview (ToolTip) <UIPickerViewDataSource, UIPickerViewDelegate>
 
-@property (nonatomic, strong) NSDate *toolTipDate;
+@property (strong, nonatomic) NSDate *toolTipDate;
 
 - (void)openToolTipWithDate:(NSDate *)date;
 

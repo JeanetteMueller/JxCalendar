@@ -9,7 +9,7 @@
 #import "JxCalendarRangeElement.h"
 @interface JxCalendarRangeElement ()
 
-@property (nonatomic, readwrite) JxCalendarDayType dayType;
+@property (assign, nonatomic, readwrite) JxCalendarDayType dayType;
 
 @property (strong, nonatomic, readwrite) NSDate *date;
 @property (strong, nonatomic, readwrite) NSDate *start;
@@ -105,26 +105,23 @@
     }
     return self;
 }
+
 - (id)initWithDate:(NSDate *)date andDayType:(JxCalendarDayType)dayType withStartDate:(NSDate *)start andEndDate:(NSDate *)end{
     self = [super init];
     if (self) {
         self.date = date;
         self.dayType = dayType;
-//        if((start && !end) || (!start && end) ){
-//            self.dayType = JxCalendarDayTypeFreeChoiceMax;
-//        }else{
-//            self.dayType = JxCalendarDayTypeFreeChoice;
-//        }
-        
         self.start = start;
         self.end = end;
 
     }
     return self;
 }
+
 - (NSTimeInterval)duration{
     return [self.end timeIntervalSinceDate:self.start];
 }
+
 - (BOOL)isFromValueWhileFreeChoiceMaxWithCalendar:(NSCalendar *)calendar{
     if (self.dayType == JxCalendarDayTypeFreeChoiceMax) {
         NSDateComponents *startComponents = [calendar components:NSCalendarUnitHour|NSCalendarUnitMinute|NSCalendarUnitSecond fromDate:self.start];
@@ -135,4 +132,9 @@
     }
     return NO;
 }
+
+- (NSString *)description{
+    return [NSString stringWithFormat:@"RangeElement %@", _date];
+}
+
 @end

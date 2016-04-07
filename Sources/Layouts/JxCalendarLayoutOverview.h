@@ -12,10 +12,17 @@
 @interface JxCalendarLayoutOverview : JxCalendarLayout
 
 @property (strong, nonatomic) JxCalendarViewController *overview;
-@property (nonatomic, readwrite) BOOL renderWeekDayLabels;
+@property (assign, nonatomic, readwrite) BOOL renderWeekDayLabels;
+
+@property (assign, nonatomic, readwrite) CGSize contentSize;
+@property (strong, nonatomic) NSCache *layouts;
+@property (strong, nonatomic) NSCache *cachedItemAttributes;
+@property (strong, nonatomic) NSCache *cachedDecoAttributes;
+@property (strong, nonatomic) NSCache *cachedHeadlineAttributes;
 
 - (id)initWithViewController:(JxCalendarViewController *)vc andSize:(CGSize)size;
 
 - (CGSize)sizeForItemAtIndexPath:(NSIndexPath *)indexPath;
 
+- (CGSize)sizeOfOneMonth;
 @end

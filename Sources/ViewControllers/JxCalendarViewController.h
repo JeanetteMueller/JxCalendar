@@ -12,16 +12,16 @@
 
 @interface JxCalendarViewController : UICollectionViewController
 
-@property (nonatomic, readwrite) JxCalendarOverviewStyle style;
+@property (assign, nonatomic, readwrite) JxCalendarOverviewStyle style;
 
 @property (strong, nonatomic) id<JxCalendarDataSource> dataSource;
-@property (nonatomic, unsafe_unretained) id<JxCalendarDelegate> delegate;
+@property (assign, nonatomic, unsafe_unretained) id<JxCalendarDelegate> delegate;
 
 @property (strong, nonatomic) NSDate *startDate;
-@property (nonatomic, readwrite) JxCalendarAppearance startAppearance;
+@property (assign, nonatomic, readwrite) JxCalendarAppearance startAppearance;
 
-@property (nonatomic, readwrite) BOOL renderWeekDayLabels; /* default YES */
-@property (nonatomic, readwrite) BOOL initialScrollDone;
+@property (assign, nonatomic, readwrite) BOOL renderWeekDayLabels; /* default YES */
+@property (assign, nonatomic, readwrite) BOOL initialScrollDone;
 
 - (NSDateComponents *)startComponents;
 - (NSDateComponents *)componentsFromDate:(NSDate *)date;

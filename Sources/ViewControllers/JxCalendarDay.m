@@ -53,10 +53,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations
     self.clearsSelectionOnViewWillAppear = NO;
     
-    // Register cell classes
     [self.collectionView setDirectionalLockEnabled:YES];
     
     NSString* const frameworkBundleID = @"de.themaverick.JxCalendar";
@@ -90,11 +88,16 @@
     
     [self.collectionView setScrollIndicatorInsets:UIEdgeInsetsMake(3*(kCalendarLayoutWholeDayHeight+[(JxCalendarLayoutDay *)self.collectionView.collectionViewLayout minimumLineSpacing]), 0, 0, 0)];
     
+    if ([self.dataSource respondsToSelector:@selector(calendar:willDisplayMonth:inYear:)]) {
+        NSDateComponents *startComponents = [self startComponents];
+        [self.dataSource calendar:[self getCalendarOverview] willDisplayMonth:startComponents.month inYear:startComponents.year];
+    }
+    
     [self updateZeigerPosition];
 }
 
 - (void)viewDidLayoutSubviews {
-    // If we haven't done the initial scroll, do it once.
+    
     if (!self.initialScrollDone) {
         
         NSDate *now = [NSDate date];
@@ -137,6 +140,12 @@
     
     [self.zeigerPositionTimer invalidate];
     self.zeigerPositionTimer = nil;
+    
+    if ([self.dataSource respondsToSelector:@selector(calendar:didHideMonth:inYear:)]) {
+        NSDateComponents *startComponents = [self startComponents];
+        [self.dataSource calendar:[self getCalendarOverview] didHideMonth:startComponents.month inYear:startComponents.year];
+    }
+    
     
     [super viewWillDisappear:animated];
 }
@@ -196,9 +205,7 @@
     [self loadNow];
     
     if (_nowComponents.year == _currentComponents.year && _nowComponents.month == _currentComponents.month && _nowComponents.day == _currentComponents.day) {
-        //aktueller tag ist heute
-        
-        //plaziere zeitzeiger
+
         if (!_zeiger) {
             self.zeiger = [[UIView alloc] init];
             _zeiger.backgroundColor = [UIColor redColor];

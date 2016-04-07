@@ -20,10 +20,6 @@
 #define kJxCalendarWeekLayoutWholeDay               @"JxCalendarWeekLayoutWholeDay"
 #define kJxCalendarWeekLayoutHeader                 @"JxCalendarWeekLayoutHeader"
 
-#define kJxCalendarMonthLayoutCells                 @"JxCalendarMonthLayoutCells"
-#define kJxCalendarMonthLayoutHeader                @"JxCalendarMonthLayoutHeader"
-#define kJxCalendarMonthLayoutDecoration            @"JxCalendarMonthLayoutDecoration"
-
 #define kJxCalendarDayLayoutCells                   @"JxCalendarDayLayoutCells"
 #define kJxCalendarDayLayoutWholeDay                @"JxCalendarDayLayoutWholeDay"
 #define kJxCalendarDayLayoutHeader                  @"JxCalendarDayLayoutHeader"
@@ -90,6 +86,21 @@ typedef NS_ENUM(NSInteger, JxCalendarSelectionStyle) {
     
     /* touch on an item start a range-selection. another touch ends range-selection. touch and hold start and change range */
     JxCalendarSelectionStyleRangeOnly
+    
+};
+
+typedef NS_ENUM(NSInteger, JxCalendarScrollingStyle) {
+    /* there will be 12 Month to be displayed. On the top and bottom edge there can be a pull to refresh view */
+    JxCalendarScrollingStylePullToRefreshYearly,
+    
+    /* there will be ONE Month to be displayed. On the top and bottom edge there can be a pull to refresh view */
+    //JxCalendarScrollingStylePullToRefreshMonthly,  // NOT YET IMPLEMENTED
+    
+    /* there will be 12 Month to be displayed. On Top and Buttom there is a pull to next/last year to change the current year */
+    JxCalendarScrollingStyleSwitchYearOnEdge,
+    
+    /* endless scrolling. No PullToRefresh Available */
+    JxCalendarScrollingStyleEndlessScrolling
     
 };
 

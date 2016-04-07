@@ -17,11 +17,11 @@
 
 @interface JxCalendarViewController ()
 
-@property (nonatomic, strong) UIView *pullToRefreshHeader;
-@property (nonatomic, strong) UIView *pullToRefreshFooter;
-@property (nonatomic) UIEdgeInsets originalInsets;
-@property (nonatomic, readwrite) BOOL isInRangeForRefreshHeader;
-@property (nonatomic, readwrite) BOOL isInRangeForRefreshFooter;
+@property (strong, nonatomic) UIView *pullToRefreshHeader;
+@property (strong, nonatomic) UIView *pullToRefreshFooter;
+@property (assign, nonatomic) UIEdgeInsets originalInsets;
+@property (assign, nonatomic, readwrite) BOOL isInRangeForRefreshHeader;
+@property (assign, nonatomic, readwrite) BOOL isInRangeForRefreshFooter;
 
 @end
 
@@ -48,13 +48,9 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations
     self.clearsSelectionOnViewWillAppear = NO;
     
-    // Register cell classes
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
-    
-    // Do any additional setup after loading the view.
     
     if ([self.dataSource respondsToSelector:@selector(viewForPullToRefreshHeaderWhileOnAppearance:)]) {
         _pullToRefreshHeader = [self.dataSource viewForPullToRefreshHeaderWhileOnAppearance:[self getAppearance]];
@@ -175,7 +171,7 @@ static NSString * const reuseIdentifier = @"Cell";
     }else if ([self.navigationController.viewControllers.lastObject isKindOfClass:[JxCalendarWeek class]]) {
         return JxCalendarAppearanceWeek;
     }else if ([self.navigationController.viewControllers.lastObject isEqual:self]) {
-        return [[self getCalendarOverview] getOverviewAppearance];
+        return [self getCalendarOverview].overviewAppearance;
     }
     return JxCalendarAppearanceNone;
 }
@@ -233,66 +229,67 @@ static NSString * const reuseIdentifier = @"Cell";
         [self.delegate calendar:[self getCalendarOverview] didScroll:scrollView.contentOffset whileOnAppearance:[self getAppearance]];
     }
     
+    if ([self getCalendarOverview].scrollingStyle != JxCalendarScrollingStyleEndlessScrolling || ![self isEqual:[self getCalendarOverview]]) {
     
-    
-    if (_pullToRefreshHeader) {
-        CGRect headerRect = _pullToRefreshHeader.frame;
-        if (scrollView.contentOffset.y+scrollView.contentInset.top < 0) {
-            if ((scrollView.contentOffset.y*-1) < kPullToSwitchContextOffset) {
-                headerRect.size = CGSizeMake(scrollView.frame.size.width, (scrollView.contentOffset.y*-1));
+        if (_pullToRefreshHeader) {
+            CGRect headerRect = _pullToRefreshHeader.frame;
+            if (scrollView.contentOffset.y+scrollView.contentInset.top < 0) {
+                if ((scrollView.contentOffset.y*-1) < kPullToSwitchContextOffset) {
+                    headerRect.size = CGSizeMake(scrollView.frame.size.width, (scrollView.contentOffset.y*-1));
+                }else{
+                    headerRect.size = CGSizeMake(scrollView.frame.size.width, kPullToSwitchContextOffset);
+                }
             }else{
-                headerRect.size = CGSizeMake(scrollView.frame.size.width, kPullToSwitchContextOffset);
+                headerRect.size = CGSizeMake(scrollView.frame.size.width, scrollView.contentInset.top);
             }
-        }else{
-            headerRect.size = CGSizeMake(scrollView.frame.size.width, scrollView.contentInset.top);
+            headerRect.origin = CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y);
+            _pullToRefreshHeader.frame = headerRect;
+            
+            if (scrollView.contentOffset.y + scrollView.contentInset.top < -kPullToSwitchContextOffset) {
+                if (!_isInRangeForRefreshHeader) {
+                    _isInRangeForRefreshHeader = YES;
+                    if ([self.delegate respondsToSelector:@selector(calendar:didReachRefreshOffsetForHeader:whileOnAppearance:)]) {
+                        [self.delegate calendar:[self getCalendarOverview] didReachRefreshOffsetForHeader:_pullToRefreshHeader whileOnAppearance:[self getAppearance]];
+                    }
+                }
+            }else{
+                if (_isInRangeForRefreshHeader) {
+                    _isInRangeForRefreshHeader = NO;
+                    
+                    if ([self.delegate respondsToSelector:@selector(calendar:didLeftRefreshOffsetForHeader:whileOnAppearance:)]) {
+                        [self.delegate calendar:[self getCalendarOverview] didLeftRefreshOffsetForHeader:_pullToRefreshHeader whileOnAppearance:[self getAppearance]];
+                    }
+                }
+            }
         }
-        headerRect.origin = CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y);
-        _pullToRefreshHeader.frame = headerRect;
         
-        if (scrollView.contentOffset.y + scrollView.contentInset.top < -kPullToSwitchContextOffset) {
-            if (!_isInRangeForRefreshHeader) {
-                _isInRangeForRefreshHeader = YES;
-                if ([self.delegate respondsToSelector:@selector(calendar:didReachRefreshOffsetForHeader:whileOnAppearance:)]) {
-                    [self.delegate calendar:[self getCalendarOverview] didReachRefreshOffsetForHeader:_pullToRefreshHeader whileOnAppearance:[self getAppearance]];
+        
+        if (_pullToRefreshFooter) {
+            CGRect footerRect = _pullToRefreshFooter.frame;
+            if (scrollView.contentOffset.y+scrollView.frame.size.height-scrollView.contentInset.bottom > scrollView.contentSize.height) {
+                if ((scrollView.contentOffset.y+scrollView.frame.size.height)-scrollView.contentSize.height < kPullToSwitchContextOffset) {
+                    footerRect.size = CGSizeMake(scrollView.frame.size.width, (scrollView.contentOffset.y+scrollView.frame.size.height)-scrollView.contentSize.height);
+                }else{
+                    footerRect.size = CGSizeMake(scrollView.frame.size.width, kPullToSwitchContextOffset);
                 }
-            }
-        }else{
-            if (_isInRangeForRefreshHeader) {
-                _isInRangeForRefreshHeader = NO;
-                
-                if ([self.delegate respondsToSelector:@selector(calendar:didLeftRefreshOffsetForHeader:whileOnAppearance:)]) {
-                    [self.delegate calendar:[self getCalendarOverview] didLeftRefreshOffsetForHeader:_pullToRefreshHeader whileOnAppearance:[self getAppearance]];
-                }
-            }
-        }
-    }
-    
-    
-    if (_pullToRefreshFooter) {
-        CGRect footerRect = _pullToRefreshFooter.frame;
-        if (scrollView.contentOffset.y+scrollView.frame.size.height-scrollView.contentInset.bottom > scrollView.contentSize.height) {
-            if ((scrollView.contentOffset.y+scrollView.frame.size.height)-scrollView.contentSize.height < kPullToSwitchContextOffset) {
-                footerRect.size = CGSizeMake(scrollView.frame.size.width, (scrollView.contentOffset.y+scrollView.frame.size.height)-scrollView.contentSize.height);
             }else{
-                footerRect.size = CGSizeMake(scrollView.frame.size.width, kPullToSwitchContextOffset);
+                footerRect.size = CGSizeMake(scrollView.frame.size.width, scrollView.contentInset.bottom);
             }
-        }else{
-            footerRect.size = CGSizeMake(scrollView.frame.size.width, scrollView.contentInset.bottom);
-        }
-        footerRect.origin = CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y+scrollView.frame.size.height-footerRect.size.height);
-        _pullToRefreshFooter.frame = footerRect;
-        if (scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentInset.bottom > scrollView.contentSize.height+kPullToSwitchContextOffset){
-            if (!_isInRangeForRefreshFooter) {
-                _isInRangeForRefreshFooter = YES;
-                if ([self.delegate respondsToSelector:@selector(calendar:didReachRefreshOffsetForFooter:whileOnAppearance:)]) {
-                    [self.delegate calendar:[self getCalendarOverview] didReachRefreshOffsetForFooter:_pullToRefreshFooter whileOnAppearance:[self getAppearance]];
+            footerRect.origin = CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y+scrollView.frame.size.height-footerRect.size.height);
+            _pullToRefreshFooter.frame = footerRect;
+            if (scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentInset.bottom > scrollView.contentSize.height+kPullToSwitchContextOffset){
+                if (!_isInRangeForRefreshFooter) {
+                    _isInRangeForRefreshFooter = YES;
+                    if ([self.delegate respondsToSelector:@selector(calendar:didReachRefreshOffsetForFooter:whileOnAppearance:)]) {
+                        [self.delegate calendar:[self getCalendarOverview] didReachRefreshOffsetForFooter:_pullToRefreshFooter whileOnAppearance:[self getAppearance]];
+                    }
                 }
-            }
-        }else{
-            if (_isInRangeForRefreshFooter) {
-                _isInRangeForRefreshFooter = NO;
-                if ([self.delegate respondsToSelector:@selector(calendar:didLeftRefreshOffsetForFooter:whileOnAppearance:)]) {
-                    [self.delegate calendar:[self getCalendarOverview] didLeftRefreshOffsetForFooter:_pullToRefreshFooter whileOnAppearance:[self getAppearance]];
+            }else{
+                if (_isInRangeForRefreshFooter) {
+                    _isInRangeForRefreshFooter = NO;
+                    if ([self.delegate respondsToSelector:@selector(calendar:didLeftRefreshOffsetForFooter:whileOnAppearance:)]) {
+                        [self.delegate calendar:[self getCalendarOverview] didLeftRefreshOffsetForFooter:_pullToRefreshFooter whileOnAppearance:[self getAppearance]];
+                    }
                 }
             }
         }
@@ -302,15 +299,18 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     if (decelerate) {
         
-        if (_pullToRefreshHeader && scrollView.contentOffset.y + scrollView.contentInset.top < -kPullToSwitchContextOffset) {
-            if ([self.delegate respondsToSelector:@selector(calendar:didRefreshByHeader:whileOnAppearance:)]) {
-                [self.delegate calendar:[self getCalendarOverview] didRefreshByHeader:_pullToRefreshHeader whileOnAppearance:[self getAppearance]];
+        if ([self getCalendarOverview].scrollingStyle == JxCalendarScrollingStylePullToRefreshYearly || ![self isEqual:[self getCalendarOverview]]) {
+            
+            if (_pullToRefreshHeader && scrollView.contentOffset.y + scrollView.contentInset.top < -kPullToSwitchContextOffset) {
+                if ([self.delegate respondsToSelector:@selector(calendar:didRefreshByHeader:whileOnAppearance:)]) {
+                    [self.delegate calendar:[self getCalendarOverview] didRefreshByHeader:_pullToRefreshHeader whileOnAppearance:[self getAppearance]];
+                }
             }
-        }
-        
-        if (_pullToRefreshFooter && scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentInset.bottom > scrollView.contentSize.height+kPullToSwitchContextOffset){
-            if ([self.delegate respondsToSelector:@selector(calendar:didRefreshByFooter:whileOnAppearance:)]) {
-                [self.delegate calendar:[self getCalendarOverview] didRefreshByFooter:_pullToRefreshFooter whileOnAppearance:[self getAppearance]];
+            
+            if (_pullToRefreshFooter && scrollView.contentOffset.y + scrollView.frame.size.height - scrollView.contentInset.bottom > scrollView.contentSize.height+kPullToSwitchContextOffset){
+                if ([self.delegate respondsToSelector:@selector(calendar:didRefreshByFooter:whileOnAppearance:)]) {
+                    [self.delegate calendar:[self getCalendarOverview] didRefreshByFooter:_pullToRefreshFooter whileOnAppearance:[self getAppearance]];
+                }
             }
         }
     }

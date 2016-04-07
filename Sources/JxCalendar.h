@@ -14,14 +14,10 @@ FOUNDATION_EXPORT double JxCalendarVersionNumber;
 //! Project version string for JxCalendar.
 FOUNDATION_EXPORT const unsigned char JxCalendarVersionString[];
 
-// In this header, you should import all the public headers of your framework using statements like #import <JxCalendar/PublicHeader.h>
-
 #import <JxCalendar/JxCalendarBasics.h>
 #import <JxCalendar/JxCalendarDefinitions.h>
 #import <JxCalendar/JxCalendarProtocols.h>
 #import <JxCalendar/JxCalendarOverview.h>
-//#import <JxCalendar/JxCalendarWeek.h>
-//#import <JxCalendar/JxCalendarDay.h>
 #import <JxCalendar/JxCalendarEventDay.h>
 #import <JxCalendar/JxCalendarEventDuration.h>
 #import <JxCalendar/JxCalendarRangeElement.h>

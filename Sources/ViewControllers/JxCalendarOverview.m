@@ -24,18 +24,18 @@
 
 @interface JxCalendarOverview () <UIGestureRecognizerDelegate>
 
-@property (nonatomic, readwrite) CGSize startSize;
-@property (nonatomic, readwrite) JxCalendarSelectionStyle selectionStyle;
-@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGesture;
-@property (nonatomic, strong) NSIndexPath *longHoldStartIndexPath;
-@property (nonatomic, strong) NSIndexPath *longHoldEndIndexPath;
+@property (assign, nonatomic, readwrite) CGSize startSize;
+@property (assign, nonatomic, readwrite) JxCalendarSelectionStyle selectionStyle;
+@property (strong, nonatomic) UILongPressGestureRecognizer *longPressGesture;
+@property (strong, nonatomic) NSIndexPath *longHoldStartIndexPath;
+@property (strong, nonatomic) NSIndexPath *longHoldEndIndexPath;
 
-@property (nonatomic, strong) NSTimer *moveTimer;
-@property (nonatomic, readwrite) CGFloat direction;
+@property (strong, nonatomic) NSTimer *moveTimer;
+@property (assign, nonatomic, readwrite) CGFloat direction;
 
+@property (strong, nonatomic) NSMutableArray *visibleSections;
 
-
-
+@property (assign, nonatomic, readwrite) JxCalendarScrollingStyle scrollingStyle;
 @end
 
 @implementation JxCalendarOverview
@@ -45,7 +45,8 @@
                  andSize:(CGSize)size
             andStartDate:(NSDate *)date
       andStartAppearance:(JxCalendarAppearance)appearance
-       andSelectionStyle:(JxCalendarSelectionStyle)selectionStyle{
+       andSelectionStyle:(JxCalendarSelectionStyle)selectionStyle
+       andScrollingStyle:(JxCalendarScrollingStyle)scrollingStyle{
     
     if (CGSizeEqualToSize(size, CGSizeZero)) {
         size = [UIScreen mainScreen].bounds.size;
@@ -75,7 +76,8 @@
         self.automaticallyAdjustsScrollViewInsets = NO;
         self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         
-        self.pullToSwitchYears = YES;
+        self.visibleSections = [NSMutableArray array];
+        self.scrollingStyle = scrollingStyle;
         self.lengthOfDayInHours = 24;
         
         self.startSize = size;
@@ -131,37 +133,57 @@
     
     if (!self.initialScrollDone) {
         
-        NSIndexPath *indexPath = [self getIndexPathForDate:self.startDate];
-        
-        
-        UICollectionViewLayoutAttributes *headerAttr = [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                                                                                                atIndexPath:[NSIndexPath indexPathForItem:0 inSection:indexPath.section]];
-        
-        NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:indexPath.section+1 inCalendar:[self calendar] andYear:[self startComponents].year];
-        NSIndexPath *lastIndexPath = [self getIndexPathForDate:lastDay];
-        UICollectionViewLayoutAttributes *lastItemAttr = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:lastIndexPath];
-        
-        if (lastItemAttr.frame.origin.y + lastItemAttr.frame.size.height - headerAttr.frame.origin.y > self.collectionView.frame.size.height) {
-            
-            /* current month height is larger then the visible container height */
-            
-            [self.collectionView setContentOffset:CGPointMake(0, [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath].frame.origin.y + [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath].frame.size.height/2 - self.collectionView.frame.size.height/2)
-                                         animated:NO];
-        }else{
-            /* visible container height is larger then the month height */
-            
-            [self.collectionView setContentOffset:CGPointMake(0, headerAttr.frame.origin.y)
-                                         animated:NO];
-        }
+        [self scrollToInitialDate:NO];
     }
     [super viewDidLayoutSubviews];
 }
+
+- (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView{
+    
+    [self scrollToInitialDate:YES];
+    
+    return NO;
+}
+- (void)scrollToInitialDate:(BOOL)animated{
+    NSIndexPath *indexPath = [self getIndexPathForDate:self.startDate];
+    
+    UICollectionViewLayoutAttributes *headerAttr = [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                                                                            atIndexPath:[NSIndexPath indexPathForItem:0 inSection:indexPath.section]];
+    
+    NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:indexPath.section+1 inCalendar:[self calendar] andYear:[self getStartYear]];
+    NSIndexPath *lastIndexPath = [self getIndexPathForDate:lastDay];
+    UICollectionViewLayoutAttributes *lastItemAttr = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:lastIndexPath];
+    
+    if (lastItemAttr.frame.origin.y + lastItemAttr.frame.size.height - headerAttr.frame.origin.y > self.collectionView.frame.size.height) {
+        
+        /* current month height is larger then the visible container height */
+        
+        [self.collectionView setContentOffset:CGPointMake(0, [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath].frame.origin.y + [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:indexPath].frame.size.height/2 - self.collectionView.frame.size.height/2)
+                                     animated:animated];
+    }else{
+        /* visible container height is larger then the month height */
+        
+        [self.collectionView setContentOffset:CGPointMake(0, headerAttr.frame.origin.y)
+                                     animated:animated];
+    }
+}
+
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
     [self updateSelectionStyle];
     
     [self switchToNewYear:[self startComponents].year];
+    
+    switch (self.scrollingStyle) {
+        case JxCalendarScrollingStyleEndlessScrolling:
+            self.collectionView.showsVerticalScrollIndicator = NO;
+            self.collectionView.showsHorizontalScrollIndicator = NO;
+            break;
+            
+        default:
+            break;
+    }
     
     if (self.startAppearance > JxCalendarAppearanceMonth) {
         
@@ -366,23 +388,13 @@
     
     if (self.navigationController) {
         
-        if ([self.delegate respondsToSelector:@selector(calendar:titleOnDate:whileOnAppearance:)]) {
-            
-            NSString *newTitle = [self.delegate calendar:self titleOnDate:self.startDate whileOnAppearance:[self getOverviewAppearance]];
-            
-            if (newTitle) {
-                self.navigationItem.title = newTitle;
-            }
-            
-        }else{
-            self.navigationItem.title = [NSString stringWithFormat:@"%ld", (long)startComponents.year];
-        }
+        [self updateTitle];
     }
 }
 
 - (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year animated:(BOOL)animated{
     
-    if ([self startComponents].year != year) {
+    if ([self startComponents].year != year && self.scrollingStyle != JxCalendarScrollingStyleEndlessScrolling) {
         
         [self switchToNewYear:year];
 
@@ -408,7 +420,12 @@
         }];
         
     }else{
-        NSIndexPath *path = [NSIndexPath indexPathForItem:0 inSection:month-1];
+        NSInteger addExtraForYears = 0;
+        if (self.scrollingStyle == JxCalendarScrollingStyleEndlessScrolling) {
+            addExtraForYears = (year-1970) * 12;
+        }
+        
+        NSIndexPath *path = [NSIndexPath indexPathForItem:0 inSection:month-1+addExtraForYears];
         
         UICollectionViewLayoutAttributes *attributes = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:path];
         
@@ -528,9 +545,6 @@
             [self.navigationController popViewControllerAnimated:NO];
         }
     }
-}
-- (JxCalendarAppearance)getAppearance{
-    return [super getAppearance];
 }
 - (void)startRefreshForHeader{
     [super startRefreshForHeader];
@@ -768,7 +782,7 @@
             if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)]){
                 if ([self.dataSource isPartOfRange:date] && ![newPathes containsObject:path]) {
                     if ([self.delegate respondsToSelector:@selector(calendar:didDeRangeDate:whileOnAppearance:)]) {
-                        [self.delegate calendar:[self getCalendarOverview] didDeRangeDate:date whileOnAppearance:[self getAppearance]];
+                        [self.delegate calendar:[self getCalendarOverview] didDeRangeDate:date whileOnAppearance:self.appearance];
                     }
                     
                 }else{
@@ -795,7 +809,7 @@
                         }
                         
                         if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
-                            [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
+                            [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:self.appearance];
                         }
                     }
                 }
@@ -856,11 +870,13 @@
                 }
                 if(!element){
                     element = [[JxCalendarRangeElement alloc] initWithDate:rangeElement.date
-                                                                                    andDayType:newDayType withStartDate:rangeElement.start andEndDate:rangeElement.end];
+                                                                andDayType:newDayType
+                                                             withStartDate:rangeElement.start
+                                                                andEndDate:rangeElement.end];
                 }
                 
                 if ([self.delegate respondsToSelector:@selector(calendar:didRange:whileOnAppearance:)]) {
-                    [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:[self getAppearance]];
+                    [self.delegate calendar:[self getCalendarOverview] didRange:element whileOnAppearance:self.appearance];
                 }
                 
                 
@@ -911,14 +927,20 @@
         [self.collectionView.collectionViewLayout invalidateLayout];
         [self.collectionView setCollectionViewLayout:layout animated:animated];
         
+        [self updateTitle];
+        
         for (JxCalendarCell *cell in self.collectionView.visibleCells) {
-            [self updateRangeForCell:cell atIndexPath:[self.collectionView indexPathForCell:cell] animated:NO];
+            NSIndexPath *path = [self.collectionView indexPathForCell:cell];
+            [self updateCell:cell atIndexPath:path];
+            [self updateRangeForCell:cell atIndexPath:path animated:NO];
         }
         
     } completion:^(BOOL finished) {
         
         if (finished) {
             [self updateSelectionStyle];
+            
+            [self updateTitle];
             
             if ([self.delegate respondsToSelector:@selector(calendar:didTransitionTo:)]) {
                 [self.delegate calendar:self didTransitionTo:newAppearance];
@@ -936,11 +958,8 @@
 
 - (void)switchToWeekView{
     
-    if ([self.navigationController.visibleViewController isKindOfClass:[JxCalendarWeek class]]) {
+    if (![self.navigationController.visibleViewController isKindOfClass:[JxCalendarWeek class]]) {
         
-        //ist schon in der wochenansicht
-        
-    }else{
         JxCalendarWeek *week = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource
                                                                   andSize:self.view.frame.size
                                                              andStartDate:self.startDate];
@@ -959,15 +978,40 @@
     }
 }
 
+- (void)updateContentForStartDate:(NSDate *)start till:(NSDate *)end{
+    
+    NSDateComponents *comps = [[NSDateComponents alloc] init];
+    comps.day = 1;
+    
+    if (!end) {
+        end = [self.dataSource.calendar dateByAddingComponents:comps toDate:start options:0];
+    }
+    
+    NSDate *thisdate = start;
+    while ( thisdate.timeIntervalSince1970 <= end.timeIntervalSince1970) {
+        
+        NSIndexPath *path = [self getIndexPathForDate:thisdate];
+        
+        JxCalendarCell *cell = (JxCalendarCell *)[self.collectionView cellForItemAtIndexPath:path];
+        
+        if (cell) {
+            [self updateCell:cell atIndexPath:path];
+        }
+        
+        thisdate = [self.dataSource.calendar dateByAddingComponents:comps toDate:thisdate options:0];
+    }
+}
+
 #pragma mark <UICollectionViewDataSource>
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    if (self.scrollingStyle == JxCalendarScrollingStyleEndlessScrolling){
+        return 1200;
+    }
     return 12;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-    
-    //NSDate *current = [self getDateForIndexPath:indexPath];
     
     switch (self.style) {
         case JxCalendarOverviewStyleYearGrid:{
@@ -987,8 +1031,10 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:section+1 inCalendar:[self calendar] andYear:[self startComponents].year];
-    NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:section+1 inCalendar:[self calendar] andYear:[self startComponents].year];
+    NSInteger startYear = [self getStartYear];
+    
+    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:section+1 inCalendar:[self calendar] andYear:startYear];
+    NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:section+1 inCalendar:[self calendar] andYear:startYear];
     
     NSDateComponents *firstComponents = [self componentsFromDate:firstDay];
     NSDateComponents *lastComponents = [self componentsFromDate:lastDay];
@@ -998,8 +1044,8 @@
 
 - (NSDate *)getDateForIndexPath:(NSIndexPath *)indexPath{
     
-    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:indexPath.section+1 inCalendar:[self calendar] andYear:[self startComponents].year];
-    NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:indexPath.section+1 inCalendar:[self calendar] andYear:[self startComponents].year];
+    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:indexPath.section+1 inCalendar:[self calendar] andYear:[self getStartYear]];
+    NSDate *lastDay = [JxCalendarBasics lastDayOfMonth:indexPath.section+1 inCalendar:[self calendar] andYear:[self getStartYear]];
     
     NSDateComponents *firstComponents = [self componentsFromDate:firstDay];
     NSDateComponents *lastComponents = [self componentsFromDate:lastDay];
@@ -1007,7 +1053,7 @@
     NSInteger weekDay = [JxCalendarBasics normalizedWeekDay:firstComponents.weekday];
     
     if (indexPath.item+1 >= weekDay && lastComponents.day > (indexPath.item+1 - weekDay)) {
-        NSDateComponents *comp = [JxCalendarBasics baseComponentsWithCalendar:[self calendar] andYear:[self startComponents].year];
+        NSDateComponents *comp = [JxCalendarBasics baseComponentsWithCalendar:[self calendar] andYear:[self getStartYear]];
         
         NSInteger month = indexPath.section+1;
         
@@ -1027,12 +1073,17 @@
     }
     return nil;
 }
-
+- (NSInteger)getStartYear{
+    if (self.scrollingStyle == JxCalendarScrollingStyleEndlessScrolling) {
+        return 1970;
+    }
+    return [self startComponents].year;
+}
 - (NSIndexPath *)getIndexPathForDate:(NSDate *)date{
-
+    
     NSDateComponents *components = [self componentsFromDate:date];
     
-    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:components.month inCalendar:[self calendar] andYear:[self startComponents].year];
+    NSDate *firstDay = [JxCalendarBasics firstDayOfMonth:components.month inCalendar:[self calendar] andYear:components.year];
 
     NSDateComponents *firstComponents = [self componentsFromDate:firstDay];
 
@@ -1044,8 +1095,14 @@
     NSInteger extraCells = ([JxCalendarBasics normalizedWeekDay:firstComponents.weekday]-1);
 
     NSInteger row = ceil(((extraCells + components.day)-1) / 7);
-
-    return [NSIndexPath indexPathForItem:(row * 7 + (weekday-1))  inSection:components.month-1];
+    
+    NSInteger addExtraYears = 0;
+    
+    if (self.scrollingStyle == JxCalendarScrollingStyleEndlessScrolling){
+        addExtraYears = ((components.year-1970)*12);
+    }
+    
+    return [NSIndexPath indexPathForItem:(row * 7 + (weekday-1)) inSection:components.month-1 + addExtraYears];
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
@@ -1057,38 +1114,44 @@
         
         NSInteger month = indexPath.section+1;
         
-        UIFont *titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:28];
-        UIFont *subFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
-        
-        
+        UIFont *titleFont, *subFont;
         
         switch (self.style) {
             case JxCalendarOverviewStyleYearGrid:
                 header.titleLabel.textAlignment = NSTextAlignmentCenter;
                 if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad){
-                    titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+                    titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:22];
+                    subFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
                 }else{
-                    titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
+                    titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
+                    subFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:8];
                 }
                 break;
             case JxCalendarOverviewStyleMonthGrid:
                 header.titleLabel.textAlignment = NSTextAlignmentLeft;
+                if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad){
+                    titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:34];
+                    subFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:12];
+                }else{
+                    titleFont = [UIFont fontWithName:@"HelveticaNeue-Light" size:28];
+                    subFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:10];
+                }
                 break;
         }
         
-        
-        NSMutableAttributedString *title = [[NSMutableAttributedString alloc] initWithString:[[[JxCalendarBasics defaultFormatter] monthSymbols] objectAtIndex:month-1]
+        NSMutableAttributedString *title = [[NSMutableAttributedString alloc] initWithString:[[[JxCalendarBasics defaultFormatter] monthSymbols] objectAtIndex:(month-1)%12]
                                                                                   attributes:@{NSFontAttributeName: titleFont,
                                                                                                NSForegroundColorAttributeName: [UIColor redColor]}];
         
-        if (self.style == JxCalendarOverviewStyleMonthGrid) {
-            [title appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@" %ld", [self startComponents].year]
+        if (self.style == JxCalendarOverviewStyleMonthGrid || YES) {
+            
+            [title appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@" %.0f", ([self getStartYear] + floor((month-1)/12.0f))]
                                                                           attributes:@{NSFontAttributeName: subFont,
                                                                                        NSForegroundColorAttributeName: [UIColor lightGrayColor]}]];
         }
         
         header.titleLabel.attributedText = title;
-
+        //header.backgroundColor = [[UIColor cyanColor] colorWithAlphaComponent:0.3];
         return header;
     }
     return nil;
@@ -1120,8 +1183,6 @@
             [self.dataSource respondsToSelector:@selector(rangeElementForDate:)]
             ) {
             
-            
-            
             cell.rangeDotBackground.backgroundColor = kJxCalendarRangeDotBackgroundColor;
             cell.rangeDot.backgroundColor           = cell.backgroundColor;
             cell.rangeFrom.backgroundColor          = kJxCalendarRangeBackgroundColor;
@@ -1136,14 +1197,10 @@
             
             JxCalendarRangeElement *rangeElement = [self.dataSource rangeElementForDate:thisDate];
             
-            
             void (^animation)(void) = ^{
                 
                 CGFloat partOfDay = 1.0;
-                
                 CGFloat startPosition = 0.0f;
-                
-                
                 
                 if([self.dataSource isDayRangeable:thisDate] &&  [self.dataSource isPartOfRange:thisDate]) {
                     if ([self nextCellIsInRangeWithIndexPath:indexPath]) {
@@ -1170,7 +1227,6 @@
                             [cell.rangeDot.layer setBorderWidth:.0];
                         }
                     }
-                    
                     
                     partOfDay = rangeElement.duration / (float)(self.lengthOfDayInHours*60*60);
                     
@@ -1207,7 +1263,6 @@
                 }else{
                     [self resetRangeForCell:cell];
                 }
-                
                 
                 JxCalendarRangeStyleInCell rangeStyle = JxCalendarRangeStyleInCellHorizontal;
                 if ([self.dataSource respondsToSelector:@selector(rangeStyleForDate:)]) {
@@ -1423,6 +1478,38 @@
         }
         
         if ([self.dataSource numberOfEventsAt:thisDate] > 0) {
+            
+            CGSize itemSize = [(UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout itemSize];
+            
+            switch (self.style) {
+                case JxCalendarOverviewStyleYearGrid:
+                    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad){
+                        cell.eventMarker.frame = CGRectMake(itemSize.width/100*80,
+                                                            itemSize.height/100*80,
+                                                            itemSize.width/100*15,
+                                                            itemSize.height/100*15);
+                    }else{
+                        cell.eventMarker.frame = CGRectMake(0,
+                                                            itemSize.height/100*90,
+                                                            itemSize.width,
+                                                            itemSize.height/100*10);
+                    }
+                    break;
+                case JxCalendarOverviewStyleMonthGrid:
+                    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad){
+                        cell.eventMarker.frame = CGRectMake(itemSize.width/100*90,
+                                                            itemSize.height/100*90,
+                                                            itemSize.width/100*8,
+                                                            itemSize.height/100*8);
+                    }else{
+                        cell.eventMarker.frame = CGRectMake(itemSize.width/100*80,
+                                                            itemSize.height/100*80,
+                                                            itemSize.width/100*15,
+                                                            itemSize.height/100*15);
+                    }
+                    break;
+            }
+            
             cell.eventMarker.hidden = NO;
         }else{
             cell.eventMarker.hidden = YES;
@@ -1433,7 +1520,7 @@
             cell.contentView.backgroundColor = [[UIColor redColor] colorWithAlphaComponent:0.05];
             cell.contentView.layer.borderColor = [[UIColor redColor] colorWithAlphaComponent:0.2].CGColor;
             cell.contentView.layer.borderWidth = 1.0f;
-            cell.contentView.layer.cornerRadius = cell.frame.size.height/2;
+            cell.contentView.layer.cornerRadius = [(UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout itemSize].height/2;
         }else{
             cell.contentView.backgroundColor = [UIColor clearColor];
             cell.contentView.layer.borderWidth = 0.0f;
@@ -1451,12 +1538,64 @@
         cell.contentView.layer.borderWidth = 0.0f;
         cell.contentView.layer.cornerRadius = 0;
     }
+    
+    //cell.backgroundColor = [[UIColor brownColor] colorWithAlphaComponent:0.3];
+}
+- (void)collectionView:(UICollectionView *)collectionView willDisplaySupplementaryView:(UICollectionReusableView *)view forElementKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath{
+    [self updateStartVisibilitysForCollectionView:collectionView atIndexPath:indexPath];
 }
 - (void)collectionView:(UICollectionView *)collectionView willDisplayCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
-    
+    [self updateStartVisibilitysForCollectionView:collectionView atIndexPath:indexPath];
+}
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingSupplementaryView:(nonnull UICollectionReusableView *)view forElementOfKind:(nonnull NSString *)elementKind atIndexPath:(nonnull NSIndexPath *)indexPath{
+    [self updateEndVisibilitysForCollectionView:collectionView atIndexPath:indexPath];
 }
 - (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath{
+    [self updateEndVisibilitysForCollectionView:collectionView atIndexPath:indexPath];
+}
+- (void)updateStartVisibilitysForCollectionView:(UICollectionView *)collectionView atIndexPath:(NSIndexPath *)indexPath{
+    if (![_visibleSections containsObject:@(indexPath.section)]) {
+        [_visibleSections addObject:@(indexPath.section)];
+        
+        if ([self.dataSource respondsToSelector:@selector(calendar:willDisplayMonth:inYear:)]) {
+            NSInteger month = [self getMonthFromIndexPath:indexPath];
+            NSInteger year = [self getYearFromIndexPath:indexPath];
+            [self.dataSource calendar:self willDisplayMonth:month inYear:year];
+        }
+    }
+}
+- (void)updateEndVisibilitysForCollectionView:(UICollectionView *)collectionView atIndexPath:(NSIndexPath *)indexPath{
+    BOOL stillVisible = NO;
     
+    for (NSIndexPath *cellPath in [collectionView indexPathsForVisibleItems]) {
+        if (cellPath.section == indexPath.section) {
+            stillVisible = YES;
+        }
+    }
+    for (NSIndexPath *supplementaryPath in [collectionView indexPathsForVisibleSupplementaryElementsOfKind:UICollectionElementKindSectionHeader]) {
+        if (supplementaryPath.section == indexPath.section) {
+            stillVisible = YES;
+        }
+    }
+    if (!stillVisible) {
+        NSUInteger index = [_visibleSections indexOfObject:@(indexPath.section)];
+        if (_visibleSections.count > index) {
+            [_visibleSections removeObjectAtIndex:index];
+            
+            if ([self.dataSource respondsToSelector:@selector(calendar:didHideMonth:inYear:)]) {
+                NSInteger month = [self getMonthFromIndexPath:indexPath];
+                NSInteger year = [self getYearFromIndexPath:indexPath];
+                [self.dataSource calendar:self didHideMonth:month inYear:year];
+            }
+        }
+    }
+}
+- (NSInteger)getMonthFromIndexPath:(NSIndexPath *)indexPath{
+    return (indexPath.section % 12)+1;
+}
+- (NSInteger)getYearFromIndexPath:(NSIndexPath *)indexPath{
+//    NSDateComponents *startComponents = [self getStartYear];
+    return [self getStartYear] + floor(indexPath.section/12.0f) ;
 }
 #pragma mark <UICollectionViewDelegate>
 
@@ -1489,9 +1628,6 @@
                             _longHoldEndIndexPath = nil;
                         }
                         
-//                        _longHoldEndIndexPath = indexPath;
-//                        _longHoldStartIndexPath = indexPath;
-                        
                         if (!_longHoldStartIndexPath) {
                             _longHoldStartIndexPath = indexPath;
                             _longHoldEndIndexPath = nil;
@@ -1500,35 +1636,13 @@
                         }else{
                             _longHoldStartIndexPath = indexPath;
                             _longHoldEndIndexPath = nil;
-                            
-                            
-//                            if ([self.dataSource isPartOfRange:date]) {
-//                                _longHoldEndIndexPath = indexPath;
-//                            }else if (_longHoldStartIndexPath && _longHoldEndIndexPath){
-//                                if( indexPath.section > _longHoldEndIndexPath.section ||
-//                                   (indexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < indexPath.row)) {
-//                                    
-//                                    _longHoldEndIndexPath = indexPath;
-//                                }else{
-//                                    _longHoldStartIndexPath = indexPath;
-//                                }
-//                            }
                         }
-                        
-                        
                         
                         [self updateLongHoldSelectedCells];
                         
                         if ([self.delegate respondsToSelector:@selector(calendarDidEndRanging:)]) {
                             [self.delegate calendarDidEndRanging:[self getCalendarOverview]];
                         }
-                        
-//                        if (_longHoldStartIndexPath && _longHoldEndIndexPath && ( _longHoldStartIndexPath.section > _longHoldEndIndexPath.section ||
-//                            (_longHoldStartIndexPath.section == _longHoldEndIndexPath.section && _longHoldEndIndexPath.row < _longHoldStartIndexPath.row))) {
-//                            NSIndexPath *tempStart = _longHoldStartIndexPath;
-//                            _longHoldStartIndexPath = _longHoldEndIndexPath;
-//                            _longHoldEndIndexPath = tempStart;
-//                        }
                     }
                 }
             }
@@ -1607,13 +1721,47 @@
     [self hideToolTip];
     
     [super scrollViewDidScroll:scrollView];
+    
+    
+    if (self.scrollingStyle == JxCalendarScrollingStyleEndlessScrolling) {
+        
+        [self updateTitle];
+    }
+}
+- (void)updateTitle{
+    JxCalendarLayoutOverview *layout = (JxCalendarLayoutOverview *)self.collectionView.collectionViewLayout;
+    
+    CGSize sizeOfMonth = [layout sizeOfOneMonth];
+    
+    CGFloat origin = self.collectionView.contentOffset.y + self.collectionView.frame.size.height/2;
+    
+    NSInteger section = floor(origin / (sizeOfMonth.height + layout.sectionInset.top + layout.sectionInset.bottom));
+    
+    if ([self getOverviewAppearance] == JxCalendarAppearanceYear) {
+        section = section * 3;
+    }
+    
+    NSDate *date = [self getDateForIndexPath:[NSIndexPath indexPathForItem:7 inSection:section]];
+    
+    NSString *newTitle;
+    
+    if ([self.delegate respondsToSelector:@selector(calendar:titleOnDate:whileOnAppearance:)]) {
+        
+        newTitle = [self.delegate calendar:self titleOnDate:date whileOnAppearance:[self getOverviewAppearance]];
+    }else{
+        newTitle = [NSString stringWithFormat:@"%ld", [self componentsFromDate:date].year];
+    }
+    
+    if (newTitle) {
+        self.navigationItem.title = newTitle;
+    }
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     if (decelerate) {
         
-        if (self.pullToSwitchYears) {
-            [self startUpdateRefreshViews];
+        if (self.scrollingStyle == JxCalendarScrollingStyleSwitchYearOnEdge) {
+            
             BOOL switchToDifferentYear = NO;
             BOOL startFromTop = YES;
             
@@ -1627,6 +1775,7 @@
             }
             
             if (switchToDifferentYear) {
+                [self startUpdateRefreshViews];
                 [self.collectionView reloadData];
                 [self.collectionView performBatchUpdates:^{
                     [self.collectionView.collectionViewLayout invalidateLayout];

@@ -19,7 +19,7 @@
 
 @interface JxCalendarLayoutDay ()
 
-@property (nonatomic, strong) NSDictionary *layoutInfo;
+@property (strong, nonatomic) NSDictionary *layoutInfo;
 @property (strong, nonatomic) NSDate *day;
 
 @end
@@ -232,7 +232,6 @@
 - (CGRect)frameForDurationEvent:(JxCalendarEventDuration *)event atIndexPath:(NSIndexPath *)indexPath{
 
     NSDateComponents *startComponents;
-    //    NSDateComponents *endComponents;
     if (event) {
         startComponents = [[self.source.dataSource calendar] components:( NSCalendarUnitHour |
                                                      NSCalendarUnitMinute |
@@ -251,15 +250,7 @@
         itemHeight = kJxCalendarLayoutDayMinimumEventHeight;
     }
     CGRect rect = CGRectMake(kCalendarLayoutDayHeaderTextWidth,
-                             indexPath.section * (60*kCalendarLayoutDaySectionHeightMultiplier) + [self wholeDayAreaHeight] + self.minimumLineSpacing + 1 + startComponents.minute*kCalendarLayoutDaySectionHeightMultiplier
-                             /*
-                             self.headerReferenceSize.height - kCalendarLayoutDayHeaderHalfHeight +
-                             [self wholeDayAreaHeight] +
-                             (indexPath.section * (60*kCalendarLayoutDaySectionHeightMultiplier)) +
-                             self.minimumLineSpacing +
-                             (startComponents.minute * kCalendarLayoutDaySectionHeightMultiplier) */,
-                             
-                             
+                             indexPath.section * (60*kCalendarLayoutDaySectionHeightMultiplier) + [self wholeDayAreaHeight] + self.minimumLineSpacing + 1 + startComponents.minute*kCalendarLayoutDaySectionHeightMultiplier,
                              self.itemSize.width,
                              itemHeight);
     

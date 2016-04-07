@@ -11,13 +11,13 @@
 
 @interface JxCalendarRangeElement : NSObject
 
-@property (nonatomic, readonly) JxCalendarDayType dayType;
+@property (assign, nonatomic, readonly) JxCalendarDayType dayType;
 
 @property (strong, nonatomic, readonly) NSDate *date;
 @property (strong, nonatomic, readonly) NSDate *start;
 @property (strong, nonatomic, readonly) NSDate *end;
 
-@property (nonatomic, readonly) NSTimeInterval duration;
+@property (assign, nonatomic, readonly) NSTimeInterval duration;
 
 - (id)initWithDate:(NSDate *)date andDayType:(JxCalendarDayType)dayType inCalendar:(NSCalendar *)calendar andMaximumDayLength:(NSInteger)maxDayHours;
 - (id)initWithDate:(NSDate *)date andDayType:(JxCalendarDayType)dayType withStartDate:(NSDate *)start andEndDate:(NSDate *)end;

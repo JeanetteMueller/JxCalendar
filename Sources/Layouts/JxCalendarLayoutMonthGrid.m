@@ -13,15 +13,15 @@
 
 
 @interface JxCalendarLayoutMonthGrid ()
-@property (nonatomic, strong) NSDictionary *layoutInfo;
-@property (nonatomic, readwrite) CGFloat decorationHeight;
+@property (strong, nonatomic) NSDictionary *layoutInfo;
+@property (assign, nonatomic, readwrite) CGFloat decorationHeight;
 @end
 
 @implementation JxCalendarLayoutMonthGrid
 
+#define kJxCalendarWeekDayDecoration @"JxCalendarWeekDayDecoration"
 
-- (id)initWithViewController:(JxCalendarViewController *)vc andSize:(CGSize)size
-{
+- (id)initWithViewController:(JxCalendarViewController *)vc andSize:(CGSize)size{
     self = [self init];
     if (self) {
         self.headerReferenceSize = CGSizeMake(size.width, 64.0f);
@@ -34,14 +34,11 @@
         
         self.decorationHeight = 26;
         self.renderWeekDayLabels = vc.renderWeekDayLabels;
-
     }
     return self;
 }
 
-
-- (instancetype)init
-{
+- (instancetype)init{
     self = [super init];
     if (self) {
         self.scrollDirection = UICollectionViewScrollDirectionVertical;
@@ -53,8 +50,8 @@
         NSString* const frameworkBundleID = @"de.themaverick.JxCalendar";
         NSBundle* bundle = [NSBundle bundleWithIdentifier:frameworkBundleID];
         
-        [self registerClass:[JxCalendarWeekDayDecoration class] forDecorationViewOfKind:@"JxCalendarWeekDayDecoration"];
-        [self registerNib:[UINib nibWithNibName:@"JxCalendarWeekDayDecoration" bundle:bundle] forDecorationViewOfKind:@"JxCalendarWeekDayDecoration"];
+        [self registerClass:[JxCalendarWeekDayDecoration class] forDecorationViewOfKind:kJxCalendarWeekDayDecoration];
+        [self registerNib:[UINib nibWithNibName:kJxCalendarWeekDayDecoration bundle:bundle] forDecorationViewOfKind:kJxCalendarWeekDayDecoration];
     }
     
     return self;
@@ -62,217 +59,147 @@
 
 #pragma mark - Layout
 
-- (void)prepareLayout
-{
-    [super prepareLayout];
+- (CGSize)sizeOfOneMonth{
     
-    NSMutableDictionary *newLayoutInfo = [NSMutableDictionary dictionary];
-    NSMutableDictionary *cellLayoutInfo = [NSMutableDictionary dictionary];
-    NSMutableDictionary *headerLayoutInfo = [NSMutableDictionary dictionary];
-    NSMutableDictionary *decorationLayoutInfo = [NSMutableDictionary dictionary];
+    CGFloat extraPaddingTopForWeekDayLabels = 0.0f;
     
-    NSInteger sectionCount = [self.collectionView numberOfSections];
-    NSIndexPath *indexPath;
-    CGRect previousRect = CGRectZero;
-    NSIndexPath *previousIndexPath;
-    
-    for (NSInteger section = 0; section < sectionCount; section++) {
-        
-        NSInteger itemCount = [self.collectionView numberOfItemsInSection:section];
-        indexPath = [NSIndexPath indexPathForItem:0 inSection:section];
-        UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader withIndexPath:indexPath];
-        itemAttributes.frame = [self frameForHeaderAtSection:indexPath.section previousRect:previousRect previousIndexPath:previousIndexPath];
-        headerLayoutInfo[indexPath] = itemAttributes;
-        
-        for (NSInteger item = 0; item < itemCount; item++) {
-            indexPath = [NSIndexPath indexPathForItem:item inSection:section];
-            
-            UICollectionViewLayoutAttributes *itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-            itemAttributes.frame = [self frameForItemAtIndexPath:indexPath previousRect:previousRect previousIndexPath:previousIndexPath];
-            
-            cellLayoutInfo[indexPath] = itemAttributes;
-            
-            UICollectionViewLayoutAttributes *deco = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:@"JxCalendarWeekDayDecoration" withIndexPath:indexPath];
-            
-            deco.frame = [self frameForDecorationAtIndexPath:indexPath itemRect:itemAttributes.frame];
-            
-            if (!CGRectEqualToRect(deco.frame, CGRectZero)) {
-                decorationLayoutInfo[indexPath] = deco;
-            }
-            
-            previousRect = itemAttributes.frame;
-            previousIndexPath = indexPath;
-        }
+    if (self.renderWeekDayLabels) {
+        extraPaddingTopForWeekDayLabels = self.decorationHeight + self.minimumLineSpacing;
     }
-    
-    newLayoutInfo[kJxCalendarMonthLayoutCells] = cellLayoutInfo;
-    newLayoutInfo[kJxCalendarMonthLayoutHeader] = headerLayoutInfo;
-    newLayoutInfo[kJxCalendarMonthLayoutDecoration] = decorationLayoutInfo;
-    
-    self.layoutInfo = newLayoutInfo;
+    return CGSizeMake(self.headerReferenceSize.width,
+                      self.headerReferenceSize.height + self.minimumLineSpacing + ((self.itemSize.height+self.minimumLineSpacing)*6 ) + self.minimumLineSpacing + extraPaddingTopForWeekDayLabels);
 }
 
-- (nullable NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect
-{
-    NSMutableArray *allAttributes = [NSMutableArray arrayWithCapacity:self.layoutInfo.count];
+- (nullable NSArray<__kindof UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect{
+    NSArray *attr = [super layoutAttributesForElementsInRect:rect];
+    if (attr) {
+        return attr;
+    }
     
-    [self.layoutInfo enumerateKeysAndObjectsUsingBlock:^(NSString *elementIdentifier,
-                                                         NSDictionary *elementsInfo,
-                                                         BOOL *stop) {
-        [elementsInfo enumerateKeysAndObjectsUsingBlock:^(NSIndexPath *indexPath,
-                                                          UICollectionViewLayoutAttributes *attributes,
-                                                          BOOL *innerStop) {
-            if (CGRectIntersectsRect(rect, attributes.frame)) {
-                [allAttributes addObject:attributes];
+    NSMutableArray *allAttributes = [NSMutableArray array];
+    
+    CGPoint origin = rect.origin;
+    NSInteger section = floor(origin.y / [self sizeOfOneMonth].height);
+    NSInteger range = 3;
+    
+    for (NSInteger s = section-range; s <= section+range; s++) {
+        if (s >= 0 && s < [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView]) {
+            [allAttributes addObject:[self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:[NSIndexPath indexPathForItem:0 inSection:s]]];
+            
+            NSInteger itemCount = [self.collectionView numberOfItemsInSection:s];
+            
+            for (NSInteger item = 0; item < itemCount; item++) {
+                
+                NSIndexPath *path = [NSIndexPath indexPathForItem:item inSection:s];
+                
+                UICollectionViewLayoutAttributes *itemAttributes = [self layoutAttributesForItemAtIndexPath:path];
+                [allAttributes addObject:itemAttributes];
+                
+                UICollectionViewLayoutAttributes *deco = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:kJxCalendarWeekDayDecoration withIndexPath:path];
+    
+                deco.frame = [self frameForDecorationAtIndexPath:path itemRect:itemAttributes.frame];
+    
+                if (!CGRectEqualToRect(deco.frame, CGRectZero)) {
+                    [allAttributes addObject:deco];
+                }
             }
-        }];
-    }];
+        }
+    }
+    [self.layouts setObject:allAttributes forKey:[NSString stringWithFormat:@"%fx%f", origin.x, origin.y]];
     
     return allAttributes;
 }
 
-- (CGSize)collectionViewContentSize
-{
-
+- (CGSize)collectionViewContentSize{
+    
+    if (self.contentSize.width > 0 && self.contentSize.height > 0) {
+        return self.contentSize;
+    }
+    
     NSInteger numOfSections = [self.collectionView.dataSource numberOfSectionsInCollectionView:self.collectionView];
     NSIndexPath *lastHeaderIndexPath = [NSIndexPath indexPathForRow:0 inSection:numOfSections-1];
     UICollectionViewLayoutAttributes *lastLayoutAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:lastHeaderIndexPath];
     
-    NSInteger numberOfCellsInDecember = [self.collectionView numberOfItemsInSection:numOfSections-1];
-    NSIndexPath *lastCellIndexPath = [NSIndexPath indexPathForItem:numberOfCellsInDecember-1 inSection:numOfSections-1];
-    UICollectionViewLayoutAttributes *lastCellAttributes = [self layoutAttributesForItemAtIndexPath:lastCellIndexPath];
+    self.contentSize =  CGSizeMake(CGRectGetMaxX(lastLayoutAttributes.frame), lastLayoutAttributes.frame.origin.y + [self sizeOfOneMonth].height);
     
-    CGSize contentSize = CGSizeMake(CGRectGetMaxX(lastLayoutAttributes.frame), CGRectGetMaxY(lastCellAttributes.frame) + self.minimumLineSpacing);
-    
-    return contentSize;
+    return self.contentSize;
 }
 
 #pragma mark - Cells Layout
 
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath{
-    return self.layoutInfo[kJxCalendarMonthLayoutCells][indexPath];
+    
+    UICollectionViewLayoutAttributes *itemAttributes = [super layoutAttributesForItemAtIndexPath:indexPath];
+    if (itemAttributes) {
+        return itemAttributes;
+    }
+    
+    itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
+    CGFloat extraPaddingTopForWeekDayLabels = 0.0f;
+    
+    if (self.renderWeekDayLabels) {
+        extraPaddingTopForWeekDayLabels = self.decorationHeight + self.minimumLineSpacing;
+    }
+    
+    itemAttributes.frame = CGRectMake((indexPath.item % 7) * self.itemSize.width,
+                              (indexPath.section*[self sizeOfOneMonth].height) + self.headerReferenceSize.height + self.minimumLineSpacing + (floor(indexPath.item/7)*(self.itemSize.height+self.minimumLineSpacing)) + extraPaddingTopForWeekDayLabels,
+                              self.itemSize.width,
+                              self.itemSize.height);
+
+    [self.cachedItemAttributes setObject:itemAttributes forKey:indexPath];
+    return itemAttributes;
 }
 
+#pragma mark - Decoration Layout
+
+- (UICollectionViewLayoutAttributes *)layoutAttributesForDecorationViewOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath{
+    UICollectionViewLayoutAttributes *deco = [super layoutAttributesForDecorationViewOfKind:elementKind atIndexPath:indexPath];
+    if (deco) {
+        return deco;
+    }
+    
+    deco = [UICollectionViewLayoutAttributes layoutAttributesForDecorationViewOfKind:kJxCalendarWeekDayDecoration withIndexPath:indexPath];
+    
+    UICollectionViewLayoutAttributes *itemAttributes = [self layoutAttributesForItemAtIndexPath:indexPath];
+    
+    deco.frame = [self frameForDecorationAtIndexPath:indexPath itemRect:itemAttributes.frame];
+    
+    [self.cachedDecoAttributes setObject:deco forKey:indexPath];
+    return deco;
+}
 
 - (CGRect)frameForDecorationAtIndexPath:(NSIndexPath *)indexPath itemRect:(CGRect)itemRect{
     
-    if (indexPath.item >= 7 || !self.renderWeekDayLabels) {
+    if (indexPath.item >6 || !self.renderWeekDayLabels) {
         return CGRectZero;
     }
     
-    if (self.scrollDirection == UICollectionViewScrollDirectionVertical) {
-        
-
-        CGRect theoricalRect = CGRectMake(itemRect.origin.x, itemRect.origin.y - self.decorationHeight - self.minimumLineSpacing, itemRect.size.width, self.decorationHeight);
-        
-        
-        return theoricalRect;
-        
-    }
-    else {
-//        if (CGRectEqualToRect(CGRectZero, previousRect)) {
-//            return CGRectMake(0.0f, self.headerReferenceSize.height + self.minimumLineSpacing, self.itemSize.width, self.itemSize.height);
-//        }
-//        else {
-//            CGRect theoricalRect = previousRect;
-//            theoricalRect.origin.x = theoricalRect.origin.x + self.minimumInteritemSpacing + self.itemSize.width;
-//            if ((theoricalRect.origin.x + self.itemSize.width) > self.collectionView.frame.size.width * (indexPath.section+1)) {
-//                theoricalRect.origin.x =  self.collectionView.frame.size.width * indexPath.section;
-//                theoricalRect.origin.y = theoricalRect.origin.y + self.minimumLineSpacing + self.itemSize.height;
-//            }
-//            if ((indexPath.section - previousIndexPath.section) > 0) {
-//                theoricalRect.origin.x = self.collectionView.frame.size.width * indexPath.section;
-//                theoricalRect.origin.y = self.headerReferenceSize.height + self.minimumLineSpacing;
-//            }
-//            return theoricalRect;
-//        }
-    }
-    
-    return CGRectZero;
-}
-
-- (CGRect)frameForItemAtIndexPath:(NSIndexPath *)indexPath previousRect:(CGRect)previousRect previousIndexPath:(NSIndexPath*)previousIndexPath{
-    if (self.scrollDirection == UICollectionViewScrollDirectionVertical) {
-        
-        CGFloat extraPaddingTopForWeekDayLabels = 0.0f;
-        
-        if (indexPath.item < 7 && self.renderWeekDayLabels) {
-            extraPaddingTopForWeekDayLabels = self.decorationHeight + self.minimumLineSpacing;
-        }
-        
-        if (CGRectEqualToRect(CGRectZero, previousRect)) {
-            return CGRectMake(0.0f, self.headerReferenceSize.height + self.minimumLineSpacing + extraPaddingTopForWeekDayLabels, self.itemSize.width, self.itemSize.height);
-        }else {
-            CGRect theoricalRect = previousRect;
-            theoricalRect.origin.x = theoricalRect.origin.x + self.minimumInteritemSpacing + self.itemSize.width;
-            if ((indexPath.section - previousIndexPath.section) > 0) {
-                theoricalRect.origin.y = theoricalRect.origin.y + self.itemSize.height + self.headerReferenceSize.height + self.minimumLineSpacing + extraPaddingTopForWeekDayLabels;
-                theoricalRect.origin.x = 0.0f;
-            }else if ((theoricalRect.origin.x + self.itemSize.width) > self.collectionView.frame.size.width) {
-                theoricalRect.origin.x = 0.0f;
-                theoricalRect.origin.y = theoricalRect.origin.y + self.minimumLineSpacing + self.itemSize.height + extraPaddingTopForWeekDayLabels;
-            }
-            return theoricalRect;
-        }
-    }
-    else {
-        if (CGRectEqualToRect(CGRectZero, previousRect)) {
-            return CGRectMake(0.0f, self.headerReferenceSize.height + self.minimumLineSpacing, self.itemSize.width, self.itemSize.height);
-        }
-        else {
-            CGRect theoricalRect = previousRect;
-            theoricalRect.origin.x = theoricalRect.origin.x + self.minimumInteritemSpacing + self.itemSize.width;
-            if ((theoricalRect.origin.x + self.itemSize.width) > self.collectionView.frame.size.width * (indexPath.section+1)) {
-                theoricalRect.origin.x =  self.collectionView.frame.size.width * indexPath.section;
-                theoricalRect.origin.y = theoricalRect.origin.y + self.minimumLineSpacing + self.itemSize.height;
-            }
-            if ((indexPath.section - previousIndexPath.section) > 0) {
-                theoricalRect.origin.x = self.collectionView.frame.size.width * indexPath.section;
-                theoricalRect.origin.y = self.headerReferenceSize.height + self.minimumLineSpacing;
-            }
-            return theoricalRect;
-        }
-    }
-    
-    return CGRectZero;
+    return CGRectMake(itemRect.origin.x, itemRect.origin.y - self.decorationHeight - self.minimumLineSpacing, itemRect.size.width, self.decorationHeight);
 }
 
 #pragma mark - Headers Layout
 
-- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
-{
-    return self.layoutInfo[kJxCalendarMonthLayoutHeader][indexPath];
-}
-
-- (CGRect)frameForHeaderAtSection:(NSInteger)section previousRect:(CGRect)previousRect previousIndexPath:(NSIndexPath*)previousIndexPath
-{
-    if (self.scrollDirection == UICollectionViewScrollDirectionVertical) {
-        if (CGRectEqualToRect(CGRectZero, previousRect)) {
-            return CGRectMake(0.0f, 0.0f, self.headerReferenceSize.width, self.headerReferenceSize.height);
-        }
-        else {
-            CGRect theoricalRect = previousRect;
-            theoricalRect.origin.x = 0.0f;
-            theoricalRect.origin.y = theoricalRect.origin.y + self.itemSize.height + self.minimumLineSpacing;
-            theoricalRect.size.width = self.headerReferenceSize.width;
-            theoricalRect.size.height = self.headerReferenceSize.height;
-            return theoricalRect;
-        }
-    }
-    else {
-        if (CGRectEqualToRect(CGRectZero, previousRect)) {
-            return CGRectMake(0.0f, 0.0f, self.headerReferenceSize.width, self.headerReferenceSize.height);
-        }
-        else {
-            CGRect theoricalRect = previousRect;
-            theoricalRect.origin.x = section * self.headerReferenceSize.width;
-            theoricalRect.origin.y = 0.0f;
-            theoricalRect.size.width = self.headerReferenceSize.width;
-            theoricalRect.size.height = self.headerReferenceSize.height;
-            return theoricalRect;
-        }
+- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
+    UICollectionViewLayoutAttributes *itemAttributes = [super layoutAttributesForSupplementaryViewOfKind:kind atIndexPath:indexPath];
+    if (itemAttributes) {
+        return itemAttributes;
     }
     
-    return CGRectZero;
+    itemAttributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kind withIndexPath:indexPath];
+    
+    CGFloat extraPaddingTopForWeekDayLabels = 0.0f;
+    
+    if (self.renderWeekDayLabels) {
+        extraPaddingTopForWeekDayLabels = self.decorationHeight + self.minimumLineSpacing;
+    }
+    
+    itemAttributes.frame = CGRectMake(0,
+                                      indexPath.section * (self.headerReferenceSize.height + self.minimumLineSpacing + ((self.itemSize.height+self.minimumLineSpacing)*6 ) + self.minimumLineSpacing + extraPaddingTopForWeekDayLabels),
+                                      self.headerReferenceSize.width,
+                                      self.headerReferenceSize.height);
+    
+    [self.cachedHeadlineAttributes setObject:itemAttributes forKey:indexPath];
+    return itemAttributes;
 }
+
 @end

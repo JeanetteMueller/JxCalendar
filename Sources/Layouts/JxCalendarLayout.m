@@ -14,12 +14,7 @@
     self.size = size;
     
 }
-- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds
-{
-//    CGRect oldBounds = self.collectionView.bounds;
-//    if (!CGSizeEqualToSize(oldBounds.size, newBounds.size)) {
-//        return YES;
-//    }
+- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds{
     return YES;
 }
 
