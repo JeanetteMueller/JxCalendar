@@ -1749,7 +1749,7 @@
         
         newTitle = [self.delegate calendar:self titleOnDate:date whileOnAppearance:[self getOverviewAppearance]];
     }else{
-        newTitle = [NSString stringWithFormat:@"%ld", [self componentsFromDate:date].year];
+        newTitle = [NSString stringWithFormat:@"%ld", (long)[self componentsFromDate:date].year];
     }
     
     if (newTitle) {

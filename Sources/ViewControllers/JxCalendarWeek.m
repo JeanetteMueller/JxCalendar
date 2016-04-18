@@ -89,7 +89,7 @@
             
             NSString *monthName = [symbols objectAtIndex:startComponents.month-1];
             
-            self.navigationItem.title = [NSString stringWithFormat:@"%@ %ld", monthName, startComponents.year];
+            self.navigationItem.title = [NSString stringWithFormat:@"%@ %ld", monthName, (long)startComponents.year];
         }
     }
     
