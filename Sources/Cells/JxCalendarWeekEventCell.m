@@ -10,8 +10,4 @@
 
 @implementation JxCalendarWeekEventCell
 
-- (void)awakeFromNib {
-    // Initialization code
-}
-
 @end

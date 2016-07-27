@@ -134,7 +134,7 @@
 }
 
 - (NSString *)description{
-    return [NSString stringWithFormat:@"RangeElement %@", _date];
+    return [NSString stringWithFormat:@"RangeElement %@ (%@ - %@)", _date, _start, _end];
 }
 
 @end

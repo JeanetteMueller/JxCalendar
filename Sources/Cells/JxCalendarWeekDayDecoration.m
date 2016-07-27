@@ -11,10 +11,6 @@
 
 @implementation JxCalendarWeekDayDecoration
 
-- (void)awakeFromNib {
-    // Initialization code
-    
-}
 - (void)applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes{
     [super applyLayoutAttributes:layoutAttributes];
     

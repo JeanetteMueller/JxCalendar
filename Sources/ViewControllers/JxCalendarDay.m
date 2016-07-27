@@ -99,16 +99,18 @@
 - (void)viewDidLayoutSubviews {
     
     if (!self.initialScrollDone) {
-        
-        NSDate *now = [NSDate date];
-        NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:now];
-        CGFloat offset = [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
-                                                                                                  atIndexPath:[NSIndexPath indexPathForItem:0 inSection:components.hour]].frame.origin.y;
-        
-        if (offset > self.collectionView.contentSize.height-self.collectionView.frame.size.height) {
-            offset = self.collectionView.contentSize.height-self.collectionView.frame.size.height;
+        if ([self getCalendarOverview].scrollToCurrentTimeAndDate) {
+            NSDate *now = [NSDate new];
+            NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:now];
+            CGFloat offset = [self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader
+                                                                                                      atIndexPath:[NSIndexPath indexPathForItem:0 inSection:components.hour]].frame.origin.y;
+            
+            if (offset > self.collectionView.contentSize.height-self.collectionView.frame.size.height) {
+                offset = self.collectionView.contentSize.height-self.collectionView.frame.size.height;
+            }
+            [self.collectionView setContentOffset:CGPointMake(0, offset) animated:NO];
         }
-        [self.collectionView setContentOffset:CGPointMake(0, offset) animated:NO];
+        
     
         [self updateZeigerPosition];
 
@@ -188,7 +190,7 @@
 }
 
 - (void)loadNow{
-    self.now = [NSDate date];
+    self.now = [NSDate new];
     
     self.nowComponents = [[self.dataSource calendar] components:(NSCalendarUnitHour |
                                                                  NSCalendarUnitMinute |
@@ -227,54 +229,58 @@
 }
 
 - (NSIndexPath *)indexPathForEvent:(JxCalendarEvent *)searchedEvent{
-    NSArray *events = [self.dataSource eventsAt:self.startDate];
-    
-    NSDateComponents *searchedComponents = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:searchedEvent.start];
-    
-    NSMutableArray *items = [NSMutableArray array];
-    
-    for (JxCalendarEvent *e in events) {
+    if ([self.dataSource respondsToSelector:@selector(eventsAt:)]) {
+        NSArray *events = [self.dataSource eventsAt:self.startDate];
         
+        NSDateComponents *searchedComponents = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:searchedEvent.start];
         
-        NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:e.start];
+        NSMutableArray *items = [NSMutableArray array];
         
-        if (components.hour == searchedComponents.hour) {
-            [items addObject:e];
+        for (JxCalendarEvent *e in events) {
+            
+            
+            NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:e.start];
+            
+            if (components.hour == searchedComponents.hour) {
+                [items addObject:e];
+            }
+            
         }
-
+        if ([items containsObject:searchedEvent]) {
+            return [NSIndexPath indexPathForItem:[items indexOfObject:searchedEvent] inSection:searchedComponents.hour];
+        }
     }
-    if ([items containsObject:searchedEvent]) {
-        return [NSIndexPath indexPathForItem:[items indexOfObject:searchedEvent] inSection:searchedComponents.hour];
-    }
+    
     return nil;
 }
 
 - (JxCalendarEvent *)eventForIndexPath:(NSIndexPath *)indexPath{
-    
-    NSArray *events = [self.dataSource eventsAt:self.startDate];
-    
-    NSMutableArray *items = [NSMutableArray array];
-    
-    for (JxCalendarEvent *e in events) {
-        if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
-            JxCalendarEventDuration *event = (JxCalendarEventDuration *)e;
-            
-            NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:event.start];
-            
-            if (components.hour == indexPath.section) {
-                [items addObject:event];
-            }
-        }else if ([e isKindOfClass:[JxCalendarEventDay class]]) {
-            if (indexPath.section == 0) {
-                JxCalendarEventDay *event = (JxCalendarEventDay *)e;
-                [items addObject:event];
+    if ([self.dataSource respondsToSelector:@selector(eventsAt:)]) {
+        NSArray *events = [self.dataSource eventsAt:self.startDate];
+        
+        NSMutableArray *items = [NSMutableArray array];
+        
+        for (JxCalendarEvent *e in events) {
+            if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
+                JxCalendarEventDuration *event = (JxCalendarEventDuration *)e;
+                
+                NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:event.start];
+                
+                if (components.hour == indexPath.section) {
+                    [items addObject:event];
+                }
+            }else if ([e isKindOfClass:[JxCalendarEventDay class]]) {
+                if (indexPath.section == 0) {
+                    JxCalendarEventDay *event = (JxCalendarEventDay *)e;
+                    [items addObject:event];
+                }
             }
         }
-    }
-    if (items.count > indexPath.item) {
-        return [items objectAtIndex:indexPath.item];
-        
-        
+        if (items.count > indexPath.item) {
+            return [items objectAtIndex:indexPath.item];
+            
+            
+        }
     }
     return nil;
 }
@@ -332,29 +338,29 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    
-    NSArray *events = [self.dataSource eventsAt:self.startDate];
-    
     NSInteger count = 0;
-    
-    for (JxCalendarEvent *e in events) {
-        if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
-            JxCalendarEventDuration *event = (JxCalendarEventDuration *)e;
-            
-            NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:event.start];
-            
-            if (components.hour == section) {
-                count++;
+    if ([self.dataSource respondsToSelector:@selector(eventsAt:)]) {
+        NSArray *events = [self.dataSource eventsAt:self.startDate];
+        
+        
+        for (JxCalendarEvent *e in events) {
+            if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
+                JxCalendarEventDuration *event = (JxCalendarEventDuration *)e;
+                
+                NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:event.start];
+                
+                if (components.hour == section) {
+                    count++;
+                }
+            }else if ([e isKindOfClass:[JxCalendarEventDay class]]) {
+                if (section == 0) {
+                    count++;
+                }
+                
+                
             }
-        }else if ([e isKindOfClass:[JxCalendarEventDay class]]) {
-            if (section == 0) {
-                count++;
-            }
-            
-            
         }
     }
-
     return count;
 }
 

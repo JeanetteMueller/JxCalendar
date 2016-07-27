@@ -24,20 +24,17 @@
 @protocol JxCalendarDataSource <NSObject>
 
 - (NSCalendar *)calendar;
-
 - (NSUInteger)numberOfEventsAt:(NSDate *)date;
-
 - (NSArray <JxCalendarEvent*> *)eventsAt:(NSDate *)date;
-
 - (NSArray <JxCalendarRangeElement *> *)rangedDates;
 
 @optional
+
 - (BOOL)isDaySelectable:(NSDate *)date;
 - (BOOL)isDaySelected:(NSDate *)date;
 - (BOOL)isEventSelected:(JxCalendarEvent *)event;
 
 - (BOOL)shouldDisplayNavbarButtonsWhileOnAppearance:(JxCalendarAppearance)appearance;
-
 
 - (BOOL)isDayRangeable:(NSDate *)date;
 - (BOOL)isStartOfRange:(NSDate *)date;

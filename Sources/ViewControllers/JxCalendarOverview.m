@@ -86,10 +86,11 @@
         self.startAppearance = appearance;
         self.dataSource = dataSource;
         self.selectionStyle = selectionStyle;
+        self.scrollToCurrentTimeAndDate = YES;
         
         if (!self.startDate) {
             
-            self.startDate = [NSDate date];
+            self.startDate = [NSDate new];
         }
         
         
@@ -98,6 +99,61 @@
     return self;
 }
 
+- (NSMutableArray <JxCalendarRangeElement *> *)defineRangeForStartDate:(NSDate *)startDate toEndDate:(NSDate *)endDate{
+    
+    NSMutableArray *dates = [NSMutableArray array];
+    
+    NSDateComponents *startComponents = [self.calendar components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear fromDate:startDate];
+    NSDate *start = [self.calendar dateFromComponents:startComponents];
+    
+    NSDateComponents *endComponents = [self.calendar components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear fromDate:endDate];
+    
+    NSDate *end = [self.calendar dateFromComponents:endComponents];
+    
+    
+    int days = 0;
+    
+    while ([start timeIntervalSince1970] + (24*60*60 *days) < [end timeIntervalSince1970]) {
+        days++;
+    }
+    
+    startComponents.hour = 23;
+    startComponents.minute = 59;
+    startComponents.second = 59;
+    
+    JxCalendarRangeElement *startRangeElement = [[JxCalendarRangeElement alloc]
+                                                 initWithDate:start
+                                                 andDayType:JxCalendarDayTypeFreeChoiceMax
+                                                 withStartDate:startDate
+                                                 andEndDate:[self.calendar dateFromComponents:startComponents]];
+    
+    [dates addObject:startRangeElement];
+    
+    for (int d = 1; d < days; d++) {
+        
+        [dates addObject:[[JxCalendarRangeElement alloc] initWithDate:[start dateByAddingTimeInterval:24*60*60*d]
+                                                                         andDayType:JxCalendarDayTypeWholeDay
+                                                                         inCalendar:self.calendar
+                                                                andMaximumDayLength:self.lengthOfDayInHours]];
+    }
+    
+    
+    endComponents.hour = 0;
+    endComponents.minute = 59;
+    endComponents.second = 59;
+    endComponents.nanosecond = 0;
+    
+    JxCalendarRangeElement *endRangeElement = [[JxCalendarRangeElement alloc] initWithDate:end
+                                                                                andDayType:JxCalendarDayTypeFreeChoiceMin
+                                                                             withStartDate:[self.calendar dateFromComponents:endComponents]
+                                                                                andEndDate:endDate];
+    
+    
+    
+    [dates addObject:endRangeElement];
+
+    return dates;
+}
 - (NSCalendar *)calendar{
     return [self.dataSource calendar];
 }
@@ -814,18 +870,15 @@
                     }
                 }
             }
-            
         }
         
         NSMutableArray *availableOptions = [NSMutableArray array];
         
         for (JxCalendarRangeElement *rangeElement in self.dataSource.rangedDates) {
             
-            
             JxCalendarDayTypeMask mask = [self.dataSource availableDayTypesForDate:rangeElement.date];
             
             [availableOptions removeAllObjects];
-            
             
             if ((mask & JxCalendarDayTypeMaskWholeDay) == JxCalendarDayTypeMaskWholeDay) {
                 [availableOptions addObject:@(JxCalendarDayTypeWholeDay)];

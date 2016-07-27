@@ -34,6 +34,9 @@
 /* duration means hh:mm h */
 @property (assign, nonatomic, readwrite) BOOL displayRangeTimeAdDuration;
 
+/* if selected week or day is current day */
+@property (assign, nonatomic, readwrite) BOOL scrollToCurrentTimeAndDate;
+
 
 /* Internal Use only */
 @property (assign, nonatomic, readonly) JxCalendarAppearance overviewAppearance;
@@ -48,6 +51,8 @@
       andStartAppearance:(JxCalendarAppearance)appearance
        andSelectionStyle:(JxCalendarSelectionStyle)selectionStyle
        andScrollingStyle:(JxCalendarScrollingStyle)scrollingStyle;
+
+- (NSMutableArray <JxCalendarRangeElement *> *)defineRangeForStartDate:(NSDate *)start toEndDate:(NSDate *)end;
 
 - (void)scrollToMonth:(NSInteger)month inYear:(NSInteger)year animated:(BOOL)animated;
 - (void)switchToAppearance:(JxCalendarAppearance)newAppearance;

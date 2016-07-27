@@ -11,6 +11,7 @@
 #ifndef JxCalendarDefinitions_h
 #define JxCalendarDefinitions_h
 
+
 #define kPullToSwitchContextOffset                  80
 #define kPullToSwitchContextAnimationDuration       0.3f
 #define kJxCalendarYearLayoutCells                  @"JxCalendarYearLayoutCells"

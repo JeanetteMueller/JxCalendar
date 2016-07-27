@@ -10,7 +10,4 @@
 
 @implementation JxCalendarCell
 
-- (void)awakeFromNib {
-    // Initialization code
-}
 @end

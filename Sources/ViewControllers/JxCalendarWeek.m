@@ -39,7 +39,7 @@
         
         if (!self.startDate) {
             
-            self.startDate = [NSDate date];
+            self.startDate = [NSDate new];
         }
     }
     return self;
@@ -128,21 +128,26 @@
     JxCalendarLayoutWeek *layout = (JxCalendarLayoutWeek *)self.collectionView.collectionViewLayout;
     
     if (!self.initialScrollDone) {
-        NSDate *now = [NSDate date];
-        NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:now];
-        
-        
-        NSInteger section = [self sectionForDay:[self startComponents].day];
-        
-        NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:floor(section/7)*7];
-        
-        CGFloat offset = components.hour*(60*kCalendarLayoutDaySectionHeightMultiplier) + (3*(kCalendarLayoutWholeDayHeight+layout.minimumLineSpacing))-kCalendarLayoutDayHeaderHalfHeight;
-        
-        if (offset > self.collectionView.contentSize.height-self.collectionView.frame.size.height) {
-            offset = self.collectionView.contentSize.height-self.collectionView.frame.size.height;
+        if ([self getCalendarOverview].scrollToCurrentTimeAndDate) {
+            NSDate *now = [NSDate new];
+            
+            
+            NSDateComponents *components = [[self.dataSource calendar] components:NSCalendarUnitHour fromDate:now];
+            
+            
+            NSInteger section = [self sectionForDay:[self startComponents].day];
+            
+            NSIndexPath *headerIndexPath = [NSIndexPath indexPathForItem:0 inSection:floor(section/7)*7];
+            
+            CGFloat offset = components.hour*(60*kCalendarLayoutDaySectionHeightMultiplier) + (3*(kCalendarLayoutWholeDayHeight+layout.minimumLineSpacing))-kCalendarLayoutDayHeaderHalfHeight;
+            
+            if (offset > self.collectionView.contentSize.height-self.collectionView.frame.size.height) {
+                offset = self.collectionView.contentSize.height-self.collectionView.frame.size.height;
+            }
+            [self.collectionView setContentOffset:CGPointMake([self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:headerIndexPath].frame.origin.x,
+                                                              offset) animated:NO];
         }
-        [self.collectionView setContentOffset:CGPointMake([self.collectionView.collectionViewLayout layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:headerIndexPath].frame.origin.x,
-                                                          offset) animated:NO];
+        
     }
     UIColor *color = [[UIColor lightGrayColor] colorWithAlphaComponent:0.5];
     
@@ -299,12 +304,14 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    NSDate *thisDate = [self getDateForSection:section];
-    if (thisDate) {
-        
-        NSArray *events = [self.dataSource eventsAt:thisDate];
-        
-        return events.count;
+    if ([self.dataSource respondsToSelector:@selector(eventsAt:)]) {
+        NSDate *thisDate = [self getDateForSection:section];
+        if (thisDate) {
+            
+            NSArray *events = [self.dataSource eventsAt:thisDate];
+            
+            return events.count;
+        }
     }
     return 0;
 }
@@ -313,38 +320,40 @@
     JxCalendarWeekEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"JxCalendarWeekEventCell" forIndexPath:indexPath];
     
     NSDate *thisDate = [self getDateForSection:indexPath.section];
-    NSArray *events = [self.dataSource eventsAt:thisDate];
+    if ([self.dataSource respondsToSelector:@selector(eventsAt:)]) {
+        NSArray *events = [self.dataSource eventsAt:thisDate];
     
-    JxCalendarEvent *e = [events objectAtIndex:indexPath.item];
-    
-    cell.textLabel.numberOfLines = 0;
-    
-    JxCalendarEventDay *event = (JxCalendarEventDay *)e;
-    cell.textLabel.text = event.title;
-    
-    if ([self.dataSource respondsToSelector:@selector(isEventSelected:)] && [self.dataSource isEventSelected:e]) {
-        cell.textLabel.textColor = e.fontColorSelected;
-        cell.backgroundColor = e.backgroundColorSelected;
-        [cell.layer setBorderColor:[UIColor redColor].CGColor];
-    }else{
-        cell.textLabel.textColor = e.fontColor;
-        cell.backgroundColor = e.backgroundColor;
-        [cell.layer setBorderColor:e.borderColor.CGColor];
-    }
-    
-    
-    [cell.layer setBorderWidth:1.0f];
-    [cell.layer setCornerRadius:5];
-    
-    
-    [cell.textLabel setTransform:CGAffineTransformIdentity];
-    
-    if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
-        cell.textLabel.transform = CGAffineTransformMakeRotation(M_PI_2);
-        cell.textLabel.frame = CGRectMake(0, 2, cell.frame.size.width, cell.frame.size.height-4);
+        JxCalendarEvent *e = [events objectAtIndex:indexPath.item];
         
-    }else{
-        cell.textLabel.frame = CGRectMake(2, 0, cell.frame.size.width-4, cell.frame.size.height);
+        cell.textLabel.numberOfLines = 0;
+        
+        JxCalendarEventDay *event = (JxCalendarEventDay *)e;
+        cell.textLabel.text = event.title;
+        
+        if ([self.dataSource respondsToSelector:@selector(isEventSelected:)] && [self.dataSource isEventSelected:e]) {
+            cell.textLabel.textColor = e.fontColorSelected;
+            cell.backgroundColor = e.backgroundColorSelected;
+            [cell.layer setBorderColor:[UIColor redColor].CGColor];
+        }else{
+            cell.textLabel.textColor = e.fontColor;
+            cell.backgroundColor = e.backgroundColor;
+            [cell.layer setBorderColor:e.borderColor.CGColor];
+        }
+        
+        
+        [cell.layer setBorderWidth:1.0f];
+        [cell.layer setCornerRadius:5];
+        
+        
+        [cell.textLabel setTransform:CGAffineTransformIdentity];
+        
+        if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
+            cell.textLabel.transform = CGAffineTransformMakeRotation(M_PI_2);
+            cell.textLabel.frame = CGRectMake(0, 2, cell.frame.size.width, cell.frame.size.height-4);
+            
+        }else{
+            cell.textLabel.frame = CGRectMake(2, 0, cell.frame.size.width-4, cell.frame.size.height);
+        }
     }
     return cell;
 }
@@ -355,18 +364,18 @@
         
         NSDate *thisDate = [self getDateForSection:indexPath.section];
         
-        
-        NSArray *events = [self.dataSource eventsAt:thisDate];
-        
-        JxCalendarEvent *event = [events objectAtIndex:indexPath.item];
-        if (event) {
-            if ([self.delegate respondsToSelector:@selector(calendar:didSelectEvent:whileOnAppearance:)]) {
-                [self.delegate calendar:[self getCalendarOverview] didSelectEvent:event whileOnAppearance:JxCalendarAppearanceWeek];
-            }
+        if ([self.dataSource respondsToSelector:@selector(eventsAt:)]) {
+            NSArray *events = [self.dataSource eventsAt:thisDate];
             
-            [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+            JxCalendarEvent *event = [events objectAtIndex:indexPath.item];
+            if (event) {
+                if ([self.delegate respondsToSelector:@selector(calendar:didSelectEvent:whileOnAppearance:)]) {
+                    [self.delegate calendar:[self getCalendarOverview] didSelectEvent:event whileOnAppearance:JxCalendarAppearanceWeek];
+                }
+                
+                [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+            }
         }
-        
     }
 }
 
@@ -440,7 +449,7 @@
                 }
                 header.titleLabel.textColor = kJxCalendarSelectedDayTextColor;
             }
-            header.eventMarker.hidden = !([self.dataSource eventsAt:thisDate].count > 0);
+            header.eventMarker.hidden = !([self.dataSource numberOfEventsAt:thisDate] > 0);
             
         }else{
             header.titleLabel.text = @"";
@@ -555,7 +564,7 @@
     {
         NSUInteger currentIndex = (NSUInteger)(scrollView.contentOffset.x / scrollView.bounds.size.width);
         
-        [scrollView setContentOffset:CGPointMake(scrollView.bounds.size.width * currentIndex, 0) animated:YES];
+        [scrollView setContentOffset:CGPointMake(scrollView.bounds.size.width * currentIndex, scrollView.contentOffset.y) animated:YES];
     }
 }
 @end

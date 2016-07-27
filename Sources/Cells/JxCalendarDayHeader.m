@@ -10,8 +10,4 @@
 
 @implementation JxCalendarDayHeader
 
-- (void)awakeFromNib {
-    // Initialization code
-}
-
 @end
