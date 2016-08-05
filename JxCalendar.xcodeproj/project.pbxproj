@@ -324,7 +324,7 @@
 				TargetAttributes = {
 					269F3F591C1843B3008CD7AF = {
 						CreatedOnToolsVersion = 7.1.1;
-						DevelopmentTeam = K65BGG7A8T;
+						DevelopmentTeam = PF8DXS9D53;
 						DevelopmentTeamName = "Claudio Hintermann (Personal Team)";
 					};
 				};
@@ -489,6 +489,7 @@
 		269F3F631C1843B3008CD7AF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -506,6 +507,7 @@
 		269F3F641C1843B3008CD7AF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;

@@ -86,8 +86,11 @@ typedef NS_ENUM(NSInteger, JxCalendarSelectionStyle) {
     JxCalendarSelectionStyleSelectOnly,
     
     /* touch on an item start a range-selection. another touch ends range-selection. touch and hold start and change range */
-    JxCalendarSelectionStyleRangeOnly
+    JxCalendarSelectionStyleRangeOnly,
     
+    
+    JxCalendarSelectionStyleMonthDaySelect,
+    JxCalendarSelectionStyleMonthRangeSelect,
 };
 
 typedef NS_ENUM(NSInteger, JxCalendarScrollingStyle) {

@@ -76,6 +76,7 @@
         self.automaticallyAdjustsScrollViewInsets = NO;
         self.modalPresentationStyle = UIModalPresentationOverCurrentContext;
         
+        self.allowsManipulation = YES;
         self.visibleSections = [NSMutableArray array];
         self.scrollingStyle = scrollingStyle;
         self.lengthOfDayInHours = 24;
@@ -123,34 +124,38 @@
     
     JxCalendarRangeElement *startRangeElement = [[JxCalendarRangeElement alloc]
                                                  initWithDate:start
-                                                 andDayType:JxCalendarDayTypeFreeChoiceMax
+                                                 andDayType:([start timeIntervalSince1970] != [end timeIntervalSince1970])?JxCalendarDayTypeFreeChoiceMax:JxCalendarDayTypeFreeChoice
                                                  withStartDate:startDate
                                                  andEndDate:[self.calendar dateFromComponents:startComponents]];
     
     [dates addObject:startRangeElement];
     
-    for (int d = 1; d < days; d++) {
+    if ([start timeIntervalSince1970] != [end timeIntervalSince1970]){
+        for (int d = 1; d < days; d++) {
+            
+            [dates addObject:[[JxCalendarRangeElement alloc] initWithDate:[start dateByAddingTimeInterval:24*60*60*d]
+                                                                             andDayType:JxCalendarDayTypeWholeDay
+                                                                             inCalendar:self.calendar
+                                                                    andMaximumDayLength:self.lengthOfDayInHours]];
+        }
+    
+    
+        endComponents.hour = 0;
+        endComponents.minute = 59;
+        endComponents.second = 59;
+        endComponents.nanosecond = 0;
         
-        [dates addObject:[[JxCalendarRangeElement alloc] initWithDate:[start dateByAddingTimeInterval:24*60*60*d]
-                                                                         andDayType:JxCalendarDayTypeWholeDay
-                                                                         inCalendar:self.calendar
-                                                                andMaximumDayLength:self.lengthOfDayInHours]];
+        JxCalendarRangeElement *endRangeElement = [[JxCalendarRangeElement alloc] initWithDate:end
+                                                                                    andDayType:JxCalendarDayTypeFreeChoiceMin
+                                                                                 withStartDate:[self.calendar dateFromComponents:endComponents]
+                                                                                    andEndDate:endDate];
+        
+        
+        
+        [dates addObject:endRangeElement];
     }
     
     
-    endComponents.hour = 0;
-    endComponents.minute = 59;
-    endComponents.second = 59;
-    endComponents.nanosecond = 0;
-    
-    JxCalendarRangeElement *endRangeElement = [[JxCalendarRangeElement alloc] initWithDate:end
-                                                                                andDayType:JxCalendarDayTypeFreeChoiceMin
-                                                                             withStartDate:[self.calendar dateFromComponents:endComponents]
-                                                                                andEndDate:endDate];
-    
-    
-    
-    [dates addObject:endRangeElement];
 
     return dates;
 }
@@ -282,10 +287,11 @@
     if (self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
         switch (self.selectionStyle) {
             case JxCalendarSelectionStyleDefault:
-            case JxCalendarSelectionStyleRangeOnly:{
+            case JxCalendarSelectionStyleRangeOnly:
+            case JxCalendarSelectionStyleMonthRangeSelect:{
                 self.longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressAction:)];
                 self.longPressGesture.numberOfTouchesRequired = 1;
-                if (self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
+                if (self.selectionStyle == JxCalendarSelectionStyleRangeOnly || self.selectionStyle == JxCalendarSelectionStyleMonthRangeSelect) {
                     self.longPressGesture.minimumPressDuration = 0.15f;
                 }else{
                     self.longPressGesture.minimumPressDuration = 0.5f;
@@ -295,6 +301,8 @@
             }break;
                 
             case JxCalendarSelectionStyleSelectOnly:
+                break;
+            case JxCalendarSelectionStyleMonthDaySelect:
                 break;
         }
     }
@@ -335,8 +343,13 @@
                     case JxCalendarSelectionStyleRangeOnly:
                         extraButton = [[UIBarButtonItem alloc] initWithTitle:@"Range" style:UIBarButtonItemStylePlain target:self action:@selector(switchToDefault:)];
                         break;
+                    default:
+                        break;
                 }
-                [buttons addObject:extraButton];
+                if (extraButton) {
+                    [buttons addObject:extraButton];
+                }
+                
             }
         }
     }
@@ -619,6 +632,9 @@
 
 - (void)longPressAction:(UILongPressGestureRecognizer *)sender{
     
+    if (!_allowsManipulation) {
+        return;
+    }
     if ((![self.delegate respondsToSelector:@selector(calendarShouldStartRanging:)]) ||
         ([self.delegate respondsToSelector:@selector(calendarShouldStartRanging:)] && ![self.delegate calendarShouldStartRanging:[self getCalendarOverview]])
         ) {
@@ -1049,6 +1065,7 @@
         
         if (cell) {
             [self updateCell:cell atIndexPath:path];
+            [self updateRangeForCell:cell atIndexPath:path animated:YES];
         }
         
         thisdate = [self.dataSource.calendar dateByAddingComponents:comps toDate:thisdate options:0];
@@ -1658,7 +1675,8 @@
 
     if (date) {
         
-        if ((self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ) && self.selectionStyle == JxCalendarSelectionStyleRangeOnly) {
+        if ((self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ) &&
+            (self.selectionStyle == JxCalendarSelectionStyleRangeOnly || self.selectionStyle == JxCalendarSelectionStyleMonthRangeSelect)) {
             
             if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] &&
                 [self.dataSource respondsToSelector:@selector(isDayRangeable:)] && [self.dataSource isDayRangeable:date]) {
@@ -1671,7 +1689,7 @@
                 }else{
                     [self hideToolTip];
                     
-                    if ([self.dataSource isDayRangeable:date]) {
+                    if ([self.dataSource isDayRangeable:date] && _allowsManipulation) {
                         if ([self.delegate respondsToSelector:@selector(calendarDidStartRanging:)]) {
                             [self.delegate calendarDidStartRanging:[self getCalendarOverview]];
                         }
@@ -1751,17 +1769,21 @@
             
             [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
             
-            if ([self.delegate respondsToSelector:@selector(calendar:willTransitionFrom:to:)]) {
-                [self.delegate calendar:self willTransitionFrom:[self getOverviewAppearance] to:JxCalendarAppearanceWeek];
+            if (self.selectionStyle != JxCalendarSelectionStyleMonthDaySelect) {
+                if ([self.delegate respondsToSelector:@selector(calendar:willTransitionFrom:to:)]) {
+                    [self.delegate calendar:self willTransitionFrom:[self getOverviewAppearance] to:JxCalendarAppearanceWeek];
+                }
+                JxCalendarWeek *vc = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.view.frame.size andStartDate:date];
+                vc.delegate = self.delegate;
+                
+                if (self.navigationController) {
+                    [self.navigationController pushViewController:vc animated:YES];
+                }else{
+                    [self presentViewController:vc animated:YES completion:nil];
+                }
             }
-            JxCalendarWeek *vc = [[JxCalendarWeek alloc] initWithDataSource:self.dataSource andSize:self.view.frame.size andStartDate:date];
-            vc.delegate = self.delegate;
             
-            if (self.navigationController) {
-                [self.navigationController pushViewController:vc animated:YES];
-            }else{
-                [self presentViewController:vc animated:YES completion:nil];
-            }
+            
         }
     }else{
         [self hideToolTip];

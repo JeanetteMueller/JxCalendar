@@ -133,6 +133,10 @@ typedef enum {
         
         [self.view addSubview:arrowView];
         
+        dayTypeButton.userInteractionEnabled = self.allowsManipulation;
+        freeChoiceButton.userInteractionEnabled = self.allowsManipulation;
+        freeChoicePicker.userInteractionEnabled = self.allowsManipulation;
+        
         [self updateToolTipAnimated:NO];
     }
 }

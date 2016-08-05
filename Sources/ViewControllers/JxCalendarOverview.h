@@ -37,6 +37,9 @@
 /* if selected week or day is current day */
 @property (assign, nonatomic, readwrite) BOOL scrollToCurrentTimeAndDate;
 
+/* Wenn deaktiviert, können selektierte Bereiche oder Ranges nicht verändert werden. */
+/* default = YES */
+@property (assign, nonatomic, readwrite) BOOL allowsManipulation;
 
 /* Internal Use only */
 @property (assign, nonatomic, readonly) JxCalendarAppearance overviewAppearance;
