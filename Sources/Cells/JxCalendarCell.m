@@ -46,7 +46,7 @@
         _label.clipsToBounds = YES;
         _label.numberOfLines = 0;
         _label.font = [UIFont fontWithName:@"Helvetica Neue Thin" size:15.0f];
-        _label.textColor = [UIColor blueColor];
+        _label.textColor = [UIColor blackColor];
         _label.backgroundColor = [UIColor clearColor];
         _label.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         [self addSubview:_label];
