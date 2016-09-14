@@ -11,6 +11,44 @@
 
 @implementation JxCalendarWeekDayDecoration
 
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        NSLog(@"initWithFrame");
+        [self defaultInitWithFrame:frame];
+    }
+    return self;
+}
+- (instancetype)initWithCoder:(NSCoder *)aDecoder{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        NSLog(@"initWithCoder");
+        [self defaultInit];
+    }
+    return self;
+}
+- (void)defaultInit{
+    [self defaultInitWithFrame:CGRectZero];
+}
+- (void)defaultInitWithFrame:(CGRect)frame{
+    
+    [self labelWithFrame:frame];
+    [self setNeedsLayout];
+}
+- (UILabel *)labelWithFrame:(CGRect)frame{
+    if (!_label) {
+        _label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+        _label.tag = 0;
+        _label.numberOfLines = 0;
+        _label.font = [UIFont fontWithName:@"Helvetica Neue Thin" size:14.0f];
+        _label.textColor = [UIColor blueColor];
+        _label.backgroundColor = [UIColor clearColor];
+        _label.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+        [self addSubview:_label];
+    }
+    return _label;
+}
+
 - (void)applyLayoutAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes{
     [super applyLayoutAttributes:layoutAttributes];
     

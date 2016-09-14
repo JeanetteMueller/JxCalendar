@@ -51,7 +51,6 @@
         NSBundle* bundle = [NSBundle bundleWithIdentifier:frameworkBundleID];
         
         [self registerClass:[JxCalendarWeekDayDecoration class] forDecorationViewOfKind:kJxCalendarWeekDayDecoration];
-        [self registerNib:[UINib nibWithNibName:kJxCalendarWeekDayDecoration bundle:bundle] forDecorationViewOfKind:kJxCalendarWeekDayDecoration];
     }
     
     return self;

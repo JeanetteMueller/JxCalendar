@@ -61,11 +61,8 @@
     NSBundle* bundle = [NSBundle bundleWithIdentifier:frameworkBundleID];
     
     [self.collectionView registerClass:[JxCalendarWeekEventCell class] forCellWithReuseIdentifier:@"JxCalendarWeekEventCell"];
-    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarWeekEventCell" bundle:bundle] forCellWithReuseIdentifier:@"JxCalendarWeekEventCell"];
-    
     [self.collectionView registerClass:[JxCalendarWeekHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarWeekHeader"];
-    [self.collectionView registerNib:[UINib nibWithNibName:@"JxCalendarWeekHeader" bundle:bundle] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarWeekHeader"];
-    
+
 }
 
 - (void)viewWillAppear:(BOOL)animated{
