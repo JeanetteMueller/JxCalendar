@@ -421,7 +421,11 @@
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     
-    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+    if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        UICollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarDayFooter" forIndexPath:indexPath];
+        
+        return footer;
+    } else {
         JxCalendarDayHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarDayHeader" forIndexPath:indexPath];
         header.titleLabel.text = [NSString stringWithFormat:@"%ld Uhr", (long)indexPath.section % 24];
         header.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:13];
@@ -433,7 +437,6 @@
         header.backgroundColor = [UIColor clearColor];
         return header;
     }
-    return nil;
 }
 
 #pragma mark <UICollectionViewDelegate>

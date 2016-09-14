@@ -385,7 +385,7 @@
     
     if (date) {
         
-        if ([self.dataSource isDaySelected:date]) {
+        if ([self.dataSource respondsToSelector:@selector(isDaySelected:)] && [self.dataSource isDaySelected:date]) {
             if ([self.delegate respondsToSelector:@selector(calendar:didDeselectDate:whileOnAppearance:)]) {
                 [self.delegate calendar:[self getCalendarOverview] didDeselectDate:date whileOnAppearance:JxCalendarAppearanceWeek];
             }
@@ -415,7 +415,11 @@
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
     
-    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+    if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        UICollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarWeekFooter" forIndexPath:indexPath];
+        
+        return footer;
+    }else {
         JxCalendarWeekHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarWeekHeader" forIndexPath:indexPath];
         header.backgroundColor = [UIColor whiteColor];
         [header.button addTarget:self action:@selector(openDayView:) forControlEvents:UIControlEventTouchUpInside];
@@ -460,7 +464,6 @@
         
         return header;
     }
-    return nil;
 }
 
 - (NSInteger)getSectionForDate:(NSDate *)date{

@@ -63,7 +63,6 @@
 
 - (void)updateContentForStartDate:(NSDate *)start till:(NSDate *)end;
 
-- (NSIndexPath *)getIndexPathForDate:(NSDate *)date;
 - (void)updateRangeForCell:(JxCalendarCell *)cell atIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated;
 
 /* For internal use only */
@@ -75,5 +74,9 @@
 
 - (void)finishRefreshForHeader;
 - (void)finishRefreshForFooter;
+
+
+- (NSDate *)getDateForIndexPath:(NSIndexPath *)indexPath;
+- (NSIndexPath *)getIndexPathForDate:(NSDate *)date;
 @end
 

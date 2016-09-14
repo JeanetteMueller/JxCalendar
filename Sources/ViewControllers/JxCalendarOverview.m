@@ -107,7 +107,13 @@
     NSDateComponents *startComponents = [self.calendar components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear fromDate:startDate];
     NSDate *start = [self.calendar dateFromComponents:startComponents];
     
-    NSDateComponents *endComponents = [self.calendar components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear fromDate:endDate];
+    NSDateComponents *endComponents;
+    if (endDate) {
+        endComponents = [self.calendar components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear fromDate:endDate];
+    }else{
+        endComponents = startComponents;
+    }
+    
     
     NSDate *end = [self.calendar dateFromComponents:endComponents];
     
@@ -1176,8 +1182,11 @@
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
-    
-    if ([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+    if ([kind isEqualToString:UICollectionElementKindSectionFooter]) {
+        UICollectionReusableView *footer = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarFooter" forIndexPath:indexPath];
+        
+        return footer;
+    }else {
         JxCalendarHeader *header = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"JxCalendarHeader" forIndexPath:indexPath];
         [header addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(calendarTapped:)]];
         header.clipsToBounds = YES;
@@ -1224,7 +1233,6 @@
         //header.backgroundColor = [[UIColor cyanColor] colorWithAlphaComponent:0.3];
         return header;
     }
-    return nil;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -1754,9 +1762,11 @@
                 [self openToolTipWithDate:date];
                 
                 return;
+            }else{
+                [self hideToolTip];
             }
             
-            if ([self.dataSource isDaySelected:date]) {
+            if ([self.dataSource respondsToSelector:@selector(isDaySelected:)] && [self.dataSource isDaySelected:date]) {
                 if ([self.delegate respondsToSelector:@selector(calendar:didDeselectDate:whileOnAppearance:)]) {
                     [self.delegate calendar:[self getCalendarOverview] didDeselectDate:date whileOnAppearance:[self getOverviewAppearance]];
                 }

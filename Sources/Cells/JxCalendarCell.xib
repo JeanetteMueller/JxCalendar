@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11198.2" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" colorMatched="NO">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <development version="7000" identifier="xcode"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -13,43 +14,42 @@
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                 <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                 <subviews>
-                    <view clipsSubviews="YES" contentMode="scaleToFill" id="1Me-O8-rFx">
+                    <view clipsSubviews="YES" tag="400" contentMode="scaleToFill" id="1Me-O8-rFx">
                         <rect key="frame" x="0.0" y="0.0" width="15" height="15"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" red="0.23753643930608595" green="0.87120282504363" blue="0.83637977337954128" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
-                    <view clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" id="UYD-EF-EsP">
+                    <view clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" tag="301" contentMode="scaleToFill" id="UYD-EF-EsP">
                         <rect key="frame" x="-5" y="15" width="70" height="70"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" red="1" green="0.83178976062907395" blue="0.55473171951323874" alpha="0.5" colorSpace="calibratedRGB"/>
                     </view>
-                    <view clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" id="K5i-fN-8NU">
+                    <view clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" tag="300" contentMode="scaleToFill" id="K5i-fN-8NU">
                         <rect key="frame" x="35" y="15" width="70" height="70"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" red="1" green="0.83178976062907395" blue="0.55473171951323874" alpha="0.5" colorSpace="calibratedRGB"/>
                     </view>
-                    <view clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" id="miS-0Q-28l">
+                    <view clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" tag="302" contentMode="scaleToFill" id="miS-0Q-28l">
                         <rect key="frame" x="5" y="5" width="90" height="90"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view clipsSubviews="YES" contentMode="scaleToFill" id="qBH-AQ-y6D">
                                 <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.83178976062907395" blue="0.55473171951323874" alpha="0.5" colorSpace="calibratedRGB"/>
                     </view>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="#" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="loW-UY-HwG">
+                    <label opaque="NO" userInteractionEnabled="NO" tag="200" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="#" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="loW-UY-HwG">
                         <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="calibratedRGB"/>
                         <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="15"/>
                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
-                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             </view>
             <size key="customSize" width="452" height="108"/>
             <connections>
@@ -63,4 +63,9 @@
             <point key="canvasLocation" x="767" y="419"/>
         </collectionViewCell>
     </objects>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination"/>
+    </simulatedMetricsContainer>
 </document>
