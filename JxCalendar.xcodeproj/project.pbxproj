@@ -29,13 +29,10 @@
 		266D38151C2AAE64004FEBF1 /* JxCalendarWeekHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 266D38121C2AAE64004FEBF1 /* JxCalendarWeekHeader.xib */; };
 		26EBE1F61C18446700A0DB2E /* JxCalendarCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1CC1C18446700A0DB2E /* JxCalendarCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE1F71C18446700A0DB2E /* JxCalendarCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1CD1C18446700A0DB2E /* JxCalendarCell.m */; };
-		26EBE1F81C18446700A0DB2E /* JxCalendarCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26EBE1CE1C18446700A0DB2E /* JxCalendarCell.xib */; };
 		26EBE1F91C18446700A0DB2E /* JxCalendarDayHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1CF1C18446700A0DB2E /* JxCalendarDayHeader.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE1FA1C18446700A0DB2E /* JxCalendarDayHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1D01C18446700A0DB2E /* JxCalendarDayHeader.m */; };
-		26EBE1FB1C18446700A0DB2E /* JxCalendarDayHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26EBE1D11C18446700A0DB2E /* JxCalendarDayHeader.xib */; };
 		26EBE1FC1C18446700A0DB2E /* JxCalendarEventCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1D21C18446700A0DB2E /* JxCalendarEventCell.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE1FD1C18446700A0DB2E /* JxCalendarEventCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1D31C18446700A0DB2E /* JxCalendarEventCell.m */; };
-		26EBE1FE1C18446700A0DB2E /* JxCalendarEventCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26EBE1D41C18446700A0DB2E /* JxCalendarEventCell.xib */; };
 		26EBE2011C18446700A0DB2E /* JxCalendarHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EBE1D71C18446700A0DB2E /* JxCalendarHeader.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		26EBE2021C18446700A0DB2E /* JxCalendarHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 26EBE1D81C18446700A0DB2E /* JxCalendarHeader.m */; };
 		26EBE2031C18446700A0DB2E /* JxCalendarHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26EBE1D91C18446700A0DB2E /* JxCalendarHeader.xib */; };
@@ -91,13 +88,10 @@
 		269F3F5A1C1843B3008CD7AF /* JxCalendar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JxCalendar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26EBE1CC1C18446700A0DB2E /* JxCalendarCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarCell.h; sourceTree = "<group>"; };
 		26EBE1CD1C18446700A0DB2E /* JxCalendarCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarCell.m; sourceTree = "<group>"; };
-		26EBE1CE1C18446700A0DB2E /* JxCalendarCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarCell.xib; sourceTree = "<group>"; };
 		26EBE1CF1C18446700A0DB2E /* JxCalendarDayHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarDayHeader.h; sourceTree = "<group>"; };
 		26EBE1D01C18446700A0DB2E /* JxCalendarDayHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarDayHeader.m; sourceTree = "<group>"; };
-		26EBE1D11C18446700A0DB2E /* JxCalendarDayHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarDayHeader.xib; sourceTree = "<group>"; };
 		26EBE1D21C18446700A0DB2E /* JxCalendarEventCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarEventCell.h; sourceTree = "<group>"; };
 		26EBE1D31C18446700A0DB2E /* JxCalendarEventCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarEventCell.m; sourceTree = "<group>"; };
-		26EBE1D41C18446700A0DB2E /* JxCalendarEventCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarEventCell.xib; sourceTree = "<group>"; };
 		26EBE1D71C18446700A0DB2E /* JxCalendarHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JxCalendarHeader.h; sourceTree = "<group>"; };
 		26EBE1D81C18446700A0DB2E /* JxCalendarHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JxCalendarHeader.m; sourceTree = "<group>"; };
 		26EBE1D91C18446700A0DB2E /* JxCalendarHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JxCalendarHeader.xib; sourceTree = "<group>"; };
@@ -181,13 +175,10 @@
 			children = (
 				26EBE1CC1C18446700A0DB2E /* JxCalendarCell.h */,
 				26EBE1CD1C18446700A0DB2E /* JxCalendarCell.m */,
-				26EBE1CE1C18446700A0DB2E /* JxCalendarCell.xib */,
 				26EBE1CF1C18446700A0DB2E /* JxCalendarDayHeader.h */,
 				26EBE1D01C18446700A0DB2E /* JxCalendarDayHeader.m */,
-				26EBE1D11C18446700A0DB2E /* JxCalendarDayHeader.xib */,
 				26EBE1D21C18446700A0DB2E /* JxCalendarEventCell.h */,
 				26EBE1D31C18446700A0DB2E /* JxCalendarEventCell.m */,
-				26EBE1D41C18446700A0DB2E /* JxCalendarEventCell.xib */,
 				265FD5F71C217BA400FCC8AE /* JxCalendarWeekEventCell.h */,
 				265FD5F81C217BA400FCC8AE /* JxCalendarWeekEventCell.m */,
 				265FD5F91C217BA400FCC8AE /* JxCalendarWeekEventCell.xib */,
@@ -351,12 +342,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				26EBE1FE1C18446700A0DB2E /* JxCalendarEventCell.xib in Resources */,
 				266D38151C2AAE64004FEBF1 /* JxCalendarWeekHeader.xib in Resources */,
-				26EBE1F81C18446700A0DB2E /* JxCalendarCell.xib in Resources */,
 				2614D0971C8DB71B002EC145 /* JxCalendarWeekDayDecoration.xib in Resources */,
 				26EBE2031C18446700A0DB2E /* JxCalendarHeader.xib in Resources */,
-				26EBE1FB1C18446700A0DB2E /* JxCalendarDayHeader.xib in Resources */,
 				265FD5FC1C217BA400FCC8AE /* JxCalendarWeekEventCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -417,7 +405,6 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -467,7 +454,6 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
