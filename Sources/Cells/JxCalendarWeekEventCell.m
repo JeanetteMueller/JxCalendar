@@ -49,5 +49,17 @@
     }
     return _textLabel;
 }
+- (void)setNeedsLayout {
+    NSLog(@"setNeedsLayout");
+    [super setNeedsLayout];
+    [self setNeedsDisplay];
+}
+- (void)layoutSubviews{
+    
+    _textLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, self.frame.size.width-6, self.frame.size.height)];
+    
+    
+    [super layoutSubviews];
 
+}
 @end

@@ -127,6 +127,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		263F4A791D8AC16F00E8F0AB /* Header */ = {
+			isa = PBXGroup;
+			children = (
+				26EBE1D71C18446700A0DB2E /* JxCalendarHeader.h */,
+				26EBE1D81C18446700A0DB2E /* JxCalendarHeader.m */,
+				26EBE1CF1C18446700A0DB2E /* JxCalendarDayHeader.h */,
+				26EBE1D01C18446700A0DB2E /* JxCalendarDayHeader.m */,
+				266D38101C2AAE64004FEBF1 /* JxCalendarWeekHeader.h */,
+				266D38111C2AAE64004FEBF1 /* JxCalendarWeekHeader.m */,
+			);
+			name = Header;
+			sourceTree = "<group>";
+		};
 		269F3F501C1843B3008CD7AF = {
 			isa = PBXGroup;
 			children = (
@@ -165,18 +178,13 @@
 		26EBE1CB1C18446700A0DB2E /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				263F4A791D8AC16F00E8F0AB /* Header */,
 				26EBE1CC1C18446700A0DB2E /* JxCalendarCell.h */,
 				26EBE1CD1C18446700A0DB2E /* JxCalendarCell.m */,
-				26EBE1CF1C18446700A0DB2E /* JxCalendarDayHeader.h */,
-				26EBE1D01C18446700A0DB2E /* JxCalendarDayHeader.m */,
 				26EBE1D21C18446700A0DB2E /* JxCalendarEventCell.h */,
 				26EBE1D31C18446700A0DB2E /* JxCalendarEventCell.m */,
 				265FD5F71C217BA400FCC8AE /* JxCalendarWeekEventCell.h */,
 				265FD5F81C217BA400FCC8AE /* JxCalendarWeekEventCell.m */,
-				26EBE1D71C18446700A0DB2E /* JxCalendarHeader.h */,
-				26EBE1D81C18446700A0DB2E /* JxCalendarHeader.m */,
-				266D38101C2AAE64004FEBF1 /* JxCalendarWeekHeader.h */,
-				266D38111C2AAE64004FEBF1 /* JxCalendarWeekHeader.m */,
 				2614D0921C8DB71B002EC145 /* JxCalendarWeekDayDecoration.h */,
 				2614D0931C8DB71B002EC145 /* JxCalendarWeekDayDecoration.m */,
 			);
