@@ -1050,7 +1050,9 @@
         [self.navigationController setViewControllers:viewControllers animated:YES];
     }
 }
-
+- (void)updateContent{
+    [self.collectionView reloadData];
+}
 - (void)updateContentForStartDate:(NSDate *)start till:(NSDate *)end{
     
     NSDateComponents *comps = [[NSDateComponents alloc] init];

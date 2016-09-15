@@ -61,6 +61,8 @@
 - (void)switchToAppearance:(JxCalendarAppearance)newAppearance;
 - (void)switchToAppearance:(JxCalendarAppearance)newAppearance withDate:(NSDate *)newDate;
 
+- (void)updateContent;
+
 - (void)updateContentForStartDate:(NSDate *)start till:(NSDate *)end;
 
 - (void)updateRangeForCell:(JxCalendarCell *)cell atIndexPath:(NSIndexPath *)indexPath animated:(BOOL)animated;
