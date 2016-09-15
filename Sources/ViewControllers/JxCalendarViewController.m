@@ -106,6 +106,10 @@ static NSString * const reuseIdentifier = @"Cell";
     }];
 }
 
+- (void)updateContent{
+    [self.collectionView reloadData];
+}
+
 - (void)startUpdateRefreshViews{
     _pullToRefreshHeader.hidden = YES;
     _pullToRefreshFooter.hidden = YES;

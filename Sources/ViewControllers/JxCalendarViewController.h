@@ -23,6 +23,8 @@
 @property (assign, nonatomic, readwrite) BOOL renderWeekDayLabels; /* default YES */
 @property (assign, nonatomic, readwrite) BOOL initialScrollDone;
 
+- (void)updateContent;
+
 - (NSDateComponents *)startComponents;
 - (NSDateComponents *)componentsFromDate:(NSDate *)date;
 
