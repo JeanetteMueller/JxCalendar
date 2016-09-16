@@ -56,7 +56,8 @@
         _button.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
         
         _button.tag = 0;
-        _button.font =  [UIFont systemFontOfSize:18.0f];;
+        
+        _button.titleLabel.font =  [UIFont systemFontOfSize:18.0f];;
         [_button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         _button.backgroundColor = [UIColor clearColor];
         _button.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
