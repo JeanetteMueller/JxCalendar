@@ -57,9 +57,6 @@
     
     [self.collectionView setDirectionalLockEnabled:YES];
     
-    NSString* const frameworkBundleID = @"de.themaverick.JxCalendar";
-    NSBundle* bundle = [NSBundle bundleWithIdentifier:frameworkBundleID];
-    
     [self.collectionView registerClass:[JxCalendarEventCell class] forCellWithReuseIdentifier:@"JxCalendarEventCell"];
     [self.collectionView registerClass:[JxCalendarDayHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarDayHeader"];
     

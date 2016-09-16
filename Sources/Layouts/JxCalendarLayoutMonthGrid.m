@@ -47,9 +47,6 @@
         self.minimumLineSpacing = 2.0f;
         self.minimumInteritemSpacing = 2.0f;
         
-        NSString* const frameworkBundleID = @"de.themaverick.JxCalendar";
-        NSBundle* bundle = [NSBundle bundleWithIdentifier:frameworkBundleID];
-        
         [self registerClass:[JxCalendarWeekDayDecoration class] forDecorationViewOfKind:kJxCalendarWeekDayDecoration];
     }
     

@@ -178,9 +178,6 @@
     }
     
     self.collectionView.backgroundColor = kJxCalendarBackgroundColor;
-    
-    NSString* const frameworkBundleID = @"de.themaverick.JxCalendar";
-    NSBundle* bundle = [NSBundle bundleWithIdentifier:frameworkBundleID];
 
     // Register cell classes
     [self.collectionView registerClass:[JxCalendarCell class] forCellWithReuseIdentifier:@"JxCalendarCell"];

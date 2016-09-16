@@ -57,9 +57,6 @@
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.directionalLockEnabled = YES;
     
-    NSString* const frameworkBundleID = @"de.themaverick.JxCalendar";
-    NSBundle* bundle = [NSBundle bundleWithIdentifier:frameworkBundleID];
-    
     [self.collectionView registerClass:[JxCalendarWeekEventCell class] forCellWithReuseIdentifier:@"JxCalendarWeekEventCell"];
     [self.collectionView registerClass:[JxCalendarWeekHeader class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"JxCalendarWeekHeader"];
 

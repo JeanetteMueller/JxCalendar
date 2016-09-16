@@ -55,11 +55,9 @@
     [self setNeedsDisplay];
 }
 - (void)layoutSubviews{
+    [super layoutSubviews];
     
     _textLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, self.frame.size.width-6, self.frame.size.height)];
     
-    
-    [super layoutSubviews];
-
 }
 @end
