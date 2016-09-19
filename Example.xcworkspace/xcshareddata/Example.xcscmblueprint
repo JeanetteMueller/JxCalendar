@@ -1,30 +1,57 @@
 {
-  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486",
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++5133BE4",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
-    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486" : {
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++5133BE4" : {
+
+    },
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++4DE1274" : {
+
+    },
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++4B04022" : {
+      "DVTSourceControlWorkingCopyRepositoryBranchesLocationKey" : "branches",
+      "DVTSourceControlWorkingCopyRepositoryTagsLocationKey" : "tags",
+      "DVTSourceControlWorkingCopyRepositoryPrimaryBranchLocationKey" : "trunk"
+    },
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++C848F10" : {
 
     }
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486" : 0
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++5133BE4" : 9223372036854775807,
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++4DE1274" : 0,
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++4B04022" : 9223372036854775807,
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++C848F10" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "67E9C927-2584-4240-870D-95435D612BDD",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486" : ".."
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++5133BE4" : "JxCalendar\/",
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++4DE1274" : "..",
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++4B04022" : "JxCalendar\/",
+    "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++C848F10" : ".."
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Example",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
   "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Example.xcworkspace",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
     {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/JeanetteMueller\/JxCalendar.git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/svn.abacus.ch\/repos\/abacus",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++4B04022"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/svn.abacus.ch\/repos\/abacus",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Subversion",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++4DE1274"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/JeanetteMueller\/JxCalendar",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++5133BE4"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/JeanetteMueller\/JxCalendar.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "f10edb16-b8e6-0310-952f-8ec78df1de6a++4486+++C848F10"
     }
   ]
 }

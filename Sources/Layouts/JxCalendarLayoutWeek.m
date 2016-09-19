@@ -24,7 +24,7 @@
     self = [self init];
     if (self) {
         
-        CGFloat borders = 0;
+        CGFloat borders = 1.0f;
         
         self.minimumLineSpacing = 1.0f;
         self.minimumInteritemSpacing = borders;
@@ -198,12 +198,15 @@
     
     CGRect newRect = CGRectMake(x,
                                 self.headerReferenceSize.height + self.minimumLineSpacing + (3*(kCalendarLayoutWholeDayHeight+self.minimumLineSpacing)) + self.minimumLineSpacing + (startComponents.hour * (60*kCalendarLayoutDaySectionHeightMultiplier) + startComponents.minute*kCalendarLayoutDaySectionHeightMultiplier),
-                                20,
+                                kCalendarLayoutDayEventWidth,
                                 (event.duration/60)*kCalendarLayoutDaySectionHeightMultiplier - (2*self.minimumInteritemSpacing));
     
-    while (![self checkIfRectIsAvailable:newRect forType:kJxCalendarWeekLayoutCells]){
-        newRect.origin.x = newRect.origin.x + newRect.size.width + self.minimumInteritemSpacing;
+    if (![self.source getCalendarOverview].ignoreOverlapping) {
+        while (![self checkIfRectIsAvailable:newRect forType:kJxCalendarWeekLayoutCells]){
+            newRect.origin.x = newRect.origin.x + newRect.size.width + self.minimumInteritemSpacing;
+        }
     }
+    
     
     if (newRect.origin.x+newRect.size.width > (indexPath.section * (self.headerReferenceSize.width+self.minimumInteritemSpacing))+(self.headerReferenceSize.width+self.minimumInteritemSpacing)) {
         newRect = CGRectZero;

@@ -14,7 +14,6 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        NSLog(@"initWithFrame");
         [self defaultInitWithFrame:frame];
     }
     return self;
@@ -22,7 +21,6 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{
     self = [super initWithCoder:aDecoder];
     if (self) {
-        NSLog(@"initWithCoder");
         [self defaultInit];
     }
     return self;

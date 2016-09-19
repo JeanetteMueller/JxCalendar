@@ -243,10 +243,11 @@
                              self.itemSize.width,
                              itemHeight);
     
-    while (![self checkIfRectIsAvailable:rect forType:kJxCalendarDayLayoutCells]){
-        rect.origin.x = rect.origin.x + self.itemSize.width + self.minimumInteritemSpacing - (rect.size.width * [self overlapingEventsIndicator]);
+    if (![self.source getCalendarOverview].ignoreOverlapping) {
+        while (![self checkIfRectIsAvailable:rect forType:kJxCalendarDayLayoutCells]){
+            rect.origin.x = rect.origin.x + self.itemSize.width + self.minimumInteritemSpacing - (rect.size.width * [self overlapingEventsIndicator]);
+        }
     }
-    
     return rect;
 }
 
@@ -288,7 +289,7 @@
 }
 
 - (CGRect)frameForHeaderAtSection:(NSInteger)section{
-    return CGRectMake(self.collectionView.contentOffset.x,
+    return CGRectMake((self.collectionView.contentOffset.x >= 0)?self.collectionView.contentOffset.x: 0,
                       section * (60*kCalendarLayoutDaySectionHeightMultiplier) + [self wholeDayAreaHeight]- kCalendarLayoutDayHeaderHalfHeight,
                       MAX(self.collectionView.frame.size.width, self.collectionView.frame.size.height),
                       self.headerReferenceSize.height);

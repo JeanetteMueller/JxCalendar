@@ -41,6 +41,11 @@
 /* default = YES */
 @property (assign, nonatomic, readwrite) BOOL allowsManipulation;
 
+
+/* Wenn aktiviert werden Events übereinander gelegt und nicht mehr nebeneinander angeordnet */
+/* default = NO */
+@property (assign, nonatomic, readwrite) BOOL ignoreOverlapping;
+
 /* Internal Use only */
 @property (assign, nonatomic, readonly) JxCalendarAppearance overviewAppearance;
 @property (assign, nonatomic, readonly) JxCalendarAppearance appearance;

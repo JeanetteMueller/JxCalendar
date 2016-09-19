@@ -29,6 +29,7 @@
 #define kCalendarLayoutDayHeaderHeight              49
 #define kCalendarLayoutDayHeaderHalfHeight          24
 #define kCalendarLayoutDayHeaderTextWidth           65
+#define kCalendarLayoutDayEventWidth                28
 
 #define kCalendarLayoutWholeDayHeight               30
 
