@@ -36,7 +36,7 @@
 - (UILabel *)labelWithFrame:(CGRect)frame{
     if (!_label) {
         _label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
-        _label.tag = 0;
+        _label.tag = 200;
         _label.numberOfLines = 0;
         _label.font = [UIFont fontWithName:@"Helvetica Neue Thin" size:14.0f];
         _label.textColor = [UIColor blackColor];
@@ -74,4 +74,10 @@
     self.label.text = [NSString stringWithFormat:@"%@", [weekday stringFromDate:date]];
     
 }
+
+- (void)setNeedsLayout {
+    [super setNeedsLayout];
+    [self setNeedsDisplay];
+}
+
 @end

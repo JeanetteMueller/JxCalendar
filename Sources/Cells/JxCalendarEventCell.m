@@ -36,7 +36,7 @@
 - (UITextView *)textViewWithFrame:(CGRect)frame{
     if (!_textView) {
         _textView = [[UITextView alloc] initWithFrame:CGRectMake(0,0,frame.size.width,frame.size.height)];
-        _textView.tag = 0;
+        _textView.tag = 200;
         _textView.editable = NO;
         _textView.selectable = NO;
         _textView.font = [UIFont systemFontOfSize:14.0f];
@@ -46,6 +46,11 @@
         [self addSubview:_textView];
     }
     return _textView;
+}
+
+- (void)setNeedsLayout {
+    [super setNeedsLayout];
+    [self setNeedsDisplay];
 }
 
 @end

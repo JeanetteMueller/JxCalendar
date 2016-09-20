@@ -36,26 +36,23 @@
 - (UILabel *)textLabelWithFrame:(CGRect)frame{
     if (!_textLabel) {
         _textLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, frame.size.width-6, frame.size.height)];
-        _textLabel.tag = 0;
-        _textLabel.numberOfLines = 0;
+        _textLabel.tag = 200;
+        _textLabel.numberOfLines = 1;
         _textLabel.font =  [UIFont fontWithName:@"Helvetica Neue" size:12.0f];;
         _textLabel.textColor = [UIColor blackColor];
         _textLabel.backgroundColor = [UIColor clearColor];
         _textLabel.textAlignment = NSTextAlignmentCenter;
-        _textLabel.autoresizingMask = UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleBottomMargin;
+        _textLabel.minimumScaleFactor = 0.3;
+        _textLabel.adjustsFontSizeToFitWidth = YES;
+        _textLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
         [self addSubview:_textLabel];
     }
+
     return _textLabel;
 }
 - (void)setNeedsLayout {
-    NSLog(@"setNeedsLayout");
     [super setNeedsLayout];
     [self setNeedsDisplay];
 }
-- (void)layoutSubviews{
-    [super layoutSubviews];
-    
-    _textLabel = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, self.frame.size.width-6, self.frame.size.height)];
-    
-}
+
 @end

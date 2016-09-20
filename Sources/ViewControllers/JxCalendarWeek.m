@@ -313,13 +313,13 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     JxCalendarWeekEventCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"JxCalendarWeekEventCell" forIndexPath:indexPath];
     
+    [cell.textLabel setTransform:CGAffineTransformIdentity];
+    
     NSDate *thisDate = [self getDateForSection:indexPath.section];
     if ([self.dataSource respondsToSelector:@selector(eventsAt:)]) {
         NSArray *events = [self.dataSource eventsAt:thisDate];
     
         JxCalendarEvent *e = [events objectAtIndex:indexPath.item];
-        
-        cell.textLabel.numberOfLines = 0;
         
         JxCalendarEventDay *event = (JxCalendarEventDay *)e;
         cell.textLabel.text = event.title;
@@ -338,17 +338,17 @@
         [cell.layer setBorderWidth:1.0f];
         [cell.layer setCornerRadius:5];
         
-        
-        [cell.textLabel setTransform:CGAffineTransformIdentity];
-        
         if ([e isKindOfClass:[JxCalendarEventDuration class]]) {
             cell.textLabel.transform = CGAffineTransformMakeRotation(M_PI_2);
-            cell.textLabel.frame = CGRectMake(0, 2, cell.frame.size.width, cell.frame.size.height-4);
+            cell.textLabel.frame = CGRectMake(0, 3, cell.frame.size.width, cell.frame.size.height-6);
+            cell.textLabel.textAlignment = NSTextAlignmentLeft;
             
         }else{
-            cell.textLabel.frame = CGRectMake(2, 0, cell.frame.size.width-4, cell.frame.size.height);
+            cell.textLabel.frame = CGRectMake(3, 0, cell.frame.size.width-6, cell.frame.size.height);
+            cell.textLabel.textAlignment = NSTextAlignmentCenter;
         }
     }
+    
     return cell;
 }
 

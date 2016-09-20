@@ -61,7 +61,7 @@
                                                       andStyle:JxCalendarOverviewStyleMonthGrid
                                                        andSize:CGSizeMake(self.view.frame.size.width, self.view.frame.size.height-64)
                                                   andStartDate:[NSDate date]
-                                            andStartAppearance:JxCalendarAppearanceYear
+                                            andStartAppearance:JxCalendarAppearanceMonth
                                              andSelectionStyle:JxCalendarSelectionStyleDefault
                                              andScrollingStyle:JxCalendarScrollingStyleEndlessScrolling];
     

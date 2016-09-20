@@ -112,14 +112,9 @@
 }
 
 
-//- (void)setNeedsLayout {
-//    NSLog(@"setNeedsLayout");
-//    [super setNeedsLayout];
-//    [self setNeedsDisplay];
-//}
-//- (void)layoutSubviews{
-//    [super layoutSubviews];
-//    
-//}
+- (void)setNeedsLayout {
+    [super setNeedsLayout];
+    [self setNeedsDisplay];
+}
 
 @end

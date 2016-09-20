@@ -105,27 +105,27 @@
         
         [components setHour:startTime+2];
         
-        JxCalendarEventDuration *event2 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla8" calendar:[self calendar] andTitle:@"1:20h" andStart:[[self calendar] dateFromComponents:components] andDuration:80*60];
+        JxCalendarEventDuration *event2 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla8" calendar:[self calendar] andTitle:@"1:20 h" andStart:[[self calendar] dateFromComponents:components] andDuration:80*60];
         JxCalendarEventDuration *event3 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla9" calendar:[self calendar] andTitle:@"30 min" andStart:[[self calendar] dateFromComponents:components] andDuration:30*60];
-        JxCalendarEventDuration *event4 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla10" calendar:[self calendar] andTitle:@"2,5h" andStart:[[self calendar] dateFromComponents:components] andDuration:150*60];
+        JxCalendarEventDuration *event4 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla10" calendar:[self calendar] andTitle:@"2,5 h" andStart:[[self calendar] dateFromComponents:components] andDuration:150*60];
         [components setMinute:30];
-        JxCalendarEventDuration *event42 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla10" calendar:[self calendar] andTitle:@"2,5h" andStart:[[self calendar] dateFromComponents:components] andDuration:150*60];
+        JxCalendarEventDuration *event42 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla10" calendar:[self calendar] andTitle:@"2,5 h" andStart:[[self calendar] dateFromComponents:components] andDuration:150*60];
         
         
         
         
-        JxCalendarEventDuration *event41 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla11" calendar:[self calendar] andTitle:@"4,5h" andStart:[[self calendar] dateFromComponents:components] andDuration:270*60];
+        JxCalendarEventDuration *event41 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla11" calendar:[self calendar] andTitle:@"4,5 h" andStart:[[self calendar] dateFromComponents:components] andDuration:270*60];
         
         [components setHour:startTime+3];
         [components setMinute:20];
         
         JxCalendarEventDuration *event5 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla12" calendar:[self calendar] andTitle:@"30 min" andStart:[[self calendar] dateFromComponents:components] andDuration:40*60];
         [components setMinute:0];
-        JxCalendarEventDuration *event6 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla13" calendar:[self calendar] andTitle:@"2h" andStart:[[self calendar] dateFromComponents:components] andDuration:120*60];
+        JxCalendarEventDuration *event6 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla13" calendar:[self calendar] andTitle:@"2 h" andStart:[[self calendar] dateFromComponents:components] andDuration:120*60];
         
         [components setHour:startTime+4];
         
-        JxCalendarEventDuration *event7 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla14" calendar:[self calendar] andTitle:@"1h" andStart:[[self calendar] dateFromComponents:components] andDuration:60*60];
+        JxCalendarEventDuration *event7 = [[JxCalendarEventDuration alloc] initWithIdentifier:@"bla14" calendar:[self calendar] andTitle:@"1 h" andStart:[[self calendar] dateFromComponents:components] andDuration:60*60];
         
 
         self.events = @[wholeDay1, wholeDay2, wholeDay3, wholeDay4,
