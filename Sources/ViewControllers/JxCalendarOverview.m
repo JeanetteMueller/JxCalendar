@@ -320,10 +320,10 @@
         
         switch (self.style) {
             case JxCalendarOverviewStyleMonthGrid:{
-                [buttons addObject:[[UIBarButtonItem alloc] initWithTitle:@"Year" style:UIBarButtonItemStylePlain target:self action:@selector(switchToYear:)]];
+                [buttons addObject:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Year", nil) style:UIBarButtonItemStylePlain target:self action:@selector(switchToYear:)]];
             }break;
             case JxCalendarOverviewStyleYearGrid:
-                [buttons addObject:[[UIBarButtonItem alloc] initWithTitle:@"Month" style:UIBarButtonItemStylePlain target:self action:@selector(switchToMonth:)]];
+                [buttons addObject:[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Month", nil) style:UIBarButtonItemStylePlain target:self action:@selector(switchToMonth:)]];
                 break;
             default:
                 break;
@@ -336,13 +336,13 @@
                 
                 switch (self.selectionStyle) {
                     case JxCalendarSelectionStyleDefault:
-                        extraButton = [[UIBarButtonItem alloc] initWithTitle:@"Default" style:UIBarButtonItemStylePlain target:self action:@selector(switchToSelectOnly:)];
+                        extraButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Default", nil) style:UIBarButtonItemStylePlain target:self action:@selector(switchToSelectOnly:)];
                         break;
                     case JxCalendarSelectionStyleSelectOnly:
-                        extraButton = [[UIBarButtonItem alloc] initWithTitle:@"Select" style:UIBarButtonItemStylePlain target:self action:@selector(switchToRangeOnly:)];
+                        extraButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Select", nil) style:UIBarButtonItemStylePlain target:self action:@selector(switchToRangeOnly:)];
                         break;
                     case JxCalendarSelectionStyleRangeOnly:
-                        extraButton = [[UIBarButtonItem alloc] initWithTitle:@"Range" style:UIBarButtonItemStylePlain target:self action:@selector(switchToDefault:)];
+                        extraButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Range", nil) style:UIBarButtonItemStylePlain target:self action:@selector(switchToDefault:)];
                         break;
                     default:
                         break;
