@@ -130,7 +130,7 @@ static NSString * const reuseIdentifier = @"Cell";
     _pullToRefreshHeader.frame = CGRectMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y, self.collectionView.contentSize.width, _pullToRefreshHeader.frame.size.height);
 
     [UIView animateWithDuration:kPullToSwitchContextAnimationDuration animations:^{
-        _pullToRefreshHeader.frame = CGRectMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y, self.collectionView.frame.size.width, kPullToSwitchContextOffset);
+        self->_pullToRefreshHeader.frame = CGRectMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y, self.collectionView.frame.size.width, kPullToSwitchContextOffset);
         
         self.collectionView.contentInset = UIEdgeInsetsMake(kPullToSwitchContextOffset, self.collectionView.contentInset.left, self.collectionView.contentInset.bottom, self.collectionView.contentInset.right);
         self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
@@ -142,7 +142,7 @@ static NSString * const reuseIdentifier = @"Cell";
     _pullToRefreshFooter.frame = CGRectMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y+self.collectionView.frame.size.height-_pullToRefreshFooter.frame.size.height, self.collectionView.contentSize.width, _pullToRefreshFooter.frame.size.height);
     
     [UIView animateWithDuration:kPullToSwitchContextAnimationDuration animations:^{
-        _pullToRefreshFooter.frame = CGRectMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y+self.collectionView.frame.size.height-kPullToSwitchContextOffset, self.collectionView.frame.size.width, kPullToSwitchContextOffset);
+        self->_pullToRefreshFooter.frame = CGRectMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y+self.collectionView.frame.size.height-kPullToSwitchContextOffset, self.collectionView.frame.size.width, kPullToSwitchContextOffset);
         
         self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top, self.collectionView.contentInset.left, kPullToSwitchContextOffset, self.collectionView.contentInset.right);
         self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
@@ -152,16 +152,16 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void)finishRefreshForHeader{
     [UIView animateWithDuration:kPullToSwitchContextAnimationDuration animations:^{
         
-        _pullToRefreshHeader.frame = CGRectMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y, self.collectionView.frame.size.width, 0);
-        self.collectionView.contentInset = UIEdgeInsetsMake(_originalInsets.top, _originalInsets.left, self.collectionView.contentInset.bottom, _originalInsets.right);
+        self->_pullToRefreshHeader.frame = CGRectMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y, self.collectionView.frame.size.width, 0);
+        self.collectionView.contentInset = UIEdgeInsetsMake(self->_originalInsets.top, self->_originalInsets.left, self.collectionView.contentInset.bottom, self->_originalInsets.right);
         self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
     }];
 }
 
 - (void)finishRefreshForFooter{
     [UIView animateWithDuration:kPullToSwitchContextAnimationDuration animations:^{
-        _pullToRefreshFooter.frame = CGRectMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y+self.collectionView.frame.size.height, self.collectionView.frame.size.width, 0);
-        self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top, _originalInsets.left, _originalInsets.bottom, _originalInsets.right);
+        self->_pullToRefreshFooter.frame = CGRectMake(self.collectionView.contentOffset.x, self.collectionView.contentOffset.y+self.collectionView.frame.size.height, self.collectionView.frame.size.width, 0);
+        self.collectionView.contentInset = UIEdgeInsetsMake(self.collectionView.contentInset.top, self->_originalInsets.left, self->_originalInsets.bottom, self->_originalInsets.right);
         self.collectionView.scrollIndicatorInsets = self.collectionView.contentInset;
     }];
     

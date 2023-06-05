@@ -27,7 +27,7 @@
 @implementation JxCalendarLayoutDay
 
 - (CGFloat)overlapingEventsIndicator{
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+    if(UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad){
         return kJxCalendarLayoutDayOverlapItemsPad;
     }
     return kJxCalendarLayoutDayOverlapItemsPhone;

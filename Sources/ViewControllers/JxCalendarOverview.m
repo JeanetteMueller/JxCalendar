@@ -285,7 +285,7 @@
             [self.collectionView removeGestureRecognizer:self.collectionView.gestureRecognizers[i]];
         }
     }
-    if (self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
+    if (self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad)) {
         switch (self.selectionStyle) {
             case JxCalendarSelectionStyleDefault:
             case JxCalendarSelectionStyleRangeOnly:
@@ -329,7 +329,7 @@
                 break;
         }
         
-        if (self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)) {
+        if (self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad)) {
             if ([self.delegate respondsToSelector:@selector(calendarSelectionStyleSwitchable:)] && [self.delegate calendarSelectionStyleSwitchable:[self getCalendarOverview]]) {
                 
                 UIBarButtonItem *extraButton;
@@ -1677,7 +1677,7 @@
 
     if (date) {
         
-        if ((self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) ) &&
+        if ((self.style == JxCalendarOverviewStyleMonthGrid || (self.style == JxCalendarOverviewStyleYearGrid && UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad) ) &&
             (self.selectionStyle == JxCalendarSelectionStyleRangeOnly || self.selectionStyle == JxCalendarSelectionStyleMonthRangeSelect)) {
             
             if ([self.dataSource respondsToSelector:@selector(isPartOfRange:)] &&
@@ -1726,7 +1726,7 @@
             
             __weak __typeof(self)weakSelf = self;
             
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad && [self.dataSource respondsToSelector:@selector(isPartOfRange:)] &&
+            if (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPad && [self.dataSource respondsToSelector:@selector(isPartOfRange:)] &&
                 [self.dataSource respondsToSelector:@selector(isDayRangeable:)] && [self.dataSource isDayRangeable:date] && [self.dataSource isPartOfRange:date]) {
                 
                 [self openToolTipWithDate:date];
